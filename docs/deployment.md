@@ -71,3 +71,9 @@ Maintenance expires rate limits and group listings, deletes analytics after 90 d
 - Existing KFC and all unrelated PM2 apps must remain healthy after changes.
 
 Node 20.20 currently runs the project and its verified build. Prisma's unused streams development package reports a Node 22 engine warning. Plan a controlled supported-Node upgrade separately; do not replace the host's Node binary without checking its other applications.
+
+## Image Processing Memory
+
+The editorial release's cold-image verification exposed a PM2 restart at approximately 752 MiB RSS against its 650 MiB limit. The follow-up keeps that limit and bounds native work: two Node worker-pool slots, one libvips thread per image, disabled libvips operation caching, and `MALLOC_ARENA_MAX=2` in this app's PM2 environment. Encoded Next.js image disk caching remains enabled. These controls trade some cold-image throughput for lower peak memory; they do not remove request validation or change other applications' environments.
+
+The installed Next version exposes `imgOptConcurrency` and `imgOptOperationCache`; check their support when upgrading Next. [Sharp's performance guidance](https://sharp.pixelplumbing.com/performance/) documents the worker pool and allocator controls. AVIF codecs can have their own internal threads, so verify actual RSS and PM2 restart counts after cold-cache checks rather than treating thread settings as a guaranteed memory ceiling.

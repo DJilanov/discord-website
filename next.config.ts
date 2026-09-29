@@ -5,7 +5,11 @@ const config: NextConfig = {
   poweredByHeader: false,
   devIndicators: false,
   images: { formats: ["image/avif", "image/webp"], qualities: [60, 75] },
-  experimental: { serverActions: { bodySizeLimit: "10mb" } },
+  experimental: {
+    serverActions: { bodySizeLimit: "10mb" },
+    imgOptConcurrency: 1,
+    imgOptOperationCache: false,
+  },
   async headers() {
     return [
       {

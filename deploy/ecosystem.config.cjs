@@ -15,6 +15,8 @@ module.exports = {
       restart_delay: 3000,
       env: {
         NODE_ENV: "production",
+        MALLOC_ARENA_MAX: "2",
+        UV_THREADPOOL_SIZE: "2",
         FOREVER_BUILD_DIR: process.env.FOREVER_BUILD_DIR || ".next",
       },
     },

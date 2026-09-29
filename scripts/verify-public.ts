@@ -11,7 +11,10 @@ async function main(): Promise<void> {
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
     await mkdir("artifacts", { recursive: true });
-    const context = await browser.newContext({ baseURL: origin });
+    const context = await browser.newContext({
+      baseURL: origin,
+      extraHTTPHeaders: { DNT: "1" },
+    });
     const page = await context.newPage();
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));

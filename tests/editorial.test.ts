@@ -2,6 +2,7 @@ import "../scripts/env";
 import assert from "node:assert/strict";
 import { test, after } from "node:test";
 import { randomUUID } from "node:crypto";
+import { createRequire } from "node:module";
 import { stat } from "node:fs/promises";
 import { initialGuides } from "../content/guides";
 import { editorialGuides, guideReadingPaths } from "../content/editorial";
@@ -17,9 +18,29 @@ import {
 } from "../lib/discord";
 import { conversionRate, sessionConversions } from "../lib/traffic-conversion";
 import { db } from "../lib/db";
+import nextConfig from "../next.config";
 
 after(async (): Promise<void> => {
   await db.$disconnect();
+});
+
+test("image processing has bounded workers without raising the production memory limit", () => {
+  const require = createRequire(import.meta.url);
+  const deployment = require("../deploy/ecosystem.config.cjs") as {
+    apps: Array<{
+      name: string;
+      max_memory_restart: string;
+      env: Record<string, string>;
+    }>;
+  };
+  const app = deployment.apps.find(
+    (item) => item.name === "wow-forever-discord",
+  );
+  assert.equal(app?.max_memory_restart, "650M");
+  assert.equal(app?.env.MALLOC_ARENA_MAX, "2");
+  assert.equal(app?.env.UV_THREADPOOL_SIZE, "2");
+  assert.equal(nextConfig.experimental?.imgOptConcurrency, 1);
+  assert.equal(nextConfig.experimental?.imgOptOperationCache, false);
 });
 
 test("all editorial guides, covers and reading paths are valid and distinct", async () => {
