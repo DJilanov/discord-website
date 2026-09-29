@@ -1,0 +1,339 @@
+.public-site .discord-intro {
+  padding: 30px 0 48px;
+  border-bottom: 1px solid var(--line);
+}
+.public-site .discord-intro h1 {
+  font-size: 46px;
+  margin-bottom: 20px;
+}
+.public-site .discord-lead {
+  font: 500 28px/1.4 var(--serif);
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.public-site .discord-intro-copy {
+  max-width: 690px;
+  font-size: 17px;
+  line-height: 1.8;
+}
+.public-site .discord-intro .button-row {
+  margin-block: 26px;
+}
+.discord-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  color: #bdcfbf;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.discord-facts > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.discord-community,
+.discord-inside {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+.discord-community h2,
+.discord-inside h2,
+.discord-standards h2,
+.discord-close h2 {
+  font-size: 34px;
+  line-height: 1.3;
+  margin-bottom: 22px;
+}
+.discord-community p,
+.discord-inside p,
+.discord-standards p {
+  line-height: 1.85;
+}
+.discord-scene img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.discord-inside {
+  border-block: 1px solid var(--line);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+}
+.channel-map {
+  margin-block: 28px;
+}
+.channel-map > div {
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+}
+.channel-map dt {
+  color: #e8dfbf;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.channel-map dd {
+  margin: 0;
+  line-height: 1.85;
+  color: var(--muted);
+}
+.channel-map code {
+  font-size: 13px;
+  color: #c5d9e7;
+  overflow-wrap: anywhere;
+}
+.server-preview {
+  margin: 0;
+  justify-self: center;
+  max-width: 320px;
+  width: 100%;
+}
+.server-preview img {
+  width: 100%;
+  height: auto;
+  border: 1px solid #454952;
+  border-radius: 4px;
+}
+.server-preview figcaption {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  margin-top: 12px;
+}
+.public-site .discord-page .section-heading h2,
+.public-site .community-activity .section-heading h2 {
+  font-size: 30px;
+}
+.community-activity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  border-top: 1px solid var(--line);
+}
+.community-activity > div {
+  min-width: 0;
+}
+.community-activity .section-heading {
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 12px;
+}
+.activity-entry {
+  padding-block: 22px;
+  border-top: 1px solid var(--line);
+}
+.activity-entry h3 {
+  font-size: 21px;
+  line-height: 1.5;
+}
+.activity-entry p {
+  font-size: 14px;
+}
+.activity-entry .eyebrow {
+  color: #b8cce0;
+  font-size: 11px;
+}
+.activity-time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.activity-empty {
+  min-height: 160px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+.activity-empty > svg {
+  color: #8aaf9a;
+  margin-bottom: 12px;
+}
+.activity-empty p {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  list-style: none;
+  padding: 0;
+}
+.step-number {
+  display: block;
+  font: 500 26px/1 var(--serif);
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.onboarding-steps h3 {
+  font-size: 23px;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.onboarding-steps p {
+  font-size: 15px;
+  line-height: 1.8;
+}
+.discord-reading {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  margin-top: 32px;
+}
+.discord-reading a {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  border-block: 1px solid var(--line);
+  padding-block: 22px;
+  font-size: 15px;
+}
+.discord-reading a > span {
+  flex: 1;
+}
+.discord-reading svg {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+.discord-standards {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 24px;
+  border-block: 1px solid var(--line);
+}
+.discord-standards > svg {
+  color: #9abbad;
+}
+.discord-standards p {
+  max-width: 800px;
+}
+.discord-standards .button-row {
+  margin-top: 24px;
+}
+.discord-close {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: 64px;
+  border-top: 1px solid var(--line);
+  align-items: center;
+}
+.discord-close .share-line {
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.discord-close .share-line strong {
+  overflow-wrap: anywhere;
+}
+.discord-close .button {
+  margin-top: 18px;
+}
+.guide-starting-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 40px;
+  padding-block: 22px;
+  margin-bottom: 48px;
+  border-block: 1px solid var(--line);
+  align-items: center;
+}
+.guide-starting-path .eyebrow {
+  margin: 0;
+}
+.guide-starting-path a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 14px;
+  flex: 1 1 300px;
+}
+.guide-starting-path svg {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+.article-next {
+  margin-block: 36px;
+}
+.public-site .article-layout .prose code {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1000px) {
+  .discord-community,
+  .discord-inside,
+  .community-activity,
+  .discord-close {
+    gap: 36px;
+  }
+  .onboarding-steps {
+    gap: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .public-site .discord-intro {
+    padding-top: 22px;
+  }
+  .public-site .discord-intro h1 {
+    font-size: 31px;
+  }
+  .public-site .discord-lead {
+    font-size: 24px;
+  }
+  .public-site .discord-intro-copy {
+    font-size: 16px;
+  }
+  .public-site .discord-page .section {
+    padding-block: 48px;
+  }
+  .discord-community,
+  .discord-inside,
+  .community-activity,
+  .discord-close,
+  .onboarding-steps,
+  .discord-reading {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .discord-community h2,
+  .discord-inside h2,
+  .discord-standards h2,
+  .discord-close h2 {
+    font-size: 27px;
+  }
+  .public-site .discord-page .section-heading h2,
+  .public-site .community-activity .section-heading h2 {
+    font-size: 27px;
+  }
+  .discord-community {
+    gap: 28px;
+  }
+  .server-preview {
+    max-width: 280px;
+  }
+  .discord-standards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .onboarding-steps {
+    gap: 28px;
+  }
+  .onboarding-steps li {
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .step-number {
+    margin-bottom: 12px;
+  }
+  .discord-reading {
+    gap: 0;
+  }
+  .discord-reading a + a {
+    border-top: 0;
+  }
+  .guide-starting-path {
+    gap: 18px;
+  }
+  .guide-starting-path .eyebrow {
+    flex-basis: 100%;
+  }
+}

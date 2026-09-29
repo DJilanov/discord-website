@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: forever
+      POSTGRES_PASSWORD: forever_local_only
+      POSTGRES_DB: forever
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - forever_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forever"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  forever_data:

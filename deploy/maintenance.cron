@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/5 * * * * wowforever cd /home/wow-forever-discord && /usr/bin/flock -n /home/wow-forever-discord/.data/maintenance.lock /usr/bin/npm run maintenance >> /home/wow-forever-discord/.data/maintenance.log 2>&1
+35 3 * * * wowforever cd /home/wow-forever-discord && /usr/bin/flock -n /home/wow-forever-discord/.data/backup.lock /usr/bin/npm run backup >> /home/wow-forever-discord/.data/maintenance.log 2>&1

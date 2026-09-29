@@ -1,0 +1,11 @@
+## Interface: 16001
+## Title: ForeverGuard
+## Notes: Private player notes and reviewed community context. No gameplay automation.
+## Author: WoW Forever Discord Community
+## Version: 0.1.0-alpha.1
+## SavedVariables: ForeverGuardDB
+## IconTexture: Interface\Icons\INV_Shield_06
+
+Data.lua
+Core.lua
+ForeverGuard.lua
