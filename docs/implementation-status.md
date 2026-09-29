@@ -1,5 +1,9 @@
 # Implementation Status
 
+## Discord and Editorial Release
+
+The expanded Discord page, six evergreen guides, approved screenshot editor, article-specific social metadata, regional activity, source/session conversion reporting and search-admin workflow are live. Public Discord forums are explicitly distinguished from the website's private case system. Google ownership is owner-confirmed; sitemap inspection and Bing ownership remain to be confirmed. See [the editorial release](editorial-release.md) for 24 unit/integration tests, 19 browser tests, final live verification and the cold-image memory correction, and [search operations](search-operations.md) for remaining account/community actions.
+
 ## Visual Redesign Released
 
 The September 29 redesign is live: official Forever desktop/portrait artwork, a prominent standalone community identity, responsive navigation, editorial guides with native contents links, real approved guild/group previews, coherent interior pages, and a matching social image. Existing invitations, administration, privacy, and moderation boundaries are preserved. See [the design release report](design-release.md) for browser coverage, performance measurements, deployment, and rollback details.
@@ -9,7 +13,7 @@ Redesign verification passed 16 unit/integration tests, 14 Playwright tests, lin
 ## Delivered Website
 
 - Separate WoW Forever identity and official game logo with visible unofficial-community disclosure. Organizer history is limited to About and Privacy.
-- Public homepage, Discord invitation and live counts, EU/NA and faction/playstyle pages, searchable guild directory and guild profiles, group listings, four original guides, FAQ, policies, transparency, addon information, and staff sign-in.
+- Public homepage, Discord invitation and live counts, EU/NA and faction/playstyle pages, searchable guild directory and guild profiles, group listings, six evergreen guides, FAQ, policies, transparency, addon information, and staff sign-in.
 - Server-rendered public content, canonical metadata, social share image, Article/Organization/WebSite/Breadcrumb structured data, sitemap, crawler policies, and a factual llms.txt.
 - Independent admin with owner/admin/moderator/editor permissions, settings, invitations, guide preview/publishing, guild/group approval, reports/evidence, appeals, alerts, releases, analytics/CSV, staff access, and audits.
 - Bounded, validated public forms; self-hosted anti-spam checks; private image evidence with metadata removal; receipt keys hashed at rest; two-reviewer publication; stale-write protection; independent appeal handling; expiry-aware public exports.
@@ -30,12 +34,12 @@ Launch verification on September 29, 2026: 13 unit/integration tests, 10 Playwri
 - **Discord bot:** implementation and registration script are present, but the owner chose website-first launch. No application credentials or webhook are configured and no Discord server channels or roles have been changed.
 - **ForeverGuard publication:** real source and draft ZIP exist. In-game beta client compatibility is not verified, so the release stays unpublished pending playtesting.
 - **Public safety alerts:** launch database contains no fabricated reports, evidence, accusations, or player entries. Owners must staff the process with independent reviewers before publishing anything.
-- **Rankings:** first place in Google or AI recommendations cannot be guaranteed. Search Console verification, sitemap submission, editorial updates, real community participation, genuine links, and query monitoring require ongoing owner work.
+- **Rankings:** first place in Google or AI recommendations cannot be guaranteed. Google ownership is owner-confirmed. Sitemap submission/inspection, Bing ownership, editorial maintenance, real community participation, genuine links, and query monitoring require ongoing owner work.
 - **Off-host disaster recovery and monitoring:** local backup automation is included. An encrypted off-host destination and external alerting service still need configuration.
 
 ## Growth Work After Launch
 
-1. Verify the domain in Google Search Console and Bing Webmaster Tools, submit the sitemap, and inspect the homepage, Discord page, and best guide. Do not submit private report pages.
+1. Select the verified WoW Forever property in Google Search Console, verify/import it in Bing Webmaster Tools, submit the sitemap, and inspect the homepage, Discord page, and onboarding guide. Do not submit private report pages.
 2. Match Discord's public name, description, icon, and pinned website link to this site. Invite other guild leaders, not only existing KFC members.
 3. Publish one genuinely useful, beta-verified guide at a time, with an author, evidence, and update date. Do not manufacture realm or class guides from unverified assumptions.
 4. Seek permission for useful community introductions on Blizzard forums, relevant Reddit threads, and Discord directories. Avoid purchased links, repetitive promotional posts, and false endorsement claims.
@@ -46,7 +50,7 @@ Launch verification on September 29, 2026: 13 unit/integration tests, 10 Playwri
 
 - [Blizzard's WoW Forever page](https://worldofwarcraft.blizzard.com/en-us/forever) and [announcement](https://worldofwarcraft.blizzard.com/en-gb/news/24302093) for product facts, not community endorsement.
 - [Google's people-first content guidance](https://developers.google.com/search/docs/fundamentals/creating-helpful-content): original usefulness and clear expertise matter more than keyword repetition.
-- [Google's AI search guidance](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide): sound technical SEO and distinctive helpful content remain the foundation; there is no special guaranteed AI-ranking file.
+- [Google's AI search guidance](https://developers.google.com/search/docs/appearance/ai-features): sound technical SEO and distinctive helpful content remain the foundation; there is no special guaranteed AI-ranking file.
 - [Discord interactions](https://docs.discord.com/developers/interactions/receiving-and-responding): verify signatures over the raw body, acknowledge promptly, and minimize permissions.
 
 The broader research and phased roadmap remain in `blueprint.md`. The launch is the website and its operational workflows, not a claim that future Discord operations, editorial growth, or game-client testing have already happened.
