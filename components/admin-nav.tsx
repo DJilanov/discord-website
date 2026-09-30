@@ -16,6 +16,7 @@ import {
   Swords,
   TriangleAlert,
   Users,
+  MessagesSquare,
   type LucideIcon,
 } from "lucide-react";
 import { Brand } from "@/components/ui";
@@ -35,6 +36,7 @@ const icons: Record<string, LucideIcon> = {
   chart: BarChart3,
   list: List,
   key: KeyRound,
+  discord: MessagesSquare,
 };
 export function AdminNav({
   staff,

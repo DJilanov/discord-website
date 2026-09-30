@@ -238,3 +238,153 @@ model ForeverWebhookJob {
   deliveredAt DateTime?
   createdAt   DateTime @default(now())
 }
+
+model ForeverDiscordBridge {
+  id             String @id @default(uuid())
+  name           String
+  guildA         String
+  channelA       String
+  guildB         String
+  channelB       String
+  direction      String @default("two_way")
+  state          String @default("draft")
+  reviewRequired Boolean @default(true)
+  version        Int @default(1)
+  generation     Int @default(1)
+  policyVersion  Int @default(1)
+  activatedAt    DateTime? @db.Timestamptz
+  validatedAt    DateTime? @db.Timestamptz
+  fingerprint    String?
+  approvalA      String?
+  approvalB      String?
+  noticeA        String?
+  noticeB        String?
+  moderatorIds   String[] @default([])
+  blockedTerms   String[] @default([])
+  reason         String?
+  createdAt      DateTime @default(now()) @db.Timestamptz
+  consents       ForeverBridgeConsent[]
+  messages       ForeverBridgeMessage[]
+  jobs           ForeverDiscordOutbox[]
+  interactions   ForeverDiscordInteraction[]
+}
+
+model ForeverBridgeConsent {
+  bridgeId      String
+  guildId       String
+  actorId       String
+  generation    Int
+  policyVersion Int
+  optedAt       DateTime @default(now()) @db.Timestamptz
+  withdrawnAt   DateTime? @db.Timestamptz
+  blocked       Boolean @default(false)
+  bridge        ForeverDiscordBridge @relation(fields: [bridgeId], references: [id], onDelete: Restrict)
+  @@id([bridgeId, guildId, actorId])
+}
+
+model ForeverBridgeMessage {
+  id               String @id @default(uuid())
+  bridgeId         String
+  guildId          String
+  channelId        String
+  messageId        String
+  authorId         String
+  generation       Int
+  revision         Int @default(1)
+  approvedRevision Int @default(0)
+  state            String
+  reason           String?
+  parentId         String?
+  sourceAt         DateTime @db.Timestamptz
+  editedAt         DateTime? @db.Timestamptz
+  expiresAt        DateTime @db.Timestamptz
+  createdAt        DateTime @default(now()) @db.Timestamptz
+  bridge           ForeverDiscordBridge @relation(fields: [bridgeId], references: [id], onDelete: Restrict)
+  parent           ForeverBridgeMessage? @relation("BridgeReplies", fields: [parentId], references: [id], onDelete: Restrict)
+  children         ForeverBridgeMessage[] @relation("BridgeReplies")
+  projection       ForeverBridgeProjection?
+  jobs             ForeverDiscordOutbox[]
+  @@unique([bridgeId, guildId, channelId, messageId])
+  @@index([bridgeId, authorId, state])
+  @@index([parentId])
+  @@index([expiresAt, state])
+}
+
+model ForeverBridgeProjection {
+  id              String @id @default(uuid())
+  rootId          String @unique
+  guildId         String
+  channelId       String
+  messageId       String? @unique
+  candidateId     String?
+  nonce           String @unique
+  state           String @default("pending")
+  appliedRevision Int @default(0)
+  fingerprint     String?
+  checkedAt       DateTime? @db.Timestamptz
+  removedAt       DateTime? @db.Timestamptz
+  root            ForeverBridgeMessage @relation(fields: [rootId], references: [id], onDelete: Restrict)
+  @@index([state, checkedAt])
+}
+
+model ForeverDiscordOutbox {
+  id          String @id @default(uuid())
+  bridgeId    String
+  rootId      String?
+  operation   String
+  revision    Int @default(0)
+  dedupeKey   String @unique
+  state       String @default("pending")
+  leaseToken  String?
+  leaseUntil  DateTime? @db.Timestamptz
+  startedAt   DateTime? @db.Timestamptz
+  attempts    Int @default(0)
+  dueAt       DateTime @default(now()) @db.Timestamptz
+  error       String?
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  finishedAt  DateTime? @db.Timestamptz
+  bridge      ForeverDiscordBridge @relation(fields: [bridgeId], references: [id], onDelete: Restrict)
+  root        ForeverBridgeMessage? @relation(fields: [rootId], references: [id], onDelete: Restrict)
+  @@index([state, dueAt])
+}
+
+model ForeverDiscordInteraction {
+  id            String @id
+  applicationId String
+  guildId       String
+  actorId       String
+  bridgeId      String
+  operation     String
+  generation    Int
+  policyVersion Int
+  ack           Json
+  state         String @default("done")
+  tokenCipher   String?
+  challengeId   String? @unique
+  expiresAt     DateTime @db.Timestamptz
+  createdAt     DateTime @default(now()) @db.Timestamptz
+  error         String?
+  bridge        ForeverDiscordBridge @relation(fields: [bridgeId], references: [id], onDelete: Restrict)
+  @@index([state, expiresAt])
+}
+
+model ForeverBridgeRuntime {
+  id          String @id
+  mode        String @default("cleanup_only")
+  version     Int @default(1)
+  heartbeatAt DateTime? @db.Timestamptz
+  build       String?
+  gateway     String @default("offline")
+  leaderId    String?
+  gapAt       DateTime? @db.Timestamptz
+  error       String?
+}
+
+model ForeverBridgeAdminRequest {
+  id          String @id
+  actorId     String
+  fingerprint String
+  state       String
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  @@index([createdAt])
+}

@@ -1,5 +1,5 @@
 import "./env";
-import { mkdir, readdir, rm, chmod } from "node:fs/promises";
+import { mkdir, readdir, rm, chmod, copyFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { db } from "../lib/db";
@@ -55,6 +55,14 @@ async function main(): Promise<void> {
     { stdio: ["ignore", "pipe", "pipe"] },
   );
   await chmod(path.join(destination, "database.dump"), 0o600);
+  if (tables.some((table) => table.tablename === "ForeverDiscordBridge")) {
+    // pg_dump --table omits standalone functions; keep the reviewed bridge boundary with the backup.
+    await copyFile(
+      "prisma/migrations/004_bridge_audit_boundary.sql",
+      path.join(destination, "bridge-boundary.sql"),
+    );
+    await chmod(path.join(destination, "bridge-boundary.sql"), 0o600);
+  }
   await chmod(path.join(destination, "private-files.tar.gz"), 0o600);
   const previous = (await readdir(root, { withFileTypes: true }))
     .filter(

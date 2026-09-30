@@ -32,6 +32,9 @@
     "bot:setup": "tsx scripts/kfcbot.ts setup",
     "bot:audit": "tsx scripts/kfcbot.ts audit",
     "bot:channels": "tsx scripts/discord-channel-cleanup.ts",
+    "bridge:build": "npm --prefix workers/discord-bridge run build",
+    "bridge:verify-package": "tsx scripts/verify-bridge-package.ts",
+    "test:bridge": "tsx --test tests/discord-bridge.test.ts",
     "addon:package": "tsx scripts/package-addon.ts"
   },
   "dependencies": {

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rewriteRelativeImportExtensions": true,
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "pg": ["./node_modules/@types/pg/index.d.ts"],
+      "zod": ["./node_modules/zod/index.d.cts"]
+    },
+    "rootDir": "../..",
+    "outDir": "dist",
+    "noEmitOnError": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../lib/discord-bridge/contracts.ts",
+    "../../lib/discord-bridge/store.ts",
+    "../../lib/discord-bridge/policy.ts",
+    "../../lib/discord-bridge/crypto.ts",
+    "../../lib/discord-bridge/commands.ts"
+  ],
+  "exclude": ["dist", "node_modules"]
+}

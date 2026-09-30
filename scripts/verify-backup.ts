@@ -53,6 +53,44 @@ async function main(): Promise<void> {
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
     );
     assert.ok(Number(count.trim()) >= 4);
+    const files = await readdir(path.join(root, latest));
+    if (files.includes("bridge-boundary.sql")) {
+      execFileSync(
+        "runuser",
+        [
+          "-u",
+          "postgres",
+          "--",
+          "psql",
+          "-X",
+          "-v",
+          "ON_ERROR_STOP=1",
+          "-d",
+          name,
+        ],
+        {
+          input: await readFile(path.join(root, latest, "bridge-boundary.sql")),
+          stdio: ["pipe", "pipe", "pipe"],
+        },
+      );
+      const bridge = execFileSync(
+        "runuser",
+        [
+          "-u",
+          "postgres",
+          "--",
+          "psql",
+          "-X",
+          "-tA",
+          "-d",
+          name,
+          "-c",
+          'SELECT count(*) FROM "ForeverBridgeRuntime" WHERE "id"=\'singleton\'',
+        ],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+      );
+      assert.equal(Number(bridge.trim()), 1);
+    }
     execFileSync(
       "tar",
       ["-tzf", path.join(root, latest, "private-files.tar.gz")],

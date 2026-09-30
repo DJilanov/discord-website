@@ -16,6 +16,15 @@ tag sets; ten updates remain permission-blocked. Bot-policy publication and
 production interaction/publishing rollout remain outstanding. That local
 configuration writer is not the worker or public bot service described here.
 
+Later September 30: the owner installed WoWForeverBot in KFC Global Pugs and
+selected **two-way shared conversation** with the new community, superseding an
+earlier one-way preference. Fresh configuration audits succeeded in both servers.
+The [shared-channel implementation plan](shared-channels-implementation-plan.md)
+defines the scoped Gateway worker, opt-in, message lifecycle, moderation, admin,
+runtime, recovery and release gates. It brings this case forward after the required
+B0 foundation without requiring B1 publication or B2 member OAuth first. It does
+not authorize copying history, broaden private audiences or activate a service.
+
 The [content, tools and tester program](content-tools-and-community-plan.md)
 sets the current resource priorities: existing WoW Trader first, structured
 work for the already-invited testers, reviewed guide/addon lookup and explicit
@@ -39,7 +48,7 @@ Neither a bot nor a publishing schedule guarantees first place in search.
 
 | Area | Present in the repository | Next work |
 | --- | --- | --- |
-| Public discovery | `/discord`, six live guides, guild/group directories, server-rendered metadata and sitemap | Three guide improvements and two preparation resources are now prepared; production publication is separate |
+| Public discovery | `/discord`, ten live guides, tools/tester resources, ruleset-aware guild/group directories, metadata and sitemap | Ongoing reviewed content; community tools publication is complete |
 | Identity | Staff-only credential login in `lib/auth.ts` | Separate member identity and explicit Discord linking; no automatic staff account creation |
 | Commands | Signed HTTP endpoint, eight guild-scoped commands, ephemeral replies | Durable idempotency, prompt acknowledgement, richer validated command contracts and test-server rollout |
 | Roles | `/role` adds configured interest roles | Permission/hierarchy validation, managed-role allowlist, removal and failure recovery |
@@ -63,13 +72,11 @@ and staged priorities. Its server-access appeal proposal is separate from the
 existing FG-reference player-case appeal flow; `/appeals` must not be presented
 as an already implemented general Discord-ban appeal service.
 
-September 30 research also identified a product-model prerequisite: current
-Blizzard documentation describes rulesets rather than traditional realm
-selection and regional full character names. Existing realm-required forms,
-group records without a ruleset field and the legacy addon identity parser
-need an explicit compatibility/migration review before expanding these flows.
-Use the source-backed correction in the community plan; older realm wording
-below is not confirmation of Forever's current model or client API behavior.
+September 30's community tools release addressed character rulesets in guild/group
+forms and records, guides and templates. Report/alert identity and the legacy
+addon parser still require separate compatibility review. Older realm wording
+below is historical, not confirmation of Forever's current model or client APIs;
+new integration work must preserve the released `gameRuleset` contract.
 
 ## Immediate Growth Work
 
@@ -121,7 +128,7 @@ access when a recruiter loses an account.
 
 ### A Group Host and Participant
 
-The host creates a dated session with region, realm, faction, named time zone,
+The host creates a dated session with region, character ruleset, faction, named time zone,
 end time, roles and expectations. After approval, publish its website record
 and Discord summary. A participant can request a place from either interface
 only after the ownership/member system exists.
@@ -182,6 +189,10 @@ Gateway connection. If later requirements justify member-join or scheduled-event
 Gateway events, run that client in a dedicated PM2 worker with a maintained
 Discord library such as discord.js, after checking its supported Node version.
 Do not put a persistent Gateway connection inside a Next request handler.
+
+The new shared-channel plan is the concrete Gateway use case now proposed by the
+owner. Its separate worker does not change the HTTP-only interaction delivery
+decision or authorize roster/presence monitoring.
 
 Discord supports either HTTP or Gateway interaction delivery; do not process
 the same interaction through both. A Gateway client for other event types can
@@ -272,6 +283,11 @@ the initial release. Role selections are interests, not proof of character,
 guild leadership or trustworthy conduct. Role hierarchy remains a platform
 constraint, even when a permission bit is granted.
 [Discord permissions](https://docs.discord.com/developers/topics/permissions).
+
+That no-message-content rule applies to the website-command/publication scope
+above. The separately requested two-way shared-channel design requires a narrowly
+scoped Message Content decision and opt-in gates; it does not add presence,
+member-list collection or Administrator permission.
 
 ## Proposed Data Changes
 
@@ -396,7 +412,10 @@ member disconnects Discord. Update the actual privacy policy before collection.
 | B3: Group participation | Shared signup states, capacity/waitlist, host confirmations; scheduled-event projection when suitable | Duplicate/concurrent signup tests, time-zone/cancellation correctness, interested != accepted |
 | B4: Sustained community | Opt-in digest/reminders, real recaps, optional Gateway membership signals | Measurable usefulness, retention/consent review, manageable support workload |
 
-Implement B0 and B1 before trying to synchronize arbitrary member messages.
+The separately planned two-way bridge requires the applicable B0 receipts,
+permissions, outbox and recovery foundations. Its explicitly opted-in channels
+can be delivered before B1; arbitrary member-message synchronization is not
+authorized. Follow the shared-channel plan's stricter launch gates for that case.
 Keep `/check` disabled in the initial rollout unless alert freshness, review and
 appeal suspension are independently verified. Do not let the registration script
 bulk-enable every existing command simply because it currently lists eight.
@@ -473,10 +492,12 @@ records and destinations before enabling it.
 
 ## Inputs Still Needed
 
-The final channel names are known, but API IDs and bot permissions are not.
-The next bot task needs the application configured privately, the actual server
-ID, a test guild or isolated test channels, destination IDs, optional role IDs,
-and a consenting owner/moderator for live permission tests. Public organizer
+The application and both server identities are confirmed through local GET-only
+audits. Existing channel IDs and permission findings are in private snapshots,
+not unknown; fresh validation is still required at activation. New shared-channel
+endpoint IDs, a test guild or isolated test channels, production worker credentials,
+intent eligibility, notices, consent and moderator approvals remain outstanding.
+Public organizer
 handles and the beta guide's ongoing review owner still need confirmation.
 Search account outcomes and community listing acceptance cannot be completed
 by writing code; record the actual results in the operating checklist.

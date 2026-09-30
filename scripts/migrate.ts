@@ -13,7 +13,13 @@ async function main(): Promise<void> {
       'CREATE TABLE IF NOT EXISTS "ForeverMigration" ("id" TEXT PRIMARY KEY, "checksum" TEXT NOT NULL, "appliedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW())',
     );
     let applied = 0;
-    for (const id of ["001_initial", "002_grouping_rulesets"]) {
+    for (const id of [
+      "001_initial",
+      "002_grouping_rulesets",
+      "003_discord_bridge",
+      "004_bridge_audit_boundary",
+      "005_bridge_admin_receipts",
+    ]) {
       const sql = await readFile(`prisma/migrations/${id}.sql`, "utf8");
       const checksum = createHash("sha256").update(sql).digest("hex");
       const existing = await client.query<{ checksum: string }>(

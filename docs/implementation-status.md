@@ -1,5 +1,27 @@
 # Implementation Status
 
+## Two-Way Shared Channels Implemented Locally
+
+September 30: the [local implementation and rollout runbook](shared-channels-release.md)
+adds the independent worker, bridge-only persistence, consent/withdrawal commands,
+two-way delivery lifecycle, moderation and recovery, bot policies and the responsive
+`/admin/discord` workspace. Delivery is disabled by default. Isolated PostgreSQL,
+simulated Discord failure tests and mobile/desktop browser checks are available;
+real Discord lifecycle/rendering tests, approved new channel IDs, narrow production
+permissions, command registration and deployment remain gates. No live messages
+were read or relayed by this implementation work.
+
+## Two-Way Shared Channels Plan
+
+September 30: WoWForeverBot installation and configuration audits succeeded in
+KFC Global Pugs and WoW Forever Discord. The owner selected two-way conversation,
+superseding the earlier one-way idea. The [implementation plan](shared-channels-implementation-plan.md)
+covers selected opt-in channels, mapped replies, edits/removals, durable delivery,
+moderation, `/admin/discord`, a separate PM2 worker/runtime, bounded retention and
+recovery. Exact server findings remain private. No messages were read or copied;
+no bridge code, schema, commands, permission changes or deployment were activated
+by the audit or planning work. Pilot endpoints and governance remain release gates.
+
 ## Community Tools Released
 
 September 30: the [tools/content release](community-tools-release.md), commit

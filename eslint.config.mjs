@@ -9,6 +9,8 @@ export default defineConfig([
     ".next/**",
     ".next-*/**",
     "node_modules/**",
+    "workers/**/node_modules/**",
+    "workers/**/dist/**",
     "next-env.d.ts",
     "artifacts/**",
     "test-results/**",

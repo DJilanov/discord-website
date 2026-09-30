@@ -5,6 +5,9 @@ import { SITE_URL } from "../lib/config";
 
 async function main(): Promise<void> {
   const now = new Date();
+  await db.foreverBridgeAdminRequest.deleteMany({
+    where: { createdAt: { lt: new Date(Date.now() - 7 * 86400000) } },
+  });
   await db.foreverRateLimit.deleteMany({ where: { expiresAt: { lt: now } } });
   await db.foreverAnalyticsEvent.deleteMany({
     where: { createdAt: { lt: new Date(Date.now() - 90 * 86400000) } },

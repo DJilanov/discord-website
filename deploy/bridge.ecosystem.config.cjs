@@ -1,0 +1,21 @@
+module.exports = {
+  apps: [{
+    name: "wow-forever-bridge",
+    cwd: "/home/wow-forever-bridge/current",
+    script: "dist/workers/discord-bridge/src/main.js",
+    interpreter: "/opt/wow-forever-node24/bin/node",
+    node_args: "--env-file=/etc/wow-forever-bridge/worker.env",
+    uid: "wowbridge",
+    gid: "wowbridge",
+    exec_mode: "fork",
+    instances: 1,
+    autorestart: true,
+    restart_delay: 10000,
+    max_restarts: 5,
+    min_uptime: 30000,
+    max_memory_restart: "256M",
+    kill_timeout: 60000,
+    time: true,
+    env: { NODE_ENV: "production" },
+  }],
+};

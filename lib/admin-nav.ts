@@ -73,6 +73,12 @@ export const adminSections: {
     roles: ["owner", "admin"],
   },
   {
+    path: "/admin/discord",
+    label: "Discord bridge",
+    icon: "discord",
+    roles: ["owner", "admin", "moderator"],
+  },
+  {
     path: "/admin/audit",
     label: "Audit log",
     icon: "list",

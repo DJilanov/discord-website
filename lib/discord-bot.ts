@@ -3,6 +3,13 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { SITE_URL } from "@/lib/config";
 import { HttpError, rateLimit } from "@/lib/security";
+import {
+  bridgeInteraction,
+  isBridgeInteraction,
+} from "@/lib/discord-bridge/interactions";
+import { webBridgeStore } from "@/lib/discord-bridge/web-store";
+import { BridgeError } from "@/lib/discord-bridge/store";
+import { ephemeral } from "@/lib/discord-bridge/commands";
 
 export function verifyDiscordSignature(
   raw: string,
@@ -58,6 +65,23 @@ const interactionSchema = z.object({
     .optional(),
 });
 export async function handleInteraction(raw: unknown): Promise<object> {
+  if (isBridgeInteraction(raw)) {
+    try {
+      return await bridgeInteraction(
+        raw,
+        webBridgeStore,
+        process.env.BRIDGE_INTERACTIONS_ENABLED === "true"
+          ? process.env.BRIDGE_INTERACTION_KEY
+          : undefined,
+      );
+    } catch (error) {
+      if (error instanceof BridgeError)
+        return ephemeral(
+          `The request could not be completed (${error.code}). No new participation was enabled. Try /bridge status or contact a moderator.`,
+        );
+      throw error;
+    }
+  }
   const interaction = interactionSchema.parse(raw);
   if (interaction.type === 1) return { type: 1 };
   if (interaction.type !== 2 || !interaction.id || !interaction.data)
