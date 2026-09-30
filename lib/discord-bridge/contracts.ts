@@ -17,6 +17,7 @@ export const bridgeStates = [
   "draft",
   "validating",
   "ready",
+  "pilot",
   "active",
   "paused",
   "retiring",
@@ -50,6 +51,8 @@ export interface Bridge {
   noticeA: string | null;
   noticeB: string | null;
   moderatorIds: string[];
+  pilotActorIds: string[];
+  pilotUntil: Date | null;
   blockedTerms: string[];
   reason: string | null;
   createdAt: Date;
@@ -168,6 +171,7 @@ export const controlSchema = z
       "validate",
       "approve",
       "activate",
+      "pilot",
       "pause",
       "retire",
       "review",
@@ -184,6 +188,15 @@ export const controlSchema = z
     reason: z.string().trim().min(5).max(300),
     reviewRequired: z.boolean().optional(),
     moderatorIds: z.array(z.string().min(1).max(80)).max(20).optional(),
+    testerIds: z
+      .array(snowflake)
+      .min(1)
+      .max(5)
+      .refine(
+        (ids) => new Set(ids).size === ids.length,
+        "Tester IDs must be unique.",
+      )
+      .optional(),
     blockedTerms: z.array(z.string().trim().min(2).max(80)).max(40).optional(),
     approvals: z
       .object({

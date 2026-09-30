@@ -15,6 +15,8 @@ WoWForeverBot can connect up to three approved pairs of text channels between KF
 
 ## Your choice
 
+Before general activation, staff may open a restricted one-hour test for up to five named Discord accounts. Testers still have to accept /bridge join themselves and have speaking access in both channels. Every test copy requires moderator approval; each pair accepts at most 20 test messages. The counterpart audience can read approved test copies. Expiry, a pause or a restart ends test participation and queues removal of test copies. Test mode does not mean general publication or live acceptance testing has passed.
+
 Use **/bridge join inside the channel** you want to share from and accept the confirmation for its exact pair. You must belong to both servers and be permitted to speak in both paired channels. Opt in separately in each channel you post from; joining one pair never enrolls you in another. Only new eligible text after confirmation and channel activation can be shared. Old messages are not imported, including old messages edited after activation. Pauses or configuration changes can require a new opt-in.
 
 Some approved KFC discussions are role-gated. Their original access rules remain in place, but readers of the paired public WoW Forever channel can see opted-in copies even if they cannot open the original. Accept sharing only when you intend that audience. A read-only participant cannot use the bridge to post into a restricted channel.

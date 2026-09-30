@@ -261,6 +261,8 @@ model ForeverDiscordBridge {
   noticeA        String?
   noticeB        String?
   moderatorIds   String[] @default([])
+  pilotActorIds  String[] @default([])
+  pilotUntil     DateTime? @db.Timestamptz
   blockedTerms   String[] @default([])
   reason         String?
   createdAt      DateTime @default(now()) @db.Timestamptz

@@ -1,5 +1,9 @@
 # Existing Forever Chats
 
+The later [restricted test follow-up](shared-channels-test-pilot.md) records the
+owner's bot-notice authorization, posted/deleted notices and test-mode rollout.
+Its current state supersedes the historical rollout below.
+
 September 30, 2026. This supersedes the dedicated-channel selection in the initial
 [bridge release](shared-channels-release.md). The owner first selected three existing
 KFC channels, then explicitly excluded `classic-plus-who-plays-what`. Only the two

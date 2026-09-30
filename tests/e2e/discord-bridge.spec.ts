@@ -252,6 +252,88 @@ test("pair selection scopes participation, delivery and actions across mobile an
   }
 });
 
+test("restricted test is explicit, bounded and distinct from general publication", async ({
+  page,
+}) => {
+  test.setTimeout(180000);
+  expect(bridgeId).not.toBeNull();
+  await db.foreverBridgeRuntime.update({
+    where: { id: "singleton" },
+    data: { mode: "running", gateway: "ready", heartbeatAt: new Date() },
+  });
+  await db.foreverDiscordBridge.update({
+    where: { id: bridgeId! },
+    data: {
+      state: "ready",
+      validatedAt: new Date(),
+      approvalA: "staff:test",
+      approvalB: "staff:test",
+      fingerprint: "browser-test",
+      reviewRequired: true,
+    },
+  });
+  await db.foreverBridgeProjection.updateMany({
+    where: { root: { bridgeId: bridgeId! } },
+    data: { state: "removed", removedAt: new Date() },
+  });
+  await login(page, ownerEmail);
+  await page.goto("/admin/discord");
+  await page
+    .getByLabel("Channel pair", { exact: true })
+    .selectOption(bridgeId!);
+  await page.getByRole("tab", { name: "Shared channels", exact: true }).click();
+  await page.getByRole("button", { name: "Test pilot", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog
+    .getByLabel("Tester Discord IDs (one per line, maximum 5)")
+    .fill("1800000000000000001");
+  await dialog
+    .getByLabel("Reason for audit log")
+    .fill("Bounded browser pilot check");
+  await dialog.getByRole("button", { name: "Confirm", exact: true }).click();
+  await expect(dialog).not.toBeVisible();
+  await expect(
+    page.getByText("Restricted test", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Activate", exact: true }),
+  ).toBeDisabled();
+  const pilot = await db.foreverDiscordBridge.findUniqueOrThrow({
+    where: { id: bridgeId! },
+  });
+  expect(pilot.state).toBe("pilot");
+  expect(pilot.pilotUntil!.getTime() - pilot.activatedAt!.getTime()).toBe(
+    3600000,
+  );
+  expect(pilot.pilotActorIds).toEqual(["1800000000000000001"]);
+  for (const width of [320, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 950 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(
+      (await new AxeBuilder({ page }).analyze()).violations.map(
+        (item) => item.id,
+      ),
+    ).toEqual([]);
+    await page.screenshot({
+      path: `artifacts/bridge-pilot-${width}.png`,
+      fullPage: true,
+    });
+  }
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await dialog
+    .getByLabel("Reason for audit log")
+    .fill("End browser pilot check");
+  await dialog.getByRole("button", { name: "Confirm", exact: true }).click();
+  await expect(page.getByText("Stopped", { exact: true })).toBeVisible();
+  await db.foreverBridgeRuntime.update({
+    where: { id: "singleton" },
+    data: { mode: "cleanup_only", gateway: "offline", heartbeatAt: null },
+  });
+});
 test("bridge APIs reject unauthenticated, cross-origin and editor access", async ({
   page,
   request,

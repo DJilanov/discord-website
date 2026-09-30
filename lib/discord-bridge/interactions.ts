@@ -9,6 +9,7 @@ import {
 } from "./contracts";
 import { ephemeral, type EphemeralResponse } from "./commands";
 import { encryptToken } from "./crypto";
+import { publicationAllowed } from "./policy";
 import { audit, BridgeError, BridgeStore, one, removeRoots } from "./store";
 
 const schema = z.object({
@@ -184,7 +185,7 @@ export async function bridgeInteraction(
       ack = ephemeral(
         "Removal is queued for that shared copy and its managed reply chain. Human originals are not deleted.",
       );
-    } else if (!healthy || bridge.state !== "active" || !secret) {
+    } else if (!healthy || !publicationAllowed(bridge, actor) || !secret) {
       ack = ephemeral(
         "New participation is currently unavailable. No consent was recorded. Leave and removal requests remain available.",
       );
@@ -217,6 +218,8 @@ export async function bridgeInteraction(
           ],
         },
       ];
+      if (bridge.state === "pilot")
+        ack.data.content = `Restricted staff test until ${bridge.pilotUntil!.toISOString()}. Every message requires review; test copies are queued for removal when testing stops. General publication is not enabled.\n\n${ack.data.content}`;
     } else {
       const challenge = await one<Receipt>(
         sql,

@@ -5,6 +5,7 @@ import {
 } from "../../../lib/discord-bridge/commands.js";
 import {
   eligibility,
+  publicationAllowed,
   payloadFingerprint,
   renderMessage,
 } from "../../../lib/discord-bridge/policy.js";
@@ -17,6 +18,7 @@ import {
 } from "../../../lib/discord-bridge/store.js";
 import type {
   Job,
+  Bridge,
   Projection,
   Root,
 } from "../../../lib/discord-bridge/contracts.js";
@@ -134,7 +136,7 @@ export class BridgeEngine {
             root.state !== "live" ||
             root.revision !== job.revision ||
             root.generation !== bridge.generation ||
-            bridge.state !== "active" ||
+            !publicationAllowed(bridge, root.authorId) ||
             ["suppressed", "removed", "uncertain", "sending"].includes(
               projection.state,
             )
@@ -315,7 +317,7 @@ export class BridgeEngine {
       if (!content) {
         const bridge = await this.store.bridge(receipt.bridgeId);
         const eligible =
-          bridge.state === "active" &&
+          publicationAllowed(bridge, receipt.actorId) &&
           bridge.generation === receipt.generation &&
           (await this.transport.eligible(bridge, receipt.actorId));
         content = await this.store.transaction(async (sql) => {
@@ -337,7 +339,7 @@ export class BridgeEngine {
             runtime.mode !== "running" ||
             runtime.gateway !== "ready" ||
             activeReceipt?.state !== "processing" ||
-            current.state !== "active" ||
+            !publicationAllowed(current, receipt.actorId) ||
             current.generation !== receipt.generation ||
             current.policyVersion !== receipt.policyVersion ||
             consent?.blocked ||
@@ -403,6 +405,12 @@ export class BridgeEngine {
   }
 
   async maintenance(): Promise<void> {
+    const endedTests = await rows<Bridge>(
+      this.store.pool,
+      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"=\'pilot\' AND "pilotUntil"<=NOW()',
+    );
+    for (const bridge of endedTests)
+      await this.store.pause(bridge.id, "test_expired");
     await this.store.pool.query(
       'UPDATE "ForeverDiscordInteraction" SET "state"=\'failed\',"tokenCipher"=NULL,"error"=\'expired\' WHERE "expiresAt"<=NOW() AND "state" IN (\'pending\',\'processing\',\'challenge\')',
     );
@@ -473,7 +481,7 @@ export class BridgeEngine {
           );
           if (!source)
             await this.store.remove(bundle.root.id, "source_deleted");
-          else if (bundle.bridge.state === "active")
+          else if (publicationAllowed(bundle.bridge, bundle.root.authorId))
             await this.store.observe(source, bundle.bridge.id, true);
         }
       }

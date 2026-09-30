@@ -129,7 +129,7 @@ async function main(): Promise<void> {
   const pauseAll = async (reason: string, gatewayGap = true): Promise<void> => {
     const bridges = await rows<Bridge>(
       pool,
-      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"=\'active\'',
+      "SELECT * FROM \"ForeverDiscordBridge\" WHERE \"state\" IN ('active','pilot')",
     );
     for (const bridge of bridges) await store.pause(bridge.id, reason);
     if (!gatewayGap) return;

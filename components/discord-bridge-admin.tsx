@@ -227,6 +227,10 @@ export function DiscordBridgeAdmin({
         moderation: true,
         tests: true,
       };
+    if (dialog.action === "pilot")
+      payload.testerIds = String(form.get("testerIds") || "")
+        .split(/\s+/)
+        .filter(Boolean);
     if (dialog.action === "configure") {
       payload.reviewRequired = form.get("reviewRequired") === "on";
       payload.moderatorIds = form.getAll("moderatorIds").map(String);
@@ -312,10 +316,15 @@ export function DiscordBridgeAdmin({
         <div>
           <span>Publication</span>
           <strong>
-            {bridge?.state === "active" &&
+            {(bridge?.state === "active" ||
+              (bridge?.state === "pilot" &&
+                !!bridge.pilotUntil &&
+                Date.parse(bridge.pilotUntil) > now)) &&
             data.runtime.mode === "running" &&
             online
-              ? "Active"
+              ? bridge?.state === "pilot"
+                ? "Restricted test"
+                : "Active"
               : "Stopped"}
           </strong>
         </div>
@@ -424,6 +433,14 @@ export function DiscordBridgeAdmin({
                   <dd>{time(bridge.validatedAt)}</dd>
                   <dt>Participation generation</dt>
                   <dd>{bridge.generation}</dd>
+                  {bridge.state === "pilot" && (
+                    <>
+                      <dt>Test ends</dt>
+                      <dd>{time(bridge.pilotUntil)}</dd>
+                      <dt>Approved testers</dt>
+                      <dd>{bridge.pilotActorIds.length}</dd>
+                    </>
+                  )}
                   <dt>State reason</dt>
                   <dd>{bridge.reason ? label(bridge.reason) : "None"}</dd>
                   <dt>KFC notice</dt>
@@ -453,7 +470,8 @@ export function DiscordBridgeAdmin({
                       <button
                         className="button secondary"
                         disabled={
-                          busy || ["active", "retiring"].includes(bridge.state)
+                          busy ||
+                          ["active", "pilot", "retiring"].includes(bridge.state)
                         }
                         onClick={() =>
                           command(
@@ -469,7 +487,8 @@ export function DiscordBridgeAdmin({
                       <button
                         className="button secondary"
                         disabled={
-                          busy || ["active", "retiring"].includes(bridge.state)
+                          busy ||
+                          ["active", "pilot", "retiring"].includes(bridge.state)
                         }
                         onClick={() =>
                           command(
@@ -486,7 +505,8 @@ export function DiscordBridgeAdmin({
                       <button
                         className="button secondary"
                         disabled={
-                          busy || ["active", "retiring"].includes(bridge.state)
+                          busy ||
+                          ["active", "pilot", "retiring"].includes(bridge.state)
                         }
                         onClick={() =>
                           command(
@@ -507,7 +527,7 @@ export function DiscordBridgeAdmin({
                           !online ||
                           !bridge.approvalA ||
                           !bridge.approvalB ||
-                          ["active", "retiring"].includes(bridge.state)
+                          ["active", "pilot", "retiring"].includes(bridge.state)
                         }
                         onClick={() =>
                           command(
@@ -519,6 +539,27 @@ export function DiscordBridgeAdmin({
                       >
                         <RefreshCw size={16} />
                         Validate
+                      </button>
+                      <button
+                        className="button secondary"
+                        disabled={
+                          busy ||
+                          !online ||
+                          bridge.state !== "ready" ||
+                          !bridge.reviewRequired ||
+                          data.runtime.mode !== "running" ||
+                          !data.setupEnabled
+                        }
+                        onClick={() =>
+                          command(
+                            "Start restricted test",
+                            "pilot",
+                            "Only the listed Discord accounts may opt in for one hour, with manual review and at most 20 messages per pair. The other channel's audience can read approved test copies. Ending the test withdraws test participation and queues removal. This does not approve general publication or attest that live tests passed.",
+                          )
+                        }
+                      >
+                        <Play size={16} />
+                        Test pilot
                       </button>
                       <button
                         className="button primary"
@@ -980,6 +1021,12 @@ export function DiscordBridgeAdmin({
                 </label>
               ))}
             </fieldset>
+          )}
+          {dialog?.action === "pilot" && (
+            <label className="field">
+              <span>Tester Discord IDs (one per line, maximum 5)</span>
+              <textarea name="testerIds" required rows={5} maxLength={104} />
+            </label>
           )}
           {dialog?.action === "configure" && (
             <>

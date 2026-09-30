@@ -13,7 +13,7 @@ import {
   type Runtime,
   type SourceMessage,
 } from "./contracts.ts";
-import { eligibility } from "./policy.ts";
+import { eligibility, publicationAllowed } from "./policy.ts";
 
 export class BridgeError extends Error {
   constructor(
@@ -309,6 +309,14 @@ export class BridgeStore {
       if (Date.now() - Date.parse(message.timestamp) > 120000) return null;
       // Serialize the worker-wide capacity check across independent channel pairs.
       await sql.query("SELECT pg_advisory_xact_lock(193003005)");
+      if (bridge.state === "pilot") {
+        const tested = await one<{ count: number }>(
+          sql,
+          'SELECT COUNT(*)::int AS count FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1 AND "generation"=$2',
+          [bridge.id, bridge.generation],
+        );
+        if ((tested?.count || 0) >= 20) return null;
+      }
       const counts = await one<{
         pending: number;
         active: number;
@@ -450,7 +458,8 @@ export class BridgeStore {
   async pause(bridgeId: string, reason: string): Promise<void> {
     await this.transaction(async (sql) => {
       const bridge = await this.bridge(bridgeId, sql, true);
-      if (!["active", "ready", "validating"].includes(bridge.state)) return;
+      if (!["active", "pilot", "ready", "validating"].includes(bridge.state))
+        return;
       await sql.query(
         'UPDATE "ForeverDiscordBridge" SET "state"=\'paused\',"reason"=$2,"version"="version"+1,"generation"="generation"+1,"validatedAt"=NULL WHERE "id"=$1',
         [bridgeId, reason],
@@ -459,6 +468,23 @@ export class BridgeStore {
         'UPDATE "ForeverDiscordOutbox" SET "state"=\'cancelled\',"finishedAt"=NOW() WHERE "bridgeId"=$1 AND "operation"=\'deliver\' AND "state"=\'pending\'',
         [bridgeId],
       );
+      if (bridge.state === "pilot") {
+        const roots = await rows<Root>(
+          sql,
+          'SELECT * FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1 AND "state"<>\'removed\'',
+          [bridgeId],
+        );
+        await removeRoots(
+          sql,
+          bridgeId,
+          roots.map((root) => root.id),
+          "test_stopped",
+        );
+        await sql.query(
+          'UPDATE "ForeverBridgeConsent" SET "withdrawnAt"=NOW() WHERE "bridgeId"=$1',
+          [bridgeId],
+        );
+      }
       await audit(sql, "system:bridge", bridgeId, "paused", { reason });
     });
   }
@@ -475,7 +501,7 @@ export class BridgeStore {
         sql,
         `WITH next AS (SELECT j."id" FROM "ForeverDiscordOutbox" j JOIN "ForeverDiscordBridge" b ON b."id"=j."bridgeId"
         WHERE j."state"='pending' AND j."dueAt"<=NOW()
-        AND (j."operation"<>'deliver' OR ($1='running' AND b."state"='active'))
+        AND (j."operation"<>'deliver' OR ($1='running' AND (b."state"='active' OR (b."state"='pilot' AND b."pilotUntil">NOW()))))
         AND NOT EXISTS (SELECT 1 FROM "ForeverDiscordOutbox" other WHERE other."rootId"=j."rootId" AND other."state"='leased')
         ORDER BY CASE WHEN j."operation"='remove' THEN 0 WHEN j."operation"='validate' THEN 1 ELSE 2 END,j."createdAt"
         FOR UPDATE OF j SKIP LOCKED LIMIT 1)
@@ -509,7 +535,7 @@ export class BridgeStore {
       const runtime = await this.runtime(sql);
       if (
         !bundle ||
-        bridge.state !== "active" ||
+        !publicationAllowed(bridge, bundle.root.authorId) ||
         runtime.mode !== "running" ||
         runtime.gateway !== "ready" ||
         bundle.root.state !== "live" ||
@@ -568,7 +594,7 @@ export class BridgeStore {
         wasRemoved ||
         current.root.state !== "live" ||
         current.root.generation !== bridge.generation ||
-        bridge.state !== "active" ||
+        !publicationAllowed(bridge, current.root.authorId) ||
         runtime.mode !== "running" ||
         !current.consent ||
         current.consent.withdrawnAt ||

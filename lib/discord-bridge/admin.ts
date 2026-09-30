@@ -19,6 +19,7 @@ import {
   removeRoots,
   rows,
 } from "./store";
+import { publicationAllowed } from "./policy";
 
 export interface DeliveryRow extends Root {
   outputId: string | null;
@@ -72,6 +73,7 @@ export function serializeSnapshot(snapshot: AdminSnapshot): SerializedSnapshot {
       ...b,
       activatedAt: b.activatedAt?.toISOString() || null,
       validatedAt: b.validatedAt?.toISOString() || null,
+      pilotUntil: b.pilotUntil?.toISOString() || null,
       createdAt: b.createdAt.toISOString(),
     })),
     consents: snapshot.consents.map((c) => ({
@@ -192,7 +194,7 @@ export async function control(
       : null;
     switch (input.action) {
       case "approve": {
-        if (["active", "retiring"].includes(bridge.state))
+        if (["active", "pilot", "retiring"].includes(bridge.state))
           throw new BridgeError(409, "pause_before_configuration");
         const link = parseMessageLink(input.link || "");
         const sideA = input.side === "a";
@@ -217,7 +219,7 @@ export async function control(
       }
       case "validate": {
         if (
-          ["active", "retiring"].includes(bridge.state) ||
+          ["active", "pilot", "retiring"].includes(bridge.state) ||
           !bridge.approvalA ||
           !bridge.approvalB ||
           !bridge.noticeA ||
@@ -231,7 +233,11 @@ export async function control(
         await enqueue(sql, bridge.id, null, "validate", bridge.version + 1);
         break;
       }
-      case "activate": {
+      case "activate":
+      case "pilot": {
+        const pilot = input.action === "pilot";
+        if (pilot && (!input.testerIds?.length || !bridge.reviewRequired))
+          throw new BridgeError(400, "reviewed_testers_required");
         const runtime = await store.runtime(sql);
         const cleanup = await one(
           sql,
@@ -246,7 +252,7 @@ export async function control(
           );
         if (
           process.env.BRIDGE_INTERACTIONS_ENABLED !== "true" ||
-          !input.approvals ||
+          (!pilot && !input.approvals) ||
           bridge.state !== "ready" ||
           !bridge.validatedAt ||
           Date.now() - bridge.validatedAt.getTime() > 300000 ||
@@ -259,10 +265,16 @@ export async function control(
           Date.now() - runtime.heartbeatAt.getTime() > 60000
         )
           throw new BridgeError(409, "activation_gates_incomplete");
-        await sql.query(
-          'UPDATE "ForeverDiscordBridge" SET "state"=\'active\',"activatedAt"=NOW(),"generation"="generation"+1,"reason"=NULL WHERE "id"=$1',
-          [bridge.id],
-        );
+        if (pilot)
+          await sql.query(
+            'UPDATE "ForeverDiscordBridge" SET "state"=\'pilot\',"activatedAt"=NOW(),"pilotUntil"=NOW()+INTERVAL \'1 hour\',"pilotActorIds"=$2,"generation"="generation"+1,"reason"=\'restricted_live_test\' WHERE "id"=$1',
+            [bridge.id, input.testerIds],
+          );
+        else
+          await sql.query(
+            'UPDATE "ForeverDiscordBridge" SET "state"=\'active\',"activatedAt"=NOW(),"pilotUntil"=NULL,"pilotActorIds"=\'{}\',"generation"="generation"+1,"reason"=NULL WHERE "id"=$1',
+            [bridge.id],
+          );
         break;
       }
       case "pause":
@@ -275,7 +287,7 @@ export async function control(
           'UPDATE "ForeverDiscordOutbox" SET "state"=\'cancelled\',"finishedAt"=NOW() WHERE "bridgeId"=$1 AND "operation"=\'deliver\' AND "state"=\'pending\'',
           [bridge.id],
         );
-        if (input.action === "retire") {
+        if (input.action === "retire" || bridge.state === "pilot") {
           const roots = await rows<Root>(
             sql,
             'SELECT * FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1 AND "state"<>\'removed\'',
@@ -285,7 +297,7 @@ export async function control(
             sql,
             bridge.id,
             roots.map((r) => r.id),
-            "retired",
+            input.action === "retire" ? "retired" : "test_stopped",
           );
           await sql.query(
             'UPDATE "ForeverBridgeConsent" SET "withdrawnAt"=NOW() WHERE "bridgeId"=$1',
@@ -298,7 +310,7 @@ export async function control(
         if (
           !root ||
           root.state !== "held" ||
-          bridge.state !== "active" ||
+          !publicationAllowed(bridge, root.authorId) ||
           root.generation !== bridge.generation ||
           Date.now() - root.createdAt.getTime() > 120000
         )
@@ -330,7 +342,7 @@ export async function control(
         );
         break;
       case "configure":
-        if (["active", "retiring"].includes(bridge.state))
+        if (["active", "pilot", "retiring"].includes(bridge.state))
           throw new BridgeError(409, "pause_before_configuration");
         if (input.moderatorIds?.length) {
           const staffRows = await rows<{ id: string }>(
@@ -385,6 +397,7 @@ export async function control(
       rootId: input.rootId,
       actorId: input.actorId,
       approvals: input.approvals,
+      testerIds: input.action === "pilot" ? input.testerIds : undefined,
     });
   });
 }
@@ -421,11 +434,28 @@ export async function setMode(
     );
     if (mode !== "running")
       for (const bridge of bridges) {
-        if (bridge.state === "active")
+        if (["active", "pilot"].includes(bridge.state))
           await sql.query(
             'UPDATE "ForeverDiscordBridge" SET "state"=\'paused\',"generation"="generation"+1,"version"="version"+1,"validatedAt"=NULL,"reason"=\'global_pause\' WHERE "id"=$1',
             [bridge.id],
           );
+        if (bridge.state === "pilot") {
+          const roots = await rows<Root>(
+            sql,
+            'SELECT * FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1 AND "state"<>\'removed\'',
+            [bridge.id],
+          );
+          await removeRoots(
+            sql,
+            bridge.id,
+            roots.map((root) => root.id),
+            "test_stopped",
+          );
+          await sql.query(
+            'UPDATE "ForeverBridgeConsent" SET "withdrawnAt"=NOW() WHERE "bridgeId"=$1',
+            [bridge.id],
+          );
+        }
         await sql.query(
           'UPDATE "ForeverDiscordOutbox" SET "state"=\'cancelled\',"finishedAt"=NOW() WHERE "bridgeId"=$1 AND "operation"=\'deliver\' AND "state"=\'pending\'',
           [bridge.id],

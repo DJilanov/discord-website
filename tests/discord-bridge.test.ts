@@ -6,6 +6,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import {
   applicationId,
+  controlSchema,
   createBridgeSchema,
   existingKfcChannels,
   guilds,
@@ -58,6 +59,57 @@ const channelA = "1800000000000000011",
 let counter = 1800000000000000100n;
 function id(): string {
   return String(++counter);
+}
+async function readyForPilot(): Promise<void> {
+  await pool.query('DELETE FROM "ForeverBridgeConsent" WHERE "bridgeId"=$1', [
+    bridge.id,
+  ]);
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "state"=\'ready\',"reviewRequired"=TRUE,"validatedAt"=NOW(),"approvalA"=\'staff:test\',"approvalB"=\'staff:test\' WHERE "id"=$1',
+    [bridge.id],
+  );
+  bridge = await store.bridge(bridge.id);
+}
+async function startPilot(): Promise<void> {
+  await readyForPilot();
+  const previous = process.env.BRIDGE_INTERACTIONS_ENABLED;
+  process.env.BRIDGE_INTERACTIONS_ENABLED = "true";
+  try {
+    await control(
+      store,
+      controlSchema.parse({
+        id: bridge.id,
+        version: bridge.version,
+        action: "pilot",
+        reason: "Local restricted pilot test",
+        testerIds: [author],
+      }),
+      owner,
+    );
+    bridge = await store.bridge(bridge.id);
+  } finally {
+    if (previous === undefined) delete process.env.BRIDGE_INTERACTIONS_ENABLED;
+    else process.env.BRIDGE_INTERACTIONS_ENABLED = previous;
+  }
+}
+async function approveTestMessage(rootId: string): Promise<void> {
+  await control(
+    store,
+    {
+      id: bridge.id,
+      version: (await store.bridge(bridge.id)).version,
+      action: "review",
+      rootId,
+      reason: "Local test message review",
+    },
+    owner,
+  );
+}
+async function expirePilot(): Promise<void> {
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "activatedAt"=NOW()-INTERVAL \'1 minute\',"pilotUntil"=NOW()-INTERVAL \'1 second\' WHERE "id"=$1',
+    [bridge.id],
+  );
 }
 let bridge: Bridge;
 let engine: BridgeEngine;
@@ -1289,6 +1341,210 @@ test("editor, unassigned moderator, stale config and unverified activation are r
     (await snapshot(store, { ...owner, role: "moderator" })).bridges.length,
     0,
   );
+});
+test("restricted pilot retains activation gates, staff authorization and bounded tester IDs", async () => {
+  await readyForPilot();
+  const input = {
+    id: bridge.id,
+    version: bridge.version,
+    action: "pilot" as const,
+    reason: "Check restricted test gates",
+    testerIds: [author],
+  };
+  for (const testerIds of [
+    [],
+    [author, author],
+    Array(6).fill(author),
+    ["bad-id"],
+  ])
+    assert.equal(
+      controlSchema.safeParse({ ...input, testerIds }).success,
+      false,
+    );
+  await assert.rejects(control(store, input, { ...owner, role: "moderator" }));
+  await assert.rejects(control(store, { ...input, action: "activate" }, owner));
+  const previous = process.env.BRIDGE_INTERACTIONS_ENABLED;
+  process.env.BRIDGE_INTERACTIONS_ENABLED = "true";
+  try {
+    await pool.query(
+      'UPDATE "ForeverDiscordBridge" SET "reviewRequired"=FALSE WHERE "id"=$1',
+      [bridge.id],
+    );
+    await assert.rejects(control(store, input, owner));
+    await pool.query(
+      'UPDATE "ForeverDiscordBridge" SET "reviewRequired"=TRUE,"approvalB"=NULL WHERE "id"=$1',
+      [bridge.id],
+    );
+    await assert.rejects(control(store, input, owner));
+    await pool.query(
+      'UPDATE "ForeverDiscordBridge" SET "approvalB"=\'staff:test\',"validatedAt"=NOW()-INTERVAL \'6 minutes\' WHERE "id"=$1',
+      [bridge.id],
+    );
+    await assert.rejects(control(store, input, owner));
+    await pool.query(
+      'UPDATE "ForeverDiscordBridge" SET "validatedAt"=NOW() WHERE "id"=$1',
+      [bridge.id],
+    );
+    await control(store, input, owner);
+    const current = await store.bridge(bridge.id);
+    assert.equal(current.state, "pilot");
+    assert.equal(
+      current.pilotUntil!.getTime() - current.activatedAt!.getTime(),
+      3600000,
+    );
+    assert.deepEqual(current.pilotActorIds, [author]);
+    assert.equal(await store.consent(bridge.id, guilds.kfc, author), null);
+    assert.equal((await snapshot(store, owner)).bridges[0].state, "pilot");
+    await assert.rejects(
+      control(
+        store,
+        {
+          ...input,
+          version: current.version,
+          action: "configure",
+          reviewRequired: false,
+        },
+        owner,
+      ),
+    );
+    await assert.rejects(
+      pool.query(
+        'UPDATE "ForeverDiscordBridge" SET "reviewRequired"=FALSE WHERE "id"=$1',
+        [bridge.id],
+      ),
+    );
+  } finally {
+    if (previous === undefined) delete process.env.BRIDGE_INTERACTIONS_ENABLED;
+    else process.env.BRIDGE_INTERACTIONS_ENABLED = previous;
+  }
+});
+test("pilot requires explicit tester confirmation and rejects unlisted participants", async () => {
+  await startPilot();
+  const unlisted = (await command("join", secondAuthor)) as {
+    data: { content: string; components?: unknown };
+  };
+  assert.match(unlisted.data.content, /unavailable/);
+  assert.equal(unlisted.data.components, undefined);
+  assert.equal(await store.observe(fixture(), bridge.id), null);
+  const joined = (await command("join")) as {
+    data: {
+      content: string;
+      components: { components: { custom_id: string }[] }[];
+    };
+  };
+  assert.match(joined.data.content, /Restricted staff test/);
+  assert.equal(await store.consent(bridge.id, guilds.kfc, author), null);
+  await bridgeInteraction(
+    {
+      type: 3,
+      id: id(),
+      application_id: applicationId,
+      guild_id: guilds.kfc,
+      channel_id: channelA,
+      token: "local-test-interaction-token",
+      member: { user: { id: author } },
+      data: { custom_id: joined.data.components[0].components[0].custom_id },
+    },
+    store,
+    secret,
+  );
+  await engine.consentTick();
+  assert.equal(
+    (await store.consent(bridge.id, guilds.kfc, author))!.generation,
+    bridge.generation,
+  );
+  const root = await observe();
+  await drain();
+  assert.equal(transport.creates, 0);
+  await approveTestMessage(root);
+  await drain();
+  assert.equal(transport.creates, 1);
+  await consent(secondAuthor, guilds.kfc);
+  assert.equal(
+    await store.observe(
+      fixture(guilds.kfc, {
+        author: { id: secondAuthor, username: "Unlisted" },
+      }),
+      bridge.id,
+    ),
+    null,
+  );
+});
+test("pilot expiry rejects enrollment and delivery before maintenance and cleans known copies", async () => {
+  await startPilot();
+  await consent();
+  const delivered = await observe();
+  await approveTestMessage(delivered);
+  await drain();
+  const pending = await observe();
+  await approveTestMessage(pending);
+  await expirePilot();
+  const response = (await command("join")) as { data: { content: string } };
+  assert.match(response.data.content, /unavailable/);
+  assert.equal(await store.observe(fixture(), bridge.id), null);
+  await drain();
+  assert.equal(transport.creates, 1);
+  await engine.maintenance();
+  await drain();
+  assert.equal((await store.bridge(bridge.id)).state, "paused");
+  assert.ok((await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt);
+  assert.equal((await store.bundle(delivered))!.projection.state, "removed");
+  assert.equal((await store.bundle(pending))!.root.state, "removed");
+});
+test("pilot expiry during POST compensates the late copy", async () => {
+  await startPilot();
+  await consent();
+  const root = await observe();
+  await approveTestMessage(root);
+  transport.beforeCreate = expirePilot;
+  await drain();
+  assert.equal(transport.creates, 1);
+  assert.equal((await store.bundle(root))!.projection.state, "removed");
+});
+test("pilot pause and global stop withdraw testers and remove test copies", async () => {
+  for (const global of [false, true]) {
+    await startPilot();
+    await consent();
+    const root = await observe();
+    await approveTestMessage(root);
+    await drain();
+    if (global)
+      await setMode(
+        store,
+        "cleanup_only",
+        (await store.runtime()).version,
+        "Stop restricted test",
+        owner,
+      );
+    else
+      await control(
+        store,
+        {
+          id: bridge.id,
+          version: (await store.bridge(bridge.id)).version,
+          action: "pause",
+          reason: "Stop restricted test",
+        },
+        owner,
+      );
+    await drain();
+    assert.equal((await store.bundle(root))!.projection.state, "removed");
+    assert.ok(
+      (await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt,
+    );
+  }
+});
+test("pilot never accepts more than twenty messages per activation", async () => {
+  await startPilot();
+  await consent();
+  for (let index = 0; index < 20; index++) {
+    await observe();
+    await pool.query(
+      'UPDATE "ForeverBridgeMessage" SET "createdAt"=NOW()-INTERVAL \'2 minutes\' WHERE "bridgeId"=$1',
+      [bridge.id],
+    );
+  }
+  assert.equal(await store.observe(fixture(), bridge.id), null);
 });
 test("durable mappings and the outbox contain no source bodies", async () => {
   const privateText = `source-only-${randomUUID()}`;

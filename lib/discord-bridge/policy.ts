@@ -6,13 +6,32 @@ import {
   type SourceMessage,
 } from "./contracts.ts";
 
+export function publicationAllowed(
+  bridge: Bridge,
+  actorId: string,
+  now = Date.now(),
+): boolean {
+  return (
+    bridge.state === "active" ||
+    (bridge.state === "pilot" &&
+      bridge.reviewRequired &&
+      !!bridge.pilotUntil &&
+      bridge.pilotUntil.getTime() > now &&
+      bridge.pilotActorIds.includes(actorId))
+  );
+}
+
 export function eligibility(
   bridge: Bridge,
   consent: Consent | null,
   message: SourceMessage,
   now = Date.now(),
 ): string | null {
-  if (bridge.state !== "active" || !bridge.activatedAt) return "not_active";
+  if (
+    !publicationAllowed(bridge, message.author.id, now) ||
+    !bridge.activatedAt
+  )
+    return "not_active";
   if (
     !consent ||
     consent.blocked ||

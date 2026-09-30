@@ -1,5 +1,16 @@
 # Implementation Status
 
+## Restricted Bridge Test
+
+The [restricted test follow-up](shared-channels-test-pilot.md) adds a one-hour,
+explicit-opt-in, allowlisted and manually reviewed stage before general activation.
+The owner authorized bot notices, which were posted and verified. Three subsequently
+were deleted by the owner because inactive notices looked like spam; Discord
+validation correctly paused both pairs. Concise notices will be published only at
+test startup. No human opt-ins or relayed conversations were fabricated.
+Local checks passed 110 tests on two full reruns and all 32 browser tests; deployment
+is in progress. The owner account was identified through the bot, not Chrome tokens.
+
 ## Existing-Channel Follow-Up
 
 The owner replaced the dedicated-channel plan with two existing KFC discussions:
