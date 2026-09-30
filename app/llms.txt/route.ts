@@ -14,6 +14,8 @@ export function GET(): Response {
 - [Guides](${SITE_URL}/guides): Original community guidance with authors and update dates.
 
 ## Trust and tools
+- [WoW Trader](${SITE_URL}/addons/wow-trader): Public Forever market tools; prices depend on player uploads. Optional collection software remains in controlled testing.
+- [Community testing](${SITE_URL}/contribute): Suggested assignments and a report template; results are manually reviewed, not automatically published.
 - [About](${SITE_URL}/about): Organizers, purpose, independence, and accountability.
 - [Rules](${SITE_URL}/rules)
 - [Safety standards](${SITE_URL}/safety): Private evidence, two reviewers for public alerts, expiry and appeals.

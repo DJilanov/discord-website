@@ -7,6 +7,7 @@ import {
   CLASSES,
   DAYS,
   FACTIONS,
+  GUILD_RULESETS,
   PLAYSTYLES,
   REGIONS,
   REPORT_CATEGORIES,
@@ -271,20 +272,15 @@ export function SubmissionForm({
               <div className="form-grid">
                 <Field label="Guild name" name="name" />
                 <SelectField label="Region" name="region" options={REGIONS} />
-                <Field
-                  label="Realm or realm plan"
-                  name="realm"
-                  hint="Write Unconfirmed if your realm is not decided."
-                />
                 <SelectField
                   label="Faction"
                   name="faction"
                   options={FACTIONS}
                 />
                 <SelectField
-                  label="Main activity"
-                  name="ruleset"
-                  options={RULESETS}
+                  label="Character ruleset"
+                  name="gameRuleset"
+                  options={GUILD_RULESETS}
                 />
                 <Field
                   label="Language"
@@ -376,7 +372,11 @@ export function SubmissionForm({
                   ]}
                 />
                 <SelectField label="Region" name="region" options={REGIONS} />
-                <Field label="Realm" name="realm" />
+                <SelectField
+                  label="Character ruleset"
+                  name="gameRuleset"
+                  options={RULESETS}
+                />
                 <SelectField
                   label="Faction"
                   name="faction"

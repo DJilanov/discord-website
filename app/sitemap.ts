@@ -24,6 +24,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "lfg",
     "guides",
     "addons",
+    "addons/wow-trader",
+    "contribute",
     "addons/foreverguard",
     "addons/foreverguard/changelog",
     "reports",

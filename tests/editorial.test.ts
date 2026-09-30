@@ -5,9 +5,23 @@ import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import { stat } from "node:fs/promises";
 import { initialGuides } from "../content/guides";
-import { editorialGuides, guideReadingPaths } from "../content/editorial";
+import {
+  editorialGuides,
+  guideReadingPaths,
+  september29Guides,
+  september30Guides,
+} from "../content/editorial";
 import { artwork, coverChoices, getArtwork } from "../content/artwork";
-import { canRefreshStarterGuide } from "../lib/editorial-publication";
+import {
+  canRefreshStarterGuide,
+  canRefreshEditorialGuide,
+} from "../lib/editorial-publication";
+import {
+  communityTemplates,
+  getCommunityTemplate,
+  templateMarkdown,
+} from "../content/templates";
+import { GET as downloadTemplate } from "../app/templates/[slug]/route";
 import { guideSchema, settingsSchema } from "../lib/validation";
 import { DEFAULT_SETTINGS } from "../lib/config";
 import { trafficSource } from "../lib/analytics";
@@ -44,9 +58,9 @@ test("image processing has bounded workers without raising the production memory
 });
 
 test("all editorial guides, covers and reading paths are valid and distinct", async () => {
-  assert.equal(editorialGuides.length, 6);
+  assert.equal(editorialGuides.length, 10);
   const slugs = new Set(editorialGuides.map((guide) => guide.slug));
-  assert.equal(slugs.size, 6);
+  assert.equal(slugs.size, 10);
   for (const guide of editorialGuides) {
     assert.ok(
       guideSchema.safeParse({
@@ -124,6 +138,102 @@ test("publisher preserves custom content, titles, excerpts and drafts", () => {
         "Forever Community Hub is an independent fan project",
       ),
     }),
+  );
+});
+
+test("growth publication recognizes exact published history but never customizations or drafts", () => {
+  for (const source of [...september29Guides, ...september30Guides]) {
+    const historical = { ...source, published: true };
+    assert.equal(canRefreshEditorialGuide(historical), true);
+    for (const field of ["title", "excerpt", "content"] as const) {
+      assert.equal(
+        canRefreshEditorialGuide({
+          ...historical,
+          [field]: historical[field] + " ",
+        }),
+        false,
+        `Preserve even a whitespace edit to ${field}`,
+      );
+    }
+    assert.equal(
+      canRefreshEditorialGuide({ ...historical, published: false }),
+      false,
+    );
+  }
+  for (const source of editorialGuides) {
+    const recognized = [...september29Guides, ...september30Guides].some(
+      (guide) =>
+        guide.slug === source.slug &&
+        guide.title === source.title &&
+        guide.excerpt === source.excerpt &&
+        guide.content === source.content,
+    );
+    if (!recognized) {
+      assert.equal(
+        canRefreshEditorialGuide({ ...source, published: true }),
+        false,
+        "Already-updated content is not a refreshable historical revision",
+      );
+    }
+  }
+  assert.equal(
+    canRefreshEditorialGuide({
+      ...september29Guides[0],
+      slug: "unrecognized-guide",
+      published: true,
+    }),
+    false,
+  );
+});
+
+test("template downloads match article text, cannot read arbitrary files and stay out of search", async () => {
+  for (const template of communityTemplates) {
+    assert.ok(
+      editorialGuides.some((guide) =>
+        guide.content.includes(templateMarkdown(template.slug)),
+      ),
+    );
+    const response = await downloadTemplate(
+      new Request(`https://example.test/templates/${template.slug}`),
+      {
+        params: Promise.resolve({ slug: template.slug }),
+      },
+    );
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("X-Robots-Tag"), "noindex");
+    assert.equal(
+      response.headers.get("Content-Type"),
+      "text/plain; charset=utf-8",
+    );
+    assert.equal(response.headers.get("X-Content-Type-Options"), "nosniff");
+    assert.equal(
+      response.headers.get("Content-Disposition"),
+      `attachment; filename="wow-forever-${template.slug}.txt"`,
+    );
+    assert.equal(
+      await response.text(),
+      `${template.title}\n\n${template.text}\n`,
+    );
+  }
+  for (const slug of [
+    "__proto__",
+    "../../.env.local",
+    "missing",
+    "constructor",
+  ]) {
+    assert.equal(getCommunityTemplate(slug), undefined);
+    const response = await downloadTemplate(
+      new Request("https://example.test/templates/missing"),
+      {
+        params: Promise.resolve({ slug }),
+      },
+    );
+    assert.equal(response.status, 404);
+    assert.equal(response.headers.get("X-Robots-Tag"), "noindex");
+  }
+  assert.throws(
+    () => templateMarkdown("missing"),
+    /Unknown community template/,
   );
 });
 

@@ -46,9 +46,10 @@ model ForeverGuild {
   slug              String   @unique
   name              String
   region            String
-  realm             String
+  realm             String   @default("")
   faction           String
-  ruleset           String
+  ruleset           String   @default("")
+  gameRuleset       String   @default("Unconfirmed")
   language          String   @default("English")
   playstyle         String
   raidDays          String[]
@@ -66,13 +67,15 @@ model ForeverGuild {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   @@index([status, region, faction, ruleset])
+  @@index([status, region, faction, gameRuleset])
 }
 
 model ForeverGroup {
   id              String   @id @default(cuid())
   title           String
   region          String
-  realm           String
+  realm           String   @default("")
+  gameRuleset     String   @default("Unconfirmed")
   faction         String
   activity        String
   description     String

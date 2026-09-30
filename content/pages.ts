@@ -22,7 +22,7 @@ We have spent plenty of evenings filling the last raid spot, explaining loot rul
 
 ## A community beyond one guild
 
-You do not need to join KFC to be here. The directory welcomes other guilds, including communities that recruit the same classes or play on the same realms. Listings are reviewed against the same standards. Faction, guild size, donations, or friendship with an organizer must not buy a moderation decision.
+You do not need to join KFC to be here. The directory welcomes other guilds, including communities that recruit the same classes or choose the same character rulesets. Listings are reviewed against the same standards. Faction, guild size, donations, or friendship with an organizer must not buy a moderation decision.
 
 The hub covers Alliance and Horde, PvE, PvP, and roleplay, with regional spaces for EU and NA players. Realm choices and activity schedules belong to individual guilds and hosts. We do not present community plans as Blizzard announcements.
 
@@ -133,7 +133,7 @@ WoW Forever Discord is an independent fan community organized by the KFC communi
 
 ## Public directory information
 
-Guild and group submissions contain the details you choose to publish, including character or guild names, realm, region, schedules, descriptions, and recruitment contacts. Approved entries become public and may be indexed by search engines. Do not submit a real name, private phone number, or contact belonging to someone who has not agreed.
+Guild and group submissions contain the details you choose to publish, including character or guild names, character ruleset, region, schedules, descriptions, and recruitment contacts. Approved entries become public and may be indexed by search engines. Do not submit a real name, private phone number, or contact belonging to someone who has not agreed.
 
 ## Private reports and evidence
 
@@ -167,22 +167,22 @@ You can read public resources without submitting a report, listing, or installin
       "Find a reliable tank, a regular raid night, or a few friendly players for the next stretch of the journey.",
     body: `## A group for your pace
 
-PvE means different things to different players. Some want a scheduled progression roster. Others want a dungeon after work, a patient group for unfamiliar content, or people to quest with. Our [guild directory](/guild-recruitment?ruleset=PvE) separates schedule, playstyle, faction, and recruiting needs so you can compare what matters.
+PvE means different things to different players. Some want a scheduled progression roster. Others want a dungeon after work, a patient group for unfamiliar content, or people to quest with. Our [guild directory](/guild-recruitment) separates schedule, playstyle, faction, and recruiting needs so you can compare what matters.
 
 ## Before the first pull
 
-For a one-off run, use [looking for group](/lfg?activity=Dungeon). Give the region, realm, faction, start time, needed roles, and loot rules. Say whether the run is for learning or expects prior experience. Agree on a finishing time and tell people if plans change.
+For a one-off run, use [looking for group](/lfg?activity=Dungeon). Give the region, character ruleset, faction, start time, needed roles, and loot rules. Say whether the run is for learning or expects prior experience. Agree on a finishing time and tell people if plans change.
 
 ## Alliance and Horde
 
-Both factions belong here. Use your faction and regional roles in Discord to keep recruitment relevant. The community's PvE category is an organizational space, not confirmation of any particular official realm ruleset.
+Both factions belong here. Use your faction and regional roles in Discord to keep recruitment relevant. The community's PvE category is an organizational space, not confirmation of any particular character ruleset.
 
 ## What to expect from a guild
 
 Ask about attendance, consumables, substitutes, loot distribution, and how leaders handle mistakes. A relaxed guild can still be organized. The right fit should leave room for the rest of your life.
 
 Read [Find a guild that fits your life](/guides/find-your-wow-forever-guild) and [Clear loot rules. Better groups.](/guides/clear-loot-rules-better-groups) before committing to a regular roster.`,
-    cta: { label: "Find a PvE guild", href: "/guild-recruitment?ruleset=PvE" },
+    cta: { label: "Find a PvE guild", href: "/guild-recruitment" },
   },
   "servers/pvp": {
     title: "WoW Forever PvP Discord community",
@@ -196,7 +196,7 @@ The PvP space welcomes casual sessions and coordinated groups. A useful post sta
 
 ## Find a recurring group
 
-Browse [PvP guild recruitment](/guild-recruitment?ruleset=PvP) for a regular team or [premade posts](/lfg?activity=PvP%20premade) for a single session. Include your class, role, and availability when contacting a leader. Realm and game-mode availability should be checked against official announcements.
+Browse [PvP guild recruitment](/guild-recruitment?playstyle=PvP) for a regular team or [premade posts](/lfg?activity=PvP%20premade) for a single session. Include your class, role, and availability when contacting a leader. Confirm the character ruleset separately from your preferred activity; use the [friends checklist](/guides/wow-forever-playing-with-friends).
 
 ## Keep competition in the game
 
@@ -215,11 +215,11 @@ Alliance and Horde receive the same moderation standards. Faction channels keep 
       "Find a roleplay guild, meet new characters, and help make Azeroth a world worth inhabiting.",
     body: `## Find the kind of story you enjoy
 
-Roleplay communities range from casual tavern evenings to recurring guild campaigns. A useful recruitment post describes the tone, faction, event schedule, newcomer expectations, and any out-of-character requirements. Browse [RP guilds](/guild-recruitment?ruleset=RP) to start the conversation.
+Roleplay communities range from casual tavern evenings to recurring guild campaigns. A useful recruitment post describes the tone, faction, event schedule, newcomer expectations, and any out-of-character requirements. Browse [RP guilds](/guild-recruitment?playstyle=Roleplay) to start the conversation.
 
 ## Hosting an event
 
-Use [group and event posts](/lfg?activity=RP%20event) to share the premise, region, realm, faction, start time with a time zone, meeting location, and contact. Explain what new participants need to know without requiring them to read a long character history first.
+Use [group and event posts](/lfg?activity=RP%20event) to share the premise, region, character ruleset, faction, start time with a time zone, meeting location, and contact. Explain what new participants need to know without requiring them to read a long character history first.
 
 ## Consent comes before the storyline
 
@@ -227,8 +227,11 @@ Separate in-character disagreements from out-of-character consent. Ask before in
 
 ## A welcome for new roleplayers
 
-You do not need a polished backstory to join a friendly social event. Ask the host whether newcomers are welcome and which conventions the group uses. Keep public spaces suitable for a mixed audience. This community category does not assert that a particular official RP realm has been announced.`,
-    cta: { label: "Explore RP guilds", href: "/guild-recruitment?ruleset=RP" },
+You do not need a polished backstory to join a friendly social event. Ask the host whether newcomers are welcome and which conventions the group uses. Keep public spaces suitable for a mixed audience. Roleplay as an activity is distinct from the character ruleset chosen during creation.`,
+    cta: {
+      label: "Explore RP guilds",
+      href: "/guild-recruitment?playstyle=Roleplay",
+    },
   },
   "discord/eu": {
     title: "WoW Forever EU Discord",
@@ -242,15 +245,15 @@ The EU community helps players organize around European hours. Recruitment posts
 
 ## Find your guild
 
-Browse the [EU guild directory](/guild-recruitment?region=EU), then narrow by faction, playstyle, raid day, or recruiting class. Language is listed separately so international and local-language guilds can explain how they communicate. Contact the recruiter to confirm current realm plans and roster needs.
+Browse the [EU guild directory](/guild-recruitment?region=EU), then narrow by faction, playstyle, raid day, or recruiting class. Language is listed separately so international and local-language guilds can explain how they communicate. Contact the recruiter to confirm current character-ruleset plans and roster needs.
 
 ## One evening, one group
 
-Use [EU group posts](/lfg?region=EU) for dungeons, raids, premades, questing, and RP events. Include your realm and faction in every post; a region alone does not identify where you can play together.
+Use [EU group posts](/lfg?region=EU) for dungeons, raids, premades, questing, and RP events. Include your character ruleset and faction in every post; a region alone does not identify where you can play together.
 
 ## Shared standards across regions
 
-EU players use the same [rules](/rules), [report process](/reports), and [appeal route](/appeals) as the rest of the hub. Regional coverage describes who the community welcomes, not a guarantee of 24-hour moderator staffing or official realm availability.`,
+EU players use the same [rules](/rules), [report process](/reports), and [appeal route](/appeals) as the rest of the hub. Regional coverage describes who the community welcomes, not a guarantee of 24-hour moderator staffing or in-game availability.`,
     cta: { label: "Browse EU guilds", href: "/guild-recruitment?region=EU" },
   },
   "discord/na": {
@@ -265,15 +268,15 @@ North America spans several time zones. Guild and group posts should include ET,
 
 ## Find a regular community
 
-The [NA guild directory](/guild-recruitment?region=NA) separates region, faction, playstyle, raid days, and recruiting classes. Read the full listing, ask about attendance and loot rules, and check that the realm plan is current before joining a roster.
+The [NA guild directory](/guild-recruitment?region=NA) separates region, faction, playstyle, raid days, and recruiting classes. Read the full listing, ask about attendance and loot rules, and check that the character-ruleset plan is current before joining a roster.
 
 ## Organize a single session
 
-Browse [NA groups](/lfg?region=NA) or post a dungeon, raid, premade, questing group, or RP event. Include the realm, faction, time zone, needed roles, and voice expectations. Clear details save everyone a round of questions.
+Browse [NA groups](/lfg?region=NA) or post a dungeon, raid, premade, questing group, or RP event. Include the character ruleset, faction, time zone, needed roles, and voice expectations. Clear details save everyone a round of questions.
 
 ## A community with common standards
 
-Alliance and Horde, PvE, PvP, and RP players are all welcome. The hub's [moderation standards](/safety) apply across regions and guilds. North American coverage is an invitation to participate, not a claim of round-the-clock staff coverage or a specific official realm lineup.`,
+Alliance and Horde, PvE, PvP, and RP players are all welcome. The hub's [moderation standards](/safety) apply across regions and guilds. North American coverage is an invitation to participate, not a claim of round-the-clock staff coverage or a particular ruleset's availability.`,
     cta: { label: "Browse NA guilds", href: "/guild-recruitment?region=NA" },
   },
 };
@@ -290,15 +293,15 @@ for (const faction of ["Alliance", "Horde"]) {
     description: `Find ${faction} guilds, dungeon groups, PvP teammates, and roleplay events in the WoW Forever community.`,
     body: `## Find your next guild
 
-Browse the [${faction} directory](/guild-recruitment?faction=${faction}) and compare region, realm plans, language, playstyle, and raid schedule. Ask the recruiter which roles are currently needed and read the loot rules before signing up. A published listing is reviewed for posting standards, not a guarantee of every member's conduct.
+Browse the [${faction} directory](/guild-recruitment?faction=${faction}) and compare region, character ruleset, language, playstyle, and raid schedule. Ask the recruiter which roles are currently needed and read the loot rules before signing up. A published listing is reviewed for posting standards, not a guarantee of every member's conduct.
 
 ## Meet people outside your roster
 
-The [group board](/lfg?faction=${faction}) is for single sessions: dungeons, questing, raids, premades, and RP events. State your realm and region as well as faction. Include a start time with a time zone and the kind of group you want to build.
+The [group board](/lfg?faction=${faction}) is for single sessions: dungeons, questing, raids, premades, and RP events. State your character ruleset and region as well as faction. Include a start time with a time zone and the kind of group you want to build.
 
 ## Choose your adventure
 
-You can take part in [PvE](/servers/pve), [PvP](/servers/pvp), and [roleplay](/servers/rp) spaces without changing your guild. Regional pages for [EU](/discord/eu) and [NA](/discord/na) help organize players on similar schedules. Always check official information for confirmed realms and game rules.
+You can take part in [PvE](/servers/pve), [PvP](/servers/pvp), and [roleplay](/servers/rp) spaces without changing your guild. Regional pages for [EU](/discord/eu) and [NA](/discord/na) help organize players on similar schedules. Use the [friends checklist](/guides/wow-forever-playing-with-friends) to distinguish character choices from community interests.
 
 ## The same fair standards
 

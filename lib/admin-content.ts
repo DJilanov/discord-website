@@ -6,6 +6,7 @@ import { HttpError } from "@/lib/security";
 import { hash } from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { getDiscordPreview } from "@/lib/discord";
+import { GUILD_RULESETS, RULESETS } from "@/lib/config";
 
 export async function saveSettings(raw: unknown, staff: Staff): Promise<void> {
   const data = settingsSchema.parse(raw);
@@ -116,6 +117,8 @@ export async function saveGuild(
           previousStatus: existing.status,
           status: data.status,
           featured: data.featured,
+          previousRuleset: existing.gameRuleset,
+          gameRuleset: data.gameRuleset,
         },
       },
     });
@@ -131,16 +134,25 @@ export async function reviewGroup(
     .object({
       status: z.enum(["approved", "hidden", "rejected"]),
       reason: z.string().trim().min(5).max(500),
+      gameRuleset: z.enum(GUILD_RULESETS),
     })
     .parse(raw);
   await db.$transaction(async (tx) => {
     const group = await tx.foreverGroup.findUnique({ where: { id } });
     if (!group) throw new HttpError(404, "Group not found.");
+    if (
+      data.status === "approved" &&
+      !RULESETS.some((value) => value === data.gameRuleset)
+    )
+      throw new HttpError(
+        400,
+        "Confirm an available character ruleset before approving this session.",
+      );
     if (data.status === "approved" && group.expiresAt <= new Date())
       throw new HttpError(409, "This event has expired.");
     await tx.foreverGroup.update({
       where: { id },
-      data: { status: data.status },
+      data: { status: data.status, gameRuleset: data.gameRuleset },
     });
     await tx.foreverAuditLog.create({
       data: {
@@ -148,7 +160,11 @@ export async function reviewGroup(
         action: data.status,
         entityType: "group",
         entityId: id,
-        details: { reason: data.reason },
+        details: {
+          reason: data.reason,
+          previousRuleset: group.gameRuleset,
+          gameRuleset: data.gameRuleset,
+        },
       },
     });
   });

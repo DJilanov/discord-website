@@ -7,9 +7,23 @@ export interface EditorialArtwork {
 }
 
 export const artwork: Record<string, EditorialArtwork> = {
-  "/images/group-post-form.png": {
+  "/images/wow-trader-workspace.webp": {
+    label: "WoW Trader: actual workspace",
+    alt: "The WoW Trader Forever workspace showing the selected market, catalog build, scan freshness and incomplete price history",
+    width: 1440,
+    height: 960,
+    cover: true,
+  },
+  "/images/group-post-form-rulesets.png": {
     label: "Website: group submission fields",
-    alt: "The blank group submission form with title, activity, region, realm, faction, start time, Discord contact and group details",
+    alt: "The blank group submission form with title, activity, region, character ruleset, faction, start time, Discord contact and group details",
+    width: 814,
+    height: 704,
+    cover: false,
+  },
+  "/images/group-post-form.png": {
+    label: "Website: legacy group fields (historical)",
+    alt: "Historical group form showing the former realm field; current listings use character rulesets",
     width: 734,
     height: 706,
     cover: false,

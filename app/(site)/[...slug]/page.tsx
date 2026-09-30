@@ -46,7 +46,7 @@ export default async function ContentPage({
             ? { faction: "Horde" }
             : key.startsWith("servers/")
               ? {
-                  ruleset:
+                  interest:
                     key === "servers/pve"
                       ? "PvE"
                       : key === "servers/pvp"

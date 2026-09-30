@@ -3,6 +3,8 @@ import Image from "next/image";
 import remarkGfm from "remark-gfm";
 import { remarkContents } from "@/lib/markdown-contents";
 import { getArtwork } from "@/content/artwork";
+import { isValidElement } from "react";
+import { CopyButton } from "@/components/copy-button";
 
 export function Markdown({
   children,
@@ -19,6 +21,28 @@ export function Markdown({
         remarkPlugins={contents ? [remarkGfm, remarkContents] : [remarkGfm]}
         skipHtml
         components={{
+          pre: ({ children }) => {
+            const text =
+              editorial &&
+              isValidElement<{ className?: string; children?: unknown }>(
+                children,
+              ) &&
+              children.props.className === "language-text" &&
+              typeof children.props.children === "string"
+                ? children.props.children
+                : null;
+            if (!text) return <pre>{children}</pre>;
+            return (
+              <div className="article-template">
+                <CopyButton
+                  text={text}
+                  label="Copy template"
+                  errorMessage="Clipboard unavailable. Select the template text or use its download link."
+                />
+                <pre>{children}</pre>
+              </div>
+            );
+          },
           a: ({ href, children }) => (
             <a
               href={href}

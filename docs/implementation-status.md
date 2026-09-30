@@ -1,5 +1,39 @@
 # Implementation Status
 
+## Community Tools Implemented Locally
+
+September 30: the [first tools/content batch](community-tools-release.md) adds a
+WoW Trader hub and introduction, five tester assignments and report downloads,
+two original guides, corrected preparation articles, and explicit guild/group
+character rulesets. Historical listing fields and editor revisions are preserved.
+The owner clarified that market freshness depends on voluntary app uploads; the
+new copy distinguishes scan age from history coverage. Migration and article
+publication have been applied only to the isolated local database. Deployment,
+Discord publishing, bot activation, Helper crawler changes and raid-addon tests
+remain separate.
+
+## Content and Tools Plan
+
+September 30: the [content, tools and tester program](content-tools-and-community-plan.md) is prepared after reviewing the community and WoW Trader repositories, public endpoints and primary platform guidance. It accepts the owner's confirmation that WoW Trader is Forever-tested, other guild addons await raid testing, and testers are already invited. It prioritizes a tool hub, original reviewed guides, tester assignments and B0/B1 bot services; Companion distribution and ingestion retention remain separate gates. Live Helper robots output blocks OAI-SearchBot while the community permits it, so a separate search-only policy review is planned. No articles, crawler settings, bot services or production releases were changed by this planning work.
+
+## Channel Cleanup Partially Applied
+
+September 30: after the owner's credential/permission confirmation, the separate [channel cleanup command](discord-channel-cleanup.md) applied and verified 28 topic updates and all six recruitment/PUG forum tag sets. Ten topic updates remain blocked by channel-level Manage Channels denies. The batch was narrowed to accessible targets without disabling permission, identity, fixed-content or stale-state checks. A fresh audit confirmed that roles, onboarding, guild settings, protected channel fields and all 30 unselected channels/categories were unchanged. Names, ordering, permissions, posting limits, intentional BOT traps and member-readable report forums are preserved. All 14 focused cleanup tests passed before the live run. No messages were posted; the owner will publish them personally. Native Discord rendering remains an owner check. This is a local operator tool, not a website deployment.
+
+## Community Operations Research
+
+September 30: the [community excellence plan](community-excellence-plan.md) is prepared from the live configuration audit, public competitor pages and official platform documentation. It covers onboarding, forums, staffing, hosted activities, governance, reporting, bot/addon sequencing, growth and verification. It preserves the owner's intentional privileged staff role, BOT onboarding choices and member-readable report forums. Competitor conversations and the owner's personal Discord session were not accessed. No Discord configuration changes, outreach, commit or deployment are part of this planning work.
+
+The follow-up covers public metadata for all four owner-selected comparison servers and a capacity model informed by the owner's reported 560 guild raids per year. It also identifies a release prerequisite: review realm-required forms, draft realm-selection guidance, group ruleset fields and legacy addon identity against Blizzard's current ruleset/full-name documentation. Those compatibility changes are planned, not implemented; prepared content must pass that review before publication.
+
+## WoWForeverBot Read-Only Preparation
+
+September 30: [WoWForeverBot setup and configuration audit](kfcbot-setup.md) are implemented locally with separate credentials, a View Channels install link, GET-only identity/configuration collection, permission/onboarding review and private local reports. The owner-created application is installed and authenticated; live read-only audits return 58 channels/categories and 21 roles. Configuration findings, plans and write journals remain in gitignored local storage. The owner confirmed token rotation before the separate cleanup batch above; bot-policy publication remains outstanding. The audit itself remains GET-only. No website deployment is part of the cleanup, and existing website slash commands remain separate and inactive.
+
+## Growth and Bot Preparation
+
+September 30: three guide improvements, two preparation articles, copyable/downloadable templates and an exact-version guarded publisher are prepared locally, not yet deployed. The [preparation handoff](growth-preparation.md) records publication and rollback steps. The expanded [website/Discord blueprint](web-discord-integration-blueprint.md) defines the next bot task, later member ownership/signups and privacy-preserving synchronization. Outreach drafts are prepared; external requests and account actions are not claimed as complete.
+
 ## Discord and Editorial Release
 
 The expanded Discord page, six evergreen guides, approved screenshot editor, article-specific social metadata, regional activity, source/session conversion reporting and search-admin workflow are live. Public Discord forums are explicitly distinguished from the website's private case system. Google ownership is owner-confirmed; sitemap inspection and Bing ownership remain to be confirmed. See [the editorial release](editorial-release.md) for 24 unit/integration tests, 19 browser tests, final live verification and the cold-image memory correction, and [search operations](search-operations.md) for remaining account/community actions.
@@ -31,7 +65,7 @@ Launch verification on September 29, 2026: 13 unit/integration tests, 10 Playwri
 
 ## Deliberately Not Activated
 
-- **Discord bot:** implementation and registration script are present, but the owner chose website-first launch. No application credentials or webhook are configured and no Discord server channels or roles have been changed.
+- **Discord interaction bot:** the website interaction credentials, command registration and moderation webhook remain inactive. WoWForeverBot has separate local operator credentials; its channel topic/tag cleanup above does not activate website interactions, message publishing or role assignment.
 - **ForeverGuard publication:** real source and draft ZIP exist. In-game beta client compatibility is not verified, so the release stays unpublished pending playtesting.
 - **Public safety alerts:** launch database contains no fabricated reports, evidence, accusations, or player entries. Owners must staff the process with independent reviewers before publishing anything.
 - **Rankings:** first place in Google or AI recommendations cannot be guaranteed. Google ownership is owner-confirmed. Sitemap submission/inspection, Bing ownership, editorial maintenance, real community participation, genuine links, and query monitoring require ongoing owner work.

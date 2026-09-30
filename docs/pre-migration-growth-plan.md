@@ -7,6 +7,31 @@ articles, listings or outreach have been published. It builds on the six live
 guides and the September 30 homepage identity/KFC announcement release. The
 owner is handling the member move separately.
 
+## September 30 Follow-through
+
+The identity/KFC announcement release is deployed. The next changes prepare
+three guide additions, two complete preparation articles, copyable/downloadable
+blank templates and an exact-version guarded publisher with `--dry-run`.
+They are prepared in source and local preview, not yet claimed as published in
+production. Unchanged/customized/draft records are preserved.
+
+The owner approved preparing KFC's Bingbot/OAI-SearchBot access change while
+retaining training restrictions and private-route protection; server activation
+is a separate release. [The outreach kit](community-outreach-kit.md) contains
+ready-to-review drafts, without claiming any external submissions. The expanded
+[website/Discord integration blueprint](web-discord-integration-blueprint.md)
+defines the next bot task and the longer-term ownership, signup and sync flows.
+
+Organizer identities, article maintenance ownership, Search Console sitemap
+Success, Bing verification and directory acceptance still need actual owner/
+account input. No bot, search account or community activity is fabricated.
+
+The later [community operations research](community-excellence-plan.md) adds a
+publication prerequisite: correct the prepared realm-selection assumptions
+against Blizzard's current ruleset model and review character identity before
+addon publication. Older realm wording below is superseded by that finding;
+the [preparation handoff](growth-preparation.md) now records the release hold.
+
 ## Decision
 
 Publish selectively: two useful new resources, improve three existing guides,

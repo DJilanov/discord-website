@@ -37,9 +37,9 @@ export default async function GuildPage({
         ]}
       />
       <PageHeader
-        eyebrow={`${guild.region} · ${guild.faction} · ${guild.ruleset}`}
+        eyebrow={`${guild.region} · ${guild.faction} · ${guild.gameRuleset === "Unconfirmed" ? "Ruleset unconfirmed" : guild.gameRuleset}`}
         title={guild.name}
-        description={`${guild.playstyle} guild · ${guild.realm} · ${guild.language}`}
+        description={`${guild.playstyle} guild · ${guild.language}`}
       />
       <div className="article-layout">
         <article>

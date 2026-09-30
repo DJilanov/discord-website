@@ -14,7 +14,7 @@ export const communityFaq: FaqItem[] = [
   {
     question: "Do you cover Alliance, Horde, PvE, PvP, and RP?",
     answer:
-      "Yes. The community is organized around both factions and all three playstyles, with region and realm details included in recruitment and group posts. Community categories do not confirm official realm availability.",
+      "Yes. The community welcomes both factions and PvE, PvP and RP interests. Recruitment and group posts distinguish region, character ruleset and faction from the activity you want to do.",
   },
   {
     question: "How do player reports and appeals work?",

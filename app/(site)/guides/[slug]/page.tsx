@@ -67,16 +67,18 @@ export default async function GuidePage({
     orderBy: { publishedAt: "desc" },
   });
   const nextStep =
-    guide.slug === "write-wow-forever-guild-recruitment-post"
-      ? { href: "/guild-recruitment/new", label: "Submit your guild" }
-      : guide.slug === "find-your-wow-forever-guild"
-        ? { href: "/guild-recruitment", label: "Find a guild" }
-        : [
-              "find-or-organize-wow-forever-group",
-              "clear-loot-rules-better-groups",
-            ].includes(guide.slug)
-          ? { href: "/lfg", label: "Find your next group" }
-          : { href: "/discord", label: "Explore the Discord" };
+    guide.slug === "wow-trader-read-market-prices"
+      ? { href: "/addons/wow-trader", label: "Explore WoW Trader" }
+      : guide.slug === "write-wow-forever-guild-recruitment-post"
+        ? { href: "/guild-recruitment/new", label: "Submit your guild" }
+        : guide.slug === "find-your-wow-forever-guild"
+          ? { href: "/guild-recruitment", label: "Find a guild" }
+          : [
+                "find-or-organize-wow-forever-group",
+                "clear-loot-rules-better-groups",
+              ].includes(guide.slug)
+            ? { href: "/lfg", label: "Find your next group" }
+            : { href: "/discord", label: "Explore the Discord" };
   return (
     <div className="container">
       <Breadcrumbs
@@ -108,7 +110,13 @@ export default async function GuidePage({
           read
         </span>
       </div>
-      <div className="editorial-cover">
+      <div
+        className={
+          guide.coverImage === "/images/wow-trader-workspace.webp"
+            ? "editorial-cover product-cover"
+            : "editorial-cover"
+        }
+      >
         <Image
           src={guide.coverImage}
           alt={artworkDescription(guide.coverImage, guide.title)}

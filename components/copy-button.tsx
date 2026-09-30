@@ -5,9 +5,11 @@ import { Check, Copy } from "lucide-react";
 export function CopyButton({
   text,
   label = "Copy link",
+  errorMessage = "Clipboard unavailable. Select the displayed link to copy it.",
 }: {
   text: string;
   label?: string;
+  errorMessage?: string;
 }): React.JSX.Element {
   const [state, setState] = useState<"idle" | "copied" | "error">("idle");
   async function copy(): Promise<void> {
@@ -29,7 +31,7 @@ export function CopyButton({
         className={state === "error" ? "form-error" : "sr-only"}
       >
         {state === "error"
-          ? "Clipboard unavailable. Select the displayed link to copy it."
+          ? errorMessage
           : state === "copied"
             ? "Copied to clipboard"
             : ""}

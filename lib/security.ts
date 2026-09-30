@@ -60,8 +60,11 @@ export function requireSameOrigin(request: Request): void {
   const origin = request.headers.get("origin");
   const allowed = new Set([new URL(SITE_URL).origin]);
   if (process.env.NODE_ENV !== "production") {
-    allowed.add("http://127.0.0.1:19300");
-    allowed.add("http://localhost:19300");
+    const port = process.env.PORT || "19300";
+    if (/^\d{1,5}$/.test(port) && Number(port) > 0 && Number(port) <= 65535) {
+      allowed.add(`http://127.0.0.1:${port}`);
+      allowed.add(`http://localhost:${port}`);
+    }
   }
   if (!origin || !allowed.has(origin))
     throw new HttpError(403, "Request origin is not allowed.");

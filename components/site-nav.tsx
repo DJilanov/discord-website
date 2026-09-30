@@ -11,7 +11,7 @@ const links = [
   ["/guild-recruitment", "Find a guild"],
   ["/lfg", "Find a group"],
   ["/guides", "Guides"],
-  ["/addons", "Addons"],
+  ["/addons", "Addons & tools"],
 ] as const;
 
 export function SiteNav({
@@ -93,6 +93,7 @@ export function SiteNav({
             >
               {[
                 ...links,
+                ["/contribute", "Community testing"],
                 ["/safety", "Community safety"],
                 ["/rules", "Community rules"],
               ].map(([href, label]) => (

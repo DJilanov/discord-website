@@ -1,5 +1,6 @@
 import type { ForeverGuide } from "@prisma/client";
 import { initialGuides } from "@/content/guides";
+import { september29Guides, september30Guides } from "@/content/editorial";
 
 export function canRefreshStarterGuide(
   guide: Pick<
@@ -33,5 +34,24 @@ export function canRefreshStarterGuide(
   return (
     guide.content === original.content ||
     guide.content === historicalContent[guide.slug]
+  );
+}
+
+export function canRefreshEditorialGuide(
+  guide: Pick<
+    ForeverGuide,
+    "slug" | "title" | "excerpt" | "content" | "published"
+  >,
+): boolean {
+  if (canRefreshStarterGuide(guide)) return true;
+  return (
+    guide.published &&
+    [...september29Guides, ...september30Guides].some(
+      (previous): boolean =>
+        previous.slug === guide.slug &&
+        previous.title === guide.title &&
+        previous.excerpt === guide.excerpt &&
+        previous.content === guide.content,
+    )
   );
 }

@@ -1,6 +1,13 @@
 import type { EditorialGuide } from "./guides";
+import { guideAdditions, preparationGuides } from "./growth";
+import history from "./editorial-history.json";
+import { toolGuides } from "./tool-guides";
 
-export const editorialGuides: EditorialGuide[] = [
+// Retain exact published revisions so later updates cannot overwrite admin edits.
+export const september29Guides: EditorialGuide[] = history.september29Guides;
+export const september30Guides: EditorialGuide[] = history.september30Guides;
+
+const communityGuides: EditorialGuide[] = [
   {
     slug: "join-wow-forever-discord",
     title: "How to Join WoW Forever Discord and Find Your Group",
@@ -102,7 +109,7 @@ Our [pre-run checklist](/guides/clear-loot-rules-better-groups) provides a usefu
 
 ## Compare the details in a listing
 
-Browse the [WoW Forever guild directory](/guild-recruitment). Check region, faction, language, main activity, raid days, time zone, current recruiting needs, and the named contact. An unconfirmed realm plan should be labelled as such. Do not infer a confirmed realm or launch rule from a community listing.
+Browse the [WoW Forever guild directory](/guild-recruitment). Check region, character ruleset, faction, language, playstyle, raid days, time zone, current recruiting needs, and the named contact. A ruleset marked Unconfirmed still needs a decision from the recruiter. See our [playing with friends checklist](/guides/wow-forever-playing-with-friends) before creating a character.
 
 Use this short worksheet when comparing two guilds:
 
@@ -178,7 +185,7 @@ The [group-post guide](/guides/find-or-organize-wow-forever-group) explains wher
 
 Ask for a calm explanation against the written agreement. A misclick, misunderstanding, or missed message may have a straightforward explanation. Do not threaten a player or ask others to pile on.
 
-If review is still needed, preserve the original rules, relevant roll/allocation, surrounding conversation, date, region, realm, and character identity. Names alone are not globally unique. Avoid unrelated private messages or personal data, and do not present a cropped accusation as the whole sequence.
+If review is still needed, preserve the original rules, relevant roll/allocation, surrounding conversation, date, region, ruleset, and complete character identity. For Forever, use the full two-part character name rather than only a first name. Avoid unrelated private messages or personal data, and do not present a cropped accusation as the whole sequence. The current safety tools still use a legacy realm field: ask staff to confirm the supported intake before filing a Forever-specific case; do not invent a realm or match someone by first name alone.
 
 Submit relevant information through the [private report process](/reports). A report is not automatically published. Read the [evidence and safety policy](/safety) for how review works.
 
@@ -252,7 +259,7 @@ To get started, [join the Discord](/discord) and follow the [onboarding guide](/
 
 ## Read the practical details first
 
-Check the region, realm or realm plan, faction, activity, start time, and host's contact. Public group times are displayed in UTC. Convert that to your own time for the actual date, and check again when clocks change.
+Check the region, character ruleset, faction, activity, start time, and host's contact. Public group times are displayed in UTC. Convert that to your own time for the actual date, and check again when clocks change. The [friends checklist](/guides/wow-forever-playing-with-friends) explains the distinction between a character ruleset and an activity.
 
 Read the description before messaging. The directory does not reserve a place or maintain an automatic signup roster. Contact the organizer and confirm that a suitable space remains available.
 
@@ -262,7 +269,7 @@ Use a title that identifies the activity and purpose. "Learning group, two roles
 
 | Form field | What belongs there |
 | --- | --- |
-| Region, realm, faction | Where the group intends to play; identify an unconfirmed realm plan honestly |
+| Region, character ruleset, faction | Confirm all three with the organizer; a PvP activity is not a character-ruleset choice |
 | Activity | The game activity that matches the session |
 | Start time | The actual date and time, checked against the form's time-zone label |
 | Description | Goal, duration, roles, preparation, communication, and rules |
@@ -270,7 +277,7 @@ Use a title that identifies the activity and purpose. "Learning group, two roles
 
 There is no separate duration field, so put your intended finishing time or session length in the description. Do not advertise unavailable content as a confirmed run.
 
-![The group form's actual fields, shown empty without a submitted event](/images/group-post-form.png)
+![The group form's actual fields, shown empty without a submitted event](/images/group-post-form-rulesets.png)
 
 The form above was captured from this website on September 29, 2026. It is an empty form, not a live group or a completed signup.
 
@@ -319,7 +326,7 @@ Use achievements and size figures only when they are accurate and relevant. Char
 
 ## Make schedules unambiguous
 
-Include region, faction, language, realm or unconfirmed realm plan, raid days, start time, expected finish, and time zone. Explain whether the time means invites or first pull. For cross-region recruitment, describe whether the schedule stays fixed to local time or UTC when daylight saving changes.
+Include region, character ruleset, faction, language, raid days, start time, expected finish, and time zone. Label an undecided ruleset Unconfirmed and a future Hardcore roster as planned. Explain whether the time means invites or first pull. For international recruitment, describe whether the schedule stays fixed to local time or UTC when daylight saving changes.
 
 The directory has separate fields for language, raid days, and raid time. Use them rather than burying all practical details inside a long description.
 
@@ -347,7 +354,7 @@ This is an editorial example, not a real listing or testimonial. Avoid unsupport
 
 Before using the [submission form](/guild-recruitment/new), check:
 
-- Guild name, region, faction, language, and realm status are accurate.
+- Guild name, region, character ruleset, faction, and language are accurate.
 - The schedule includes a time zone and a realistic finish.
 - Current recruiting classes and the intended role are clear.
 - Loot, attendance, and trial expectations are explained.
@@ -362,6 +369,17 @@ When needs, contacts, or schedules change, contact staff in the [Discord communi
 
 For a single session rather than a guild roster, use [group posts](/lfg). For questions and introductions, [join the community Discord](/discord). Recruitment works best as the start of a useful conversation, not a repeated unsolicited message.`,
   },
+];
+
+export const editorialGuides: EditorialGuide[] = [
+  ...communityGuides.map((guide): EditorialGuide => ({
+    ...guide,
+    content: guideAdditions[guide.slug]
+      ? `${guide.content}\n\n${guideAdditions[guide.slug]}`
+      : guide.content,
+  })),
+  ...preparationGuides,
+  ...toolGuides,
 ];
 
 export const startingGuideSlugs = [
@@ -388,10 +406,30 @@ export const guideReadingPaths: Record<string, string[]> = {
   ],
   "find-or-organize-wow-forever-group": [
     "clear-loot-rules-better-groups",
-    "find-your-wow-forever-guild",
+    "wow-forever-beta-starter-checklist",
+    "wow-forever-launch-group-checklist",
   ],
   "write-wow-forever-guild-recruitment-post": [
     "find-your-wow-forever-guild",
     "clear-loot-rules-better-groups",
+  ],
+  "wow-forever-beta-starter-checklist": [
+    "wow-forever-playing-with-friends",
+    "find-or-organize-wow-forever-group",
+    "wow-forever-launch-group-checklist",
+  ],
+  "wow-forever-launch-group-checklist": [
+    "wow-forever-playing-with-friends",
+    "write-wow-forever-guild-recruitment-post",
+    "find-or-organize-wow-forever-group",
+  ],
+  "wow-forever-playing-with-friends": [
+    "wow-forever-beta-starter-checklist",
+    "wow-forever-launch-group-checklist",
+    "find-or-organize-wow-forever-group",
+  ],
+  "wow-trader-read-market-prices": [
+    "wow-forever-beta-starter-checklist",
+    "wow-forever-playing-with-friends",
   ],
 };

@@ -15,7 +15,7 @@ import {
   FACTIONS,
   PLAYSTYLES,
   REGIONS,
-  RULESETS,
+  GUILD_RULESETS,
 } from "@/lib/config";
 import { paginationUrl, queryValue, type QueryParams } from "@/lib/directory";
 
@@ -54,14 +54,14 @@ export function GuildFilters({
         <input
           name="q"
           defaultValue={queryValue(query, "q")}
-          placeholder="Guild, realm, or language"
+          placeholder="Guild or language"
           maxLength={100}
         />
       </label>
       {[
         { name: "region", label: "Regions", options: REGIONS },
         { name: "faction", label: "Factions", options: FACTIONS },
-        { name: "ruleset", label: "Activities", options: RULESETS },
+        { name: "ruleset", label: "Rulesets", options: GUILD_RULESETS },
         { name: "playstyle", label: "Playstyles", options: PLAYSTYLES },
         { name: "class", label: "Classes", options: CLASSES },
         { name: "day", label: "Raid days", options: DAYS },
@@ -96,7 +96,11 @@ export function GuildRow({
         <div className="guild-meta">
           {guild.featured && <span className="badge">Featured</span>}
           <span>{guild.faction}</span>
-          <span>{guild.ruleset}</span>
+          <span>
+            {guild.gameRuleset === "Unconfirmed"
+              ? "Ruleset unconfirmed"
+              : guild.gameRuleset}
+          </span>
           <span>{guild.playstyle}</span>
         </div>
         <h3>
@@ -105,7 +109,7 @@ export function GuildRow({
         <div className="guild-meta">
           <span>
             <Globe2 size={12} />
-            {guild.region} · {guild.realm}
+            {guild.region}
           </span>
           <span>
             <CalendarDays size={12} />

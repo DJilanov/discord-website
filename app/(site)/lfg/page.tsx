@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarDays, Plus, Swords } from "lucide-react";
 import { db } from "@/lib/db";
-import { REGIONS, FACTIONS } from "@/lib/config";
+import { REGIONS, FACTIONS, RULESETS } from "@/lib/config";
 import { pageMetadata } from "@/lib/seo";
 import {
   groupFilter,
@@ -22,7 +22,7 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   return pageMetadata(
     "WoW Forever LFG - Dungeons, Raids, PvP & RP",
-    "Find a WoW Forever group for dungeons, raids, PvP premades, questing and roleplay. Alliance and Horde group posts with region, realm and start time.",
+    "Find a WoW Forever group for dungeons, raids, PvP premades, questing and roleplay. Group posts with region, ruleset, faction and start time.",
     "/lfg",
     Object.keys(await searchParams).length > 0,
   );
@@ -57,6 +57,12 @@ export default async function LfgPage({
         </Link>
       </div>
       <form className="filters" action="/lfg">
+        <FilterSelect
+          name="ruleset"
+          label="Rulesets"
+          options={RULESETS}
+          value={queryValue(query, "ruleset")}
+        />
         <FilterSelect
           name="region"
           label="Regions"
@@ -104,7 +110,10 @@ export default async function LfgPage({
                   <span>{group.activity}</span>
                   <span>{group.faction}</span>
                   <span>
-                    {group.region} · {group.realm}
+                    {group.region} ·{" "}
+                    {group.gameRuleset === "Unconfirmed"
+                      ? "Ruleset unconfirmed"
+                      : group.gameRuleset}
                   </span>
                 </div>
                 <h3>{group.title}</h3>
@@ -148,9 +157,9 @@ export default async function LfgPage({
       <section className="section narrow">
         <h2>A little clarity goes a long way.</h2>
         <p className="section-lead">
-          Include your region, realm, faction, start time, needed roles, and
-          loot rules. Posts are reviewed before appearing and expire after the
-          session. For a regular roster, explore{" "}
+          Include your region, character ruleset, faction, start time, needed
+          roles, and loot rules. Posts are reviewed before appearing and expire
+          after the session. For a regular roster, explore{" "}
           <Link className="text-link" href="/guild-recruitment">
             guild recruitment
           </Link>

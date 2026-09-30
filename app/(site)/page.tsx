@@ -48,7 +48,7 @@ export default async function Home(): Promise<React.JSX.Element> {
         slug: true,
         region: true,
         faction: true,
-        ruleset: true,
+        gameRuleset: true,
       },
     }),
     db.foreverGroup.findMany({
@@ -243,7 +243,10 @@ export default async function Home(): Promise<React.JSX.Element> {
                         <span>
                           <strong>{guild.name}</strong>
                           <small>
-                            {guild.region} / {guild.faction} / {guild.ruleset}
+                            {guild.region} / {guild.faction} /{" "}
+                            {guild.gameRuleset === "Unconfirmed"
+                              ? "Ruleset unconfirmed"
+                              : guild.gameRuleset}
                           </small>
                         </span>
                         <ArrowRight size={18} />

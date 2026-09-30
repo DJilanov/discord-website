@@ -22,6 +22,7 @@ import { StatusBadge } from "@/components/ui";
 import { Markdown } from "@/components/markdown";
 import { SearchReadiness } from "@/components/search-readiness";
 import { TrafficConversions } from "@/components/traffic-conversions";
+import { GUILD_RULESETS } from "@/lib/config";
 
 interface Props {
   params: Promise<{ section: string }>;
@@ -173,6 +174,13 @@ export default async function AdminSection({
               Submitted {date(guild.createdAt)}. Changes to approved listings
               become public immediately.
             </p>
+            {(guild.realm || guild.ruleset) && (
+              <p className="muted">
+                Legacy submission: realm {guild.realm || "not supplied"};
+                activity {guild.ruleset || "not supplied"}. These values are
+                retained, not converted into a confirmed character ruleset.
+              </p>
+            )}
           </EditorHeader>
           <AdminEditor
             endpoint={`/api/admin/guilds/${id}`}
@@ -198,7 +206,7 @@ export default async function AdminSection({
           rows={rows.map((row) => ({
             id: row.id,
             title: row.name,
-            detail: `${row.region} / ${row.faction} / ${row.ruleset}`,
+            detail: `${row.region} / ${row.faction} / ${row.gameRuleset}`,
             status: row.status,
             date: row.updatedAt,
             href: `${base}?edit=${row.id}`,
@@ -216,7 +224,8 @@ export default async function AdminSection({
           <EditorHeader title={group.title} backHref={base} />
           <dl className="detail-grid">
             {[
-              ["Region / realm", `${group.region} / ${group.realm}`],
+              ["Region / ruleset", `${group.region} / ${group.gameRuleset}`],
+              ["Legacy realm (not a ruleset)", group.realm || "Not supplied"],
               ["Faction", group.faction],
               ["Activity", group.activity],
               ["Starts", date(group.startsAt)],
@@ -234,6 +243,13 @@ export default async function AdminSection({
             endpoint={`/api/admin/groups/${id}`}
             fields={[
               {
+                name: "gameRuleset",
+                label: "Character ruleset",
+                type: "select",
+                options: GUILD_RULESETS,
+                required: true,
+              },
+              {
                 name: "status",
                 label: "Decision",
                 type: "select",
@@ -247,7 +263,11 @@ export default async function AdminSection({
                 full: true,
               },
             ]}
-            values={{ status: "approved", reason: "" }}
+            values={{
+              status: "approved",
+              reason: "",
+              gameRuleset: group.gameRuleset,
+            }}
             returnTo={base}
           />
         </>

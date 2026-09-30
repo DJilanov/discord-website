@@ -6,7 +6,7 @@ import { groupFilter, guildFilter } from "@/lib/directory";
 export interface CommunityScope {
   region?: string;
   faction?: string;
-  ruleset?: string;
+  interest?: "PvE" | "PvP" | "RP";
 }
 
 export async function CommunityActivity({
@@ -14,13 +14,22 @@ export async function CommunityActivity({
 }: {
   scope?: CommunityScope;
 }): Promise<React.JSX.Element> {
-  const query = { ...scope };
+  const query = {
+    region: scope.region,
+    faction: scope.faction,
+    playstyle:
+      scope.interest === "PvP"
+        ? "PvP"
+        : scope.interest === "RP"
+          ? "Roleplay"
+          : undefined,
+  };
   const activities: Record<string, string[]> = {
     PvE: ["Dungeon", "Raid", "Questing"],
     PvP: ["PvP premade"],
     RP: ["RP event"],
   };
-  const activity = scope.ruleset ? activities[scope.ruleset] : undefined;
+  const activity = scope.interest ? activities[scope.interest] : undefined;
   const [groups, guilds] = await Promise.all([
     db.foreverGroup.findMany({
       where: {
@@ -55,7 +64,7 @@ export async function CommunityActivity({
     }),
   ]);
   const params = new URLSearchParams(
-    Object.entries(scope).filter((entry): entry is [string, string] =>
+    Object.entries(query).filter((entry): entry is [string, string] =>
       Boolean(entry[1]),
     ),
   );

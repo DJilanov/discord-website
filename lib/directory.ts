@@ -5,7 +5,7 @@ import {
   FACTIONS,
   PLAYSTYLES,
   REGIONS,
-  RULESETS,
+  GUILD_RULESETS,
 } from "@/lib/config";
 
 export type QueryParams = Record<string, string | string[] | undefined>;
@@ -32,7 +32,9 @@ export function guildFilter(query: QueryParams): Prisma.ForeverGuildWhereInput {
     status: "approved",
     ...(REGIONS.some((x) => x === region) ? { region } : {}),
     ...(FACTIONS.some((x) => x === faction) ? { faction } : {}),
-    ...(RULESETS.some((x) => x === ruleset) ? { ruleset } : {}),
+    ...(GUILD_RULESETS.some((x) => x === ruleset)
+      ? { gameRuleset: ruleset }
+      : {}),
     ...(PLAYSTYLES.some((x) => x === style) ? { playstyle: style } : {}),
     ...(DAYS.some((x) => x === day) ? { raidDays: { has: day } } : {}),
     ...(CLASSES.some((x) => x === characterClass)
@@ -42,7 +44,6 @@ export function guildFilter(query: QueryParams): Prisma.ForeverGuildWhereInput {
       ? {
           OR: [
             { name: { contains: search, mode: "insensitive" as const } },
-            { realm: { contains: search, mode: "insensitive" as const } },
             { language: { contains: search, mode: "insensitive" as const } },
           ],
         }
@@ -69,6 +70,7 @@ export function groupFilter(
   const region = queryValue(query, "region");
   const faction = queryValue(query, "faction");
   const activity = queryValue(query, "activity");
+  const ruleset = queryValue(query, "ruleset");
   return {
     status: "approved",
     expiresAt: { gt: now },
@@ -76,5 +78,8 @@ export function groupFilter(
     ...(region ? { region } : {}),
     ...(faction ? { faction } : {}),
     ...(activity ? { activity } : {}),
+    ...(GUILD_RULESETS.some((value) => value === ruleset)
+      ? { gameRuleset: ruleset }
+      : {}),
   };
 }

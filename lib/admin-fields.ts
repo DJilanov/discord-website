@@ -6,7 +6,7 @@ import {
   FACTIONS,
   PLAYSTYLES,
   REGIONS,
-  RULESETS,
+  GUILD_RULESETS,
 } from "@/lib/config";
 
 export const settingsFields: EditorField[] = [
@@ -141,9 +141,13 @@ export const guildFields: EditorField[] = [
     options: ["pending", "approved", "hidden", "rejected"],
   },
   { name: "region", label: "Region", type: "select", options: REGIONS },
-  { name: "realm", label: "Realm", required: true },
   { name: "faction", label: "Faction", type: "select", options: FACTIONS },
-  { name: "ruleset", label: "Activity", type: "select", options: RULESETS },
+  {
+    name: "gameRuleset",
+    label: "Character ruleset",
+    type: "select",
+    options: GUILD_RULESETS,
+  },
   { name: "language", label: "Language", required: true },
   {
     name: "playstyle",

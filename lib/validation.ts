@@ -4,6 +4,7 @@ import {
   CLASSES,
   DAYS,
   FACTIONS,
+  GUILD_RULESETS,
   PLAYSTYLES,
   REGIONS,
   REPORT_CATEGORIES,
@@ -69,8 +70,9 @@ const common = {
 
 export const guildSchema = z.object({
   name: shortText,
-  ...common,
-  ruleset: z.enum(RULESETS),
+  region: common.region,
+  faction: common.faction,
+  gameRuleset: z.enum(GUILD_RULESETS),
   language: shortText,
   playstyle: z.enum(PLAYSTYLES),
   raidDays: z.array(z.enum(DAYS)).max(7),
@@ -85,7 +87,9 @@ export const guildSchema = z.object({
 export const groupSchema = z
   .object({
     title: z.string().trim().min(5).max(100),
-    ...common,
+    region: common.region,
+    faction: common.faction,
+    gameRuleset: z.enum(RULESETS),
     activity: z.enum([
       "Dungeon",
       "Raid",

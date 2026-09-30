@@ -6,7 +6,12 @@ export const INDEXABLE =
   process.env.SITE_INDEXABLE === "true" && SITE_URL.startsWith("https://");
 export const REGIONS = ["EU", "NA", "OCE"] as const;
 export const FACTIONS = ["Alliance", "Horde"] as const;
-export const RULESETS = ["PvE", "PvP", "RP"] as const;
+export const RULESETS = ["Normal", "PvP", "Roleplaying"] as const;
+export const GUILD_RULESETS = [
+  ...RULESETS,
+  "Hardcore (planned)",
+  "Unconfirmed",
+] as const;
 export const CLASSES = [
   "Druid",
   "Hunter",
