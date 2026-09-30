@@ -1,15 +1,18 @@
 # Implementation Status
 
-## Two-Way Shared Channels Implemented Locally
+## Shared-Channel Infrastructure Deployed
 
-September 30: the [local implementation and rollout runbook](shared-channels-release.md)
+September 30: the [implementation and rollout runbook](shared-channels-release.md)
 adds the independent worker, bridge-only persistence, consent/withdrawal commands,
 two-way delivery lifecycle, moderation and recovery, bot policies and the responsive
-`/admin/discord` workspace. Delivery is disabled by default. Isolated PostgreSQL,
-simulated Discord failure tests and mobile/desktop browser checks are available;
-real Discord lifecycle/rendering tests, approved new channel IDs, narrow production
-permissions, command registration and deployment remain gates. No live messages
-were read or relayed by this implementation work.
+`/admin/discord` workspace. Commit `d721bcd` is deployed; the independent PM2 worker
+is healthy in cleanup-only mode. The signed interaction endpoint and `/bridge`
+commands in both servers are configured. A dedicated WoW Forever channel exists;
+KFC still needs its channel or a temporary Manage Channels grant. No pair or member
+participation is active. Notices, permission review, moderator coverage, live
+opted-in lifecycle tests, off-host secret recovery and external alerting remain
+activation gates. Automated checks, Linux build/backup restore and live responsive
+site verification passed. No conversations have been relayed.
 
 ## Two-Way Shared Channels Plan
 
@@ -91,7 +94,7 @@ Launch verification on September 29, 2026: 13 unit/integration tests, 10 Playwri
 
 ## Deliberately Not Activated
 
-- **Discord interaction bot:** the website interaction credentials, command registration and moderation webhook remain inactive. WoWForeverBot has separate local operator credentials; its channel topic/tag cleanup above does not activate website interactions, message publishing or role assignment.
+- **Discord conversation relaying and other bot features:** the shared-channel worker, signed endpoint and scoped `/bridge` commands are deployed as described above, but no pair is active. Legacy role assignment, eight-command registration and moderation notifications remain separate and inactive. The earlier channel topic/tag cleanup did not activate them.
 - **ForeverGuard publication:** real source and draft ZIP exist. In-game beta client compatibility is not verified, so the release stays unpublished pending playtesting.
 - **Public safety alerts:** launch database contains no fabricated reports, evidence, accusations, or player entries. Owners must staff the process with independent reviewers before publishing anything.
 - **Rankings:** first place in Google or AI recommendations cannot be guaranteed. Google ownership is owner-confirmed. Sitemap submission/inspection, Bing ownership, editorial maintenance, real community participation, genuine links, and query monitoring require ongoing owner work.

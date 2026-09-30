@@ -1,9 +1,65 @@
-# Shared Channels: Local Implementation
+# Shared Channels Release
 
 September 30, 2026. This implements the two-way bridge from the
-[implementation plan](shared-channels-implementation-plan.md). It is **not a live
-Discord rollout**. No real channel messages were collected, copied or deleted;
-no commands were registered and no production services were changed.
+[implementation plan](shared-channels-implementation-plan.md). Commit `d721bcd`
+is deployed to the website and the independent worker. **Message relaying is not
+active:** the worker is healthy in `cleanup_only`, with no configured pair or
+participants. See the verified rollout and remaining activation gates below.
+
+## Production Rollout
+
+Verified September 30, 2026, approximately 16:17 UTC:
+
+- Website build `.next-release-bridge-d721bcd` is live at
+  `https://www.wowforeverdiscord.online`, including `/admin/discord` and all three
+  `/bot/` policies. The previous website build and a source snapshot are retained.
+- Migrations `003`-`005` applied; a rerun reports the schema current. Backups before
+  and after deployment restored successfully into isolated Linux scratch databases,
+  including the bridge audit functions after migration.
+- `wow-forever-bridge` runs under PM2 as `wowbridge`, using the checksum-verified
+  Node 24.21.0 runtime at `/opt/wow-forever-node24`. The website remains on its
+  existing Node 20 interpreter. No Docker or additional public listener was added.
+- Worker release: `/home/wow-forever-bridge/releases/d721bcd`, selected by `current`.
+  Its production-only dependency install passed with zero reported vulnerabilities.
+  Both private environment files are mode 0600 and owned by their respective users.
+- The actual worker database login can access the bridge runtime and restricted
+  audit function, but cannot access staff accounts, private reports/evidence,
+  general audit rows, admin receipts or KFC users.
+- Discord accepted the signed HTTPS interactions endpoint. Message Content intent
+  is enabled and the Gateway is ready. Only `/bridge` was registered in each fixed
+  guild; unrelated commands were not replaced. HTTP enrollment controls are enabled,
+  but joining is unavailable until an approved pair is activated.
+- A new WoW Forever channel was created under General chats:
+  `1554889798743887984` (`forever-shared-chat`). Its topic links the policy and says
+  the pilot is not active. No notice or conversational message was posted.
+- KFC and Helper, along with every unrelated PM2 application, retained their
+  original PIDs and restart counts. Approximately 22 GB disk space remains.
+
+Repeated release checks passed: 98 unit/integration tests, lint, strict typecheck,
+worker build, Linux website build, and the three focused bridge browser tests.
+The previous full 30-test browser run is also recorded below. Live verification
+passed all 34 sitemap pages and existing desktop/mobile security/rendering checks.
+The bot policies additionally passed at 320/390/768/1440px with no overflow,
+accessibility violations or browser errors. Anonymous admin access and unsigned
+Discord requests are denied. Screenshots are in ignored `artifacts/bridge-live/`.
+
+## Activation Still Pending
+
+- KFC has no dedicated shared channel, and the bot lacks Manage Channels there.
+  The owner must create a public `forever-shared-chat` text channel, or temporarily
+  grant the bot Manage Channels to create it. The channel topic must contain the
+  policy URL; the bot needs View Channel, Send Messages and Read Message History.
+- Obtain the owner's notice-publishing choice, exact notice links, permission-scope
+  review, moderator coverage and the disclosed membership/retention approvals.
+  No existing conversation is selected automatically.
+- Create the pair in `/admin/discord`, complete actual opted-in Discord lifecycle
+  and rendering checks, and record truthful launch approvals before publication.
+  No human consent, successful live relay test or owner attestation was fabricated.
+- Encrypted off-host recovery for worker secrets and independent failure alerting
+  remain unconfigured. The private health CLI works; it is not an external monitor.
+
+`/bridge status` currently explains that shared channels are not configured. The
+presence of commands and an online bot does not mean member messages are relayed.
 
 ## Implemented
 
@@ -75,7 +131,8 @@ Playwright tests**, strict typecheck, lint, website production build and worker
 build passed. The isolated worker-package install/build/disabled-start check
 passed, as did a disabled-start smoke test under Node 24.21.0. The worker's
 production dependency audit reported zero vulnerabilities. Migration application
-and rerun succeeded. No live Discord lifecycle or Linux restore result is claimed.
+and rerun succeeded. These local results do not establish live Discord lifecycle
+behavior; the separately verified Linux restore result is recorded above.
 
 The isolated PostgreSQL on `127.0.0.1:55432` was used for migration application,
 reruns, actual queue/consent transactions, restricted-role checks and browser
@@ -104,6 +161,9 @@ Do not run the old eight-command `bot:register` script for this release.
 2. Publish the website/admin/policy changes with `BRIDGE_INTERACTIONS_ENABLED=false`.
    Back up first, run only the additive migrations, and keep KFC/Helper untouched.
    Verify private API denial and public bot policy URLs over HTTPS.
+   Install both lockfiles before the website build: the root TypeScript check also
+   includes worker integration tests. Use the supported Node 24 interpreter for
+   `npm ci --prefix workers/discord-bridge`; retain the website's own interpreter.
 3. Create restricted OS account `wowbridge`, an immutable worker release directory
    under `/home/wow-forever-bridge`, and `/etc/wow-forever-bridge/worker.env` readable
    only by that account. Do not copy the website or KFC environment into it.
@@ -187,7 +247,7 @@ and `/bridge join`. It does not publish or edit a notice on the owner's behalf.
   stores `bridge-boundary.sql`; restore that reviewed function DDL after the dump,
   restore function ownership/grants to the intended website owner, then reapply
   the worker's narrow grants. Production `backup:verify` tests the function DDL
-  in its scratch database. That Linux restore command was not executed locally.
+  in its scratch database; this passed during the production rollout above.
 - Worker secrets are deliberately **not** added to the website's private archive.
   Re-provision them from the approved secret manager after recovery. Keeping the
   interaction key unavailable simply prevents new enrollment; never recover a

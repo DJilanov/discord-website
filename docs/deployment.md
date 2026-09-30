@@ -40,12 +40,21 @@ Back up first. Stage and verify source, run the project's tests locally, install
 ```sh
 npm run backup
 npm ci
+# The root typecheck includes the bridge integration tests. Install the worker's
+# lockfile with its separate supported Node 24 runtime before building the site.
+PATH=/opt/wow-forever-node24/bin:$PATH npm ci --prefix workers/discord-bridge
 npm run db:generate
+npm run db:migrate
 npm run build
 sh deploy/activate.sh
 ```
 
 Never rebuild the active output directory while PM2 serves it. Set a fresh `FOREVER_BUILD_DIR` (for example `.next-release-20260929`) for both `npm run build` and `sh deploy/activate.sh`. PM2 persists this selection for restarts. Keep the prior output and source snapshot; to roll back, restore its source and activate its original build directory. Do not roll back the shared database or erase later submissions. Schema changes must remain backward-compatible until the old build is retired.
+
+The shared-channel worker is a separate deployment and OS/database identity, not
+part of `deploy/activate.sh`. See [its release runbook](shared-channels-release.md)
+before changing its secrets, runtime, commands, channel approvals or PM2 process.
+Restarting it deliberately stops publication and invalidates participation.
 
 ## Backups And Recovery
 
