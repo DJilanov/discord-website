@@ -12,6 +12,52 @@ test.afterAll(async (): Promise<void> => {
   await db.$disconnect();
 });
 
+test("homepage community identity is visible without JavaScript", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto("/");
+    const heading = page.getByRole("heading", {
+      level: 1,
+      name: "WoW Forever Discord",
+      exact: true,
+    });
+    await expect(heading).toBeVisible();
+    await expect(heading).toHaveText("WoW Forever Discord");
+    await expect(page.locator(".community-intro")).toHaveText(
+      "WoW Forever Discord is an independent, unofficial EU and NA community for Alliance and Horde players interested in PvE, PvP and roleplay. You do not need to join a particular guild to take part.",
+    );
+    await expect(page.locator(".community-intro")).toBeVisible();
+    await expect(page.locator(".hero-logo")).toBeVisible();
+    await expect(page.locator(".hero-description")).not.toBeEmpty();
+    await expect(page.locator("link[rel=canonical]")).toHaveAttribute(
+      "href",
+      /^https?:\/\/[^/]+\/?$/,
+    );
+    const siteName = await page
+      .locator('script[type="application/ld+json"]')
+      .evaluateAll((scripts): string | undefined => {
+        for (const script of scripts) {
+          const data = JSON.parse(script.textContent || "{}") as {
+            "@graph"?: Array<{ "@type"?: string; name?: string }>;
+          };
+          const website = data["@graph"]?.find(
+            (entry: { "@type"?: string }) => entry["@type"] === "WebSite",
+          );
+          if (website) return website.name;
+        }
+      });
+    expect(siteName).toBe("WoW Forever Discord");
+  } finally {
+    await context.close();
+  }
+});
+
 test("hero composition, sharp assets and controls across the viewport matrix", async ({
   page,
 }) => {

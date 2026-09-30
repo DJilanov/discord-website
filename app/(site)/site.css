@@ -218,6 +218,7 @@
   line-height: 1.2;
   color: #fff;
   text-shadow: 0 2px 18px #0007;
+  text-wrap: balance;
 }
 .hero-description {
   max-width: 435px;
@@ -279,6 +280,17 @@
 }
 .public-site .community-section {
   padding-top: 44px;
+}
+.community-intro {
+  max-width: 760px;
+  margin: 0 0 32px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.community-intro a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .section-note {
   color: var(--muted);

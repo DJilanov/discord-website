@@ -22,7 +22,7 @@ import { communities, communityFaq } from "@/content/community";
 
 export const metadata = pageMetadata(
   "WoW Forever Discord & Community Hub",
-  "Your unofficial WoW Forever community for Alliance and Horde. Find guilds, dungeon groups, PvP premades, RP events, guides and a Discord to call home.",
+  "Join the independent WoW Forever Discord for EU and NA. Meet Alliance and Horde players for PvE, PvP and roleplay, find guilds and arrange groups.",
   "/",
 );
 
@@ -112,14 +112,14 @@ export default async function Home(): Promise<React.JSX.Element> {
             <h1 id="home-title">
               <Image
                 src="/images/wow-forever-logo.png"
-                alt="WoW Forever"
+                alt=""
                 width={340}
                 height={277}
                 sizes="(max-width: 700px) 190px, 300px"
                 className="hero-logo"
                 loading="eager"
               />
-              <span>Community Discord</span>
+              <span>WoW Forever Discord</span>
             </h1>
             <p className="hero-description">{settings.heroDescription}</p>
             <div className="button-row">
@@ -171,6 +171,12 @@ export default async function Home(): Promise<React.JSX.Element> {
             <br />A place for every player.
           </p>
         </div>
+        <p className="community-intro">
+          <Link href="/discord">WoW Forever Discord</Link> is an independent,
+          unofficial EU and NA community for Alliance and Horde players
+          interested in PvE, PvP and roleplay. You do not need to join a
+          particular guild to take part.
+        </p>
         <div className="community-grid">
           {communities.map((community, index) => (
             <Link

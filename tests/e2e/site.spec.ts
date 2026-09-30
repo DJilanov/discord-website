@@ -192,10 +192,10 @@ for (const width of [320, 390, 768, 1440, 1920]) {
     page.on("pageerror", (error) => errors.push(error.message));
     await page.setViewportSize({ width, height: width < 500 ? 844 : 1000 });
     await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Community Discord",
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "WoW Forever Discord",
     );
-    await expect(page.locator("h1 img")).toHaveAttribute("alt", "WoW Forever");
+    await expect(page.locator("h1 img")).toHaveAttribute("alt", "");
     await page.evaluate(() => document.fonts.ready);
     await expect
       .poll(() =>
