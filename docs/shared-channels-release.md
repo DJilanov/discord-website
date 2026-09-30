@@ -1,5 +1,10 @@
 # Shared Channels Release
 
+The owner's later [existing-chat selection](shared-channels-existing-chats.md)
+supersedes the original dedicated-channel pilot below: discussion and leveling are
+selected; who-plays-what and guild-invite requests are excluded. The historical
+rollout and verification below describe `d721bcd`, not the follow-up release.
+
 September 30, 2026. This implements the two-way bridge from the
 [implementation plan](shared-channels-implementation-plan.md). Commit `d721bcd`
 is deployed to the website and the independent worker. **Message relaying is not

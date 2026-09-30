@@ -33,6 +33,7 @@ export interface AdminSnapshot {
   applicationId: string;
   runtime: Runtime;
   bridges: Bridge[];
+  selectedBridgeId: string | null;
   consents: Consent[];
   moderators: { id: string; name: string }[];
   delivery: DeliveryRow[];
@@ -102,15 +103,23 @@ export async function snapshot(
   store: BridgeStore,
   staff: Staff,
   offset = 0,
+  selectedId?: string,
 ): Promise<AdminSnapshot> {
   if (staff.role === "editor")
     throw new BridgeError(403, "bridge_access_denied");
   const bridges = await rows<Bridge>(
     store.pool,
-    'SELECT * FROM "ForeverDiscordBridge" WHERE ($1 OR $2=ANY("moderatorIds")) ORDER BY "createdAt" DESC LIMIT 20',
+    'SELECT * FROM "ForeverDiscordBridge" WHERE ($1 OR $2=ANY("moderatorIds")) ORDER BY CASE WHEN "state"=\'retired\' THEN 1 ELSE 0 END,"createdAt" DESC LIMIT 20',
     [canManage(staff), staff.id],
   );
-  const ids = bridges.map((b) => b.id);
+  if (selectedId && !bridges.some((pair) => pair.id === selectedId))
+    throw new BridgeError(404, "bridge_not_found");
+  const selectedBridgeId =
+    selectedId ||
+    bridges.find((pair) => pair.state !== "retired")?.id ||
+    bridges[0]?.id ||
+    null;
+  const ids = selectedBridgeId ? [selectedBridgeId] : [];
   const counts = await one<{ total: number; cleanup: number }>(
     store.pool,
     `SELECT COUNT(*)::int AS total,
@@ -123,6 +132,7 @@ export async function snapshot(
     applicationId,
     runtime: await store.runtime(),
     bridges,
+    selectedBridgeId,
     deliveryOffset: offset,
     deliveryCount: counts?.total || 0,
     cleanupCount: counts?.cleanup || 0,
@@ -390,7 +400,7 @@ export async function setMode(
     // Acquire locks in the same order as message/consent transactions.
     const bridges = await rows<Bridge>(
       sql,
-      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' FOR UPDATE',
+      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' ORDER BY "id" FOR UPDATE',
     );
     const runtime = await one<Runtime>(
       sql,

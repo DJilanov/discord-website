@@ -7,6 +7,7 @@ import { Pool } from "pg";
 import {
   applicationId,
   createBridgeSchema,
+  existingKfcChannels,
   guilds,
   messageLink,
   type Bridge,
@@ -61,6 +62,18 @@ function id(): string {
 let bridge: Bridge;
 let engine: BridgeEngine;
 let transport: FakeTransport;
+const additionalPairs: Bridge[] = [];
+
+async function extraPair(channelA: string, channelB: string): Promise<Bridge> {
+  const pair = await store.createDraft(
+    "TEST additional pair",
+    channelA,
+    channelB,
+    `staff:${owner.id}`,
+  );
+  additionalPairs.push(pair);
+  return pair;
+}
 
 class FakeTransport implements BridgeTransport {
   messages = new Map<string, SourceMessage>();
@@ -212,44 +225,331 @@ beforeEach(async () => {
 });
 afterEach(async () => {
   if (!bridge) return;
-  await pool.query(
-    'DELETE FROM "ForeverBridgeAdminRequest" WHERE "actorId"=$1',
-    [owner.id],
-  );
-  await pool.query(
-    'DELETE FROM "ForeverDiscordInteraction" WHERE "bridgeId"=$1',
-    [bridge.id],
-  );
-  await pool.query('DELETE FROM "ForeverDiscordOutbox" WHERE "bridgeId"=$1', [
-    bridge.id,
-  ]);
-  await pool.query(
-    'DELETE FROM "ForeverBridgeProjection" WHERE "rootId" IN (SELECT "id" FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1)',
-    [bridge.id],
-  );
-  await pool.query(
-    'UPDATE "ForeverBridgeMessage" SET "parentId"=NULL WHERE "bridgeId"=$1',
-    [bridge.id],
-  );
-  await pool.query('DELETE FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1', [
-    bridge.id,
-  ]);
-  await pool.query('DELETE FROM "ForeverBridgeConsent" WHERE "bridgeId"=$1', [
-    bridge.id,
-  ]);
-  await pool.query('DELETE FROM "ForeverDiscordBridge" WHERE "id"=$1', [
-    bridge.id,
-  ]);
-  await pool.query(
-    'DELETE FROM "ForeverAuditLog" WHERE "entityType"=\'discord_bridge\' AND ("entityId"=$1 OR "actorId"=$2)',
-    [bridge.id, `staff:${owner.id}`],
-  );
+  for (const pair of [bridge, ...additionalPairs.splice(0)]) {
+    await pool.query(
+      'DELETE FROM "ForeverBridgeAdminRequest" WHERE "actorId"=$1',
+      [owner.id],
+    );
+    await pool.query(
+      'DELETE FROM "ForeverDiscordInteraction" WHERE "bridgeId"=$1',
+      [pair.id],
+    );
+    await pool.query('DELETE FROM "ForeverDiscordOutbox" WHERE "bridgeId"=$1', [
+      pair.id,
+    ]);
+    await pool.query(
+      'DELETE FROM "ForeverBridgeProjection" WHERE "rootId" IN (SELECT "id" FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1)',
+      [pair.id],
+    );
+    await pool.query(
+      'UPDATE "ForeverBridgeMessage" SET "parentId"=NULL WHERE "bridgeId"=$1',
+      [pair.id],
+    );
+    await pool.query('DELETE FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1', [
+      pair.id,
+    ]);
+    await pool.query('DELETE FROM "ForeverBridgeConsent" WHERE "bridgeId"=$1', [
+      pair.id,
+    ]);
+    await pool.query('DELETE FROM "ForeverDiscordBridge" WHERE "id"=$1', [
+      pair.id,
+    ]);
+    await pool.query(
+      'DELETE FROM "ForeverAuditLog" WHERE "entityType"=\'discord_bridge\' AND ("entityId"=$1 OR "actorId"=$2)',
+      [pair.id, `staff:${owner.id}`],
+    );
+  }
   await pool.query(
     'UPDATE "ForeverBridgeRuntime" SET "mode"=\'cleanup_only\',"gateway"=\'offline\',"heartbeatAt"=NULL WHERE "id"=\'singleton\'',
   );
 });
 after(async () => {
   await pool.end();
+});
+
+test("three pairs have unique slots and endpoints, including concurrent draft creation", async () => {
+  const second = await extraPair(id(), id());
+  assert.equal(second.slot, 2);
+  await assert.rejects(
+    extraPair(channelA, id()),
+    (error: unknown) =>
+      error instanceof BridgeError && error.code === "channel_already_paired",
+  );
+  await assert.rejects(
+    extraPair(id(), second.channelB),
+    (error: unknown) =>
+      error instanceof BridgeError && error.code === "channel_already_paired",
+  );
+  const attempts = await Promise.allSettled([
+    extraPair(id(), id()),
+    extraPair(id(), id()),
+  ]);
+  assert.equal(
+    attempts.filter((result) => result.status === "fulfilled").length,
+    1,
+  );
+  assert.equal(additionalPairs[1].slot, 3);
+  await assert.rejects(
+    extraPair(id(), id()),
+    (error: unknown) =>
+      error instanceof BridgeError && error.code === "three_pair_limit_reached",
+  );
+  await assert.rejects(
+    pool.query(
+      'INSERT INTO "ForeverDiscordBridge" ("id","name","guildA","channelA","guildB","channelB","slot") VALUES ($1,\'invalid fourth\',$2,$3,$4,$5,4)',
+      [randomUUID(), guilds.kfc, id(), guilds.forever, id()],
+    ),
+    (error: unknown) =>
+      !!error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "23514",
+  );
+  await assert.rejects(
+    pool.query(
+      'UPDATE "ForeverDiscordBridge" SET "channelA"=$1 WHERE "id"=$2',
+      [channelA, second.id],
+    ),
+    (error: unknown) =>
+      !!error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "23505",
+  );
+});
+
+test("channel-scoped opt-in, confirmation and leave cannot enroll or withdraw another pair", async () => {
+  const second = await extraPair(id(), id());
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "state"=\'active\',"activatedAt"=NOW()-INTERVAL \'1 minute\',"reviewRequired"=FALSE,"fingerprint"=\'fixture-permission-fingerprint\' WHERE "id"=$1',
+    [second.id],
+  );
+  const message = fixture(guilds.kfc, { channel_id: second.channelA });
+  assert.equal(await store.observe(message, second.id), null);
+  const join = (await command("join", author, {
+    channel_id: second.channelA,
+  })) as { data: { components: { components: { custom_id: string }[] }[] } };
+  const confirmation = {
+    type: 3,
+    id: id(),
+    application_id: applicationId,
+    guild_id: guilds.kfc,
+    channel_id: second.channelA,
+    token: "local-test-interaction-token",
+    member: { user: { id: author } },
+    data: { custom_id: join.data.components[0].components[0].custom_id },
+  };
+  await assert.rejects(
+    bridgeInteraction({ ...confirmation, channel_id: channelA }, store, secret),
+    (error: unknown) => error instanceof BridgeError && error.status === 403,
+  );
+  assert.equal((await bridgeInteraction(confirmation, store, secret)).type, 5);
+  await engine.consentTick();
+  assert.ok(await store.consent(second.id, guilds.kfc, author));
+  await assert.rejects(
+    bridgeInteraction({ ...confirmation, channel_id: channelA }, store, secret),
+    (error: unknown) => error instanceof BridgeError && error.status === 403,
+  );
+  const fresh = fixture(guilds.kfc, { channel_id: second.channelA });
+  transport.messages.set(fresh.id, fresh);
+  const root = await store.observe(fresh, second.id);
+  assert.ok(root);
+  await drain();
+  assert.equal(
+    (await store.bundle(root))!.projection.channelId,
+    second.channelB,
+  );
+  const reply = fixture(guilds.forever, {
+    channel_id: second.channelB,
+    author: { id: secondAuthor, username: "Other participant" },
+  });
+  assert.equal(await store.observe(reply, second.id), null);
+  await pool.query(
+    'INSERT INTO "ForeverBridgeConsent" ("bridgeId","guildId","actorId","generation","policyVersion","optedAt") VALUES ($1,$2,$3,1,1,NOW()-INTERVAL \'1 minute\')',
+    [second.id, guilds.forever, secondAuthor],
+  );
+  transport.messages.set(reply.id, reply);
+  const replyRoot = await store.observe(reply, second.id);
+  assert.ok(replyRoot);
+  await drain();
+  assert.equal(
+    (await store.bundle(replyRoot))!.projection.channelId,
+    second.channelA,
+  );
+  await command("leave", author, { channel_id: second.channelA });
+  assert.ok((await store.consent(second.id, guilds.kfc, author))?.withdrawnAt);
+  assert.equal(
+    (await store.consent(bridge.id, guilds.kfc, author))?.withdrawnAt,
+    null,
+  );
+  assert.equal((await store.bundle(root))!.root.state, "removed");
+  assert.equal((await store.bundle(replyRoot))!.root.state, "live");
+  const unrelated = await command("join", author, { channel_id: id() });
+  assert.match(JSON.stringify(unrelated), /not connected/);
+  const original = await observe();
+  await drain();
+  assert.equal((await store.bundle(original))!.projection.channelId, channelB);
+});
+
+test("admin snapshot scopes records and moderator access to the selected pair", async () => {
+  const root = await observe();
+  const second = await extraPair(id(), id());
+  const firstView = await snapshot(store, owner, 0, bridge.id);
+  assert.equal(firstView.selectedBridgeId, bridge.id);
+  assert.equal(firstView.delivery[0].id, root);
+  const secondView = await snapshot(store, owner, 0, second.id);
+  assert.equal(secondView.selectedBridgeId, second.id);
+  assert.equal(secondView.deliveryCount, 0);
+  assert.equal(secondView.consents.length, 0);
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "moderatorIds"=$2 WHERE "id"=$1',
+    [bridge.id, ["assigned-test-moderator"]],
+  );
+  const moderator: Staff = {
+    ...owner,
+    id: "assigned-test-moderator",
+    role: "moderator",
+  };
+  assert.equal(
+    (await snapshot(store, moderator, 0, bridge.id)).bridges.length,
+    1,
+  );
+  await assert.rejects(
+    snapshot(store, moderator, 0, second.id),
+    (error: unknown) => error instanceof BridgeError && error.status === 404,
+  );
+});
+
+test("channel changes pause only their own pair without marking the Gateway disconnected", async () => {
+  const second = await extraPair(id(), id());
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "state"=\'active\' WHERE "id"=$1',
+    [second.id],
+  );
+  await store.pauseChannel(guilds.kfc, id());
+  assert.equal((await store.bridge(bridge.id)).state, "active");
+  await store.pauseChannel(guilds.kfc, second.channelA);
+  assert.equal((await store.bridge(second.id)).state, "paused");
+  assert.equal((await store.bridge(bridge.id)).state, "active");
+  assert.equal((await store.runtime()).gateway, "ready");
+});
+
+test("participant burst limits apply across all channel pairs", async () => {
+  const second = await extraPair(id(), id());
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "state"=\'active\',"activatedAt"=NOW()-INTERVAL \'1 minute\',"reviewRequired"=FALSE WHERE "id"=$1',
+    [second.id],
+  );
+  await pool.query(
+    'INSERT INTO "ForeverBridgeConsent" ("bridgeId","guildId","actorId","generation","policyVersion","optedAt") VALUES ($1,$2,$3,1,1,NOW()-INTERVAL \'1 minute\')',
+    [second.id, guilds.kfc, author],
+  );
+  for (let index = 0; index < 5; index++) await observe();
+  assert.equal(
+    await store.observe(
+      fixture(guilds.kfc, { channel_id: second.channelA }),
+      second.id,
+    ),
+    null,
+  );
+});
+
+test("only the explicitly selected existing KFC chats may retain a role-gated audience", async (context) => {
+  const adapter = new DiscordTransport("local-fixture-not-a-real-token");
+  let sourceId = existingKfcChannels[0];
+  let privateDestination = false;
+  let missingTopic = false;
+  let nsfw = false;
+  const noticeA = id(),
+    noticeB = id();
+  const permissions = String((1n << 10n) | (1n << 11n) | (1n << 16n));
+  context.mock.method(
+    adapter.rest,
+    "get",
+    async (route: string): Promise<unknown> => {
+      const destination =
+        route.includes(guilds.forever) || route.includes(channelB);
+      const guild = destination ? guilds.forever : guilds.kfc;
+      const channel = destination ? channelB : sourceId;
+      if (route === `/guilds/${guild}`)
+        return { id: guild, owner_id: secondAuthor };
+      if (route === `/guilds/${guild}/roles`)
+        return [
+          {
+            id: guild,
+            name: "everyone",
+            position: 0,
+            permissions: destination && !privateDestination ? permissions : "0",
+            managed: false,
+            mentionable: false,
+          },
+        ];
+      if (route === `/guilds/${guild}/members/${applicationId}`)
+        return { user: { id: applicationId }, roles: [] };
+      if (route === `/channels/${channel}`)
+        return {
+          id: channel,
+          guild_id: guild,
+          type: 0,
+          name: destination ? "general" : "classic-plus-discussion",
+          position: 0,
+          parent_id: null,
+          nsfw,
+          topic: missingTopic
+            ? null
+            : "https://www.wowforeverdiscord.online/bot/shared-channels",
+          permission_overwrites: [
+            { id: applicationId, type: 1, allow: permissions, deny: "0" },
+          ],
+        };
+      if (
+        route ===
+        `/channels/${channel}/messages/${destination ? noticeB : noticeA}`
+      )
+        return fixture(guild, {
+          channel_id: channel,
+          id: destination ? noticeB : noticeA,
+          content:
+            "Two-way sharing. /bridge join https://www.wowforeverdiscord.online/bot/shared-channels",
+        });
+      if (route === `/applications/${applicationId}/guilds/${guild}/commands`)
+        return [
+          {
+            name: "bridge",
+            options: ["join", "status", "leave", "remove"].map((name) => ({
+              name,
+            })),
+          },
+        ];
+      throw Error(
+        "Unexpected read outside selected endpoint metadata and exact notices",
+      );
+    },
+  );
+  const configured = (): Bridge => ({
+    ...bridge,
+    channelA: sourceId,
+    noticeA: messageLink(guilds.kfc, sourceId, noticeA),
+    noticeB: messageLink(guilds.forever, channelB, noticeB),
+  });
+  assert.match(await adapter.validate(configured()), /^[a-f0-9]{64}$/);
+  privateDestination = true;
+  adapter.invalidate();
+  await assert.rejects(adapter.validate(configured()), DiscordFailure);
+  privateDestination = false;
+  missingTopic = true;
+  adapter.invalidate();
+  await assert.rejects(adapter.validate(configured()), DiscordFailure);
+  missingTopic = false;
+  nsfw = true;
+  adapter.invalidate();
+  await assert.rejects(adapter.validate(configured()), DiscordFailure);
+  nsfw = false;
+  for (const excluded of ["1550970060812587028", "1548518038314295296"]) {
+    sourceId = excluded;
+    adapter.invalidate();
+    await assert.rejects(adapter.validate(configured()), DiscordFailure);
+  }
 });
 
 test("late output IDs reopen cleanup accounting without reviving a removed source", async () => {

@@ -316,3 +316,12 @@
     padding: 18px;
   }
 }
+.bridge-pair-selector {
+  max-width: 36rem;
+  margin-block: 1rem;
+}
+
+.bridge-pair-selector select {
+  width: 100%;
+  min-width: 0;
+}

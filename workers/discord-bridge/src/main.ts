@@ -126,12 +126,13 @@ async function main(): Promise<void> {
   pool.on("error", stop);
   process.once("SIGTERM", stop);
   process.once("SIGINT", stop);
-  const pauseAll = async (reason: string): Promise<void> => {
+  const pauseAll = async (reason: string, gatewayGap = true): Promise<void> => {
     const bridges = await rows<Bridge>(
       pool,
       'SELECT * FROM "ForeverDiscordBridge" WHERE "state"=\'active\'',
     );
     for (const bridge of bridges) await store.pause(bridge.id, reason);
+    if (!gatewayGap) return;
     await pool.query(
       'UPDATE "ForeverBridgeRuntime" SET "gateway"=\'recovering\',"gapAt"=NOW(),"error"=$1 WHERE "id"=\'singleton\'',
       [reason],
@@ -202,16 +203,15 @@ async function main(): Promise<void> {
           data.d.channel_id,
           data.t === "MESSAGE_DELETE" ? [data.d.id] : data.d.ids,
         );
+      } else if (data.t === "CHANNEL_UPDATE" || data.t === "CHANNEL_DELETE") {
+        transport.invalidate();
+        await store.pauseChannel(eventGuild, data.d.id);
       } else if (
-        [
-          "CHANNEL_UPDATE",
-          "CHANNEL_DELETE",
-          "GUILD_ROLE_UPDATE",
-          "GUILD_ROLE_DELETE",
-        ].includes(data.t)
+        data.t === "GUILD_ROLE_UPDATE" ||
+        data.t === "GUILD_ROLE_DELETE"
       ) {
         transport.invalidate();
-        await pauseAll("permission_change_revalidation_required");
+        await pauseAll("permission_change_revalidation_required", false);
       }
     })()
       .catch(() => {

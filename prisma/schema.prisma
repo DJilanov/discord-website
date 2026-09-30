@@ -240,6 +240,7 @@ model ForeverWebhookJob {
 }
 
 model ForeverDiscordBridge {
+  slot           Int @default(1) @db.SmallInt
   id             String @id @default(uuid())
   name           String
   guildA         String

@@ -2,6 +2,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import {
   guilds,
+  maxBridgePairs,
   opposite,
   policyVersion,
   type Bridge,
@@ -146,22 +147,16 @@ export class BridgeStore {
       [bridge, guild, actor],
     );
   }
-  async pairForChannel(guild: string, channel: string): Promise<Bridge | null> {
-    if (guild !== guilds.kfc && guild !== guilds.forever) return null;
-    return one<Bridge>(
-      this.pool,
-      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' AND (("guildA"=$1 AND "channelA"=$2) OR ("guildB"=$1 AND "channelB"=$2))',
-      [guild, channel],
-    );
-  }
-  async pairForGuild(
+  async pairForChannel(
     guild: string,
+    channel: string,
     sql: Sql = this.pool,
   ): Promise<Bridge | null> {
+    if (guild !== guilds.kfc && guild !== guilds.forever) return null;
     return one<Bridge>(
       sql,
-      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' AND ("guildA"=$1 OR "guildB"=$1)',
-      [guild],
+      'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' AND (("guildA"=$1 AND "channelA"=$2) OR ("guildB"=$1 AND "channelB"=$2))',
+      [guild, channel],
     );
   }
   async bundle(
@@ -205,17 +200,33 @@ export class BridgeStore {
   ): Promise<Bridge> {
     return this.transaction(async (sql) => {
       await sql.query("SELECT pg_advisory_xact_lock(193003001)");
+      const existing = await rows<Bridge>(
+        sql,
+        'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\'',
+      );
       if (
-        await one(
-          sql,
-          'SELECT "id" FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\'',
+        existing.some(
+          (pair) => pair.channelA === channelA || pair.channelB === channelB,
         )
       )
-        throw new BridgeError(409, "pilot_pair_already_exists");
+        throw new BridgeError(409, "channel_already_paired");
+      const slot = Array.from(
+        { length: maxBridgePairs },
+        (_, index) => index + 1,
+      ).find((candidate) => !existing.some((pair) => pair.slot === candidate));
+      if (!slot) throw new BridgeError(409, "three_pair_limit_reached");
       const bridge = await one<Bridge>(
         sql,
-        'INSERT INTO "ForeverDiscordBridge" ("id","name","guildA","channelA","guildB","channelB") VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-        [randomUUID(), name, guilds.kfc, channelA, guilds.forever, channelB],
+        'INSERT INTO "ForeverDiscordBridge" ("id","name","guildA","channelA","guildB","channelB","slot") VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+        [
+          randomUUID(),
+          name,
+          guilds.kfc,
+          channelA,
+          guilds.forever,
+          channelB,
+          slot,
+        ],
       );
       if (!bridge) throw new BridgeError(500, "draft_failed");
       await audit(sql, actor, bridge.id, "draft_created");
@@ -296,6 +307,8 @@ export class BridgeStore {
         return existing.id;
       }
       if (Date.now() - Date.parse(message.timestamp) > 120000) return null;
+      // Serialize the worker-wide capacity check across independent channel pairs.
+      await sql.query("SELECT pg_advisory_xact_lock(193003005)");
       const counts = await one<{
         pending: number;
         active: number;
@@ -304,12 +317,12 @@ export class BridgeStore {
       }>(
         sql,
         `SELECT
-        (SELECT COUNT(*)::int FROM "ForeverDiscordOutbox" WHERE "bridgeId"=$1 AND "operation"='deliver' AND "state" IN ('pending','leased')) AS pending,
+        (SELECT COUNT(*)::int FROM "ForeverDiscordOutbox" WHERE "operation"='deliver' AND "state" IN ('pending','leased')) AS pending,
         COUNT(*) FILTER (WHERE "state"<>'removed')::int AS active,
-        COUNT(*) FILTER (WHERE "authorId"=$2 AND "createdAt">NOW()-INTERVAL '1 minute')::int AS minute,
-        COUNT(*) FILTER (WHERE "authorId"=$2 AND "createdAt">NOW()-INTERVAL '10 seconds')::int AS burst
-        FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1`,
-        [bridgeId, message.author.id],
+        COUNT(*) FILTER (WHERE "authorId"=$1 AND "createdAt">NOW()-INTERVAL '1 minute')::int AS minute,
+        COUNT(*) FILTER (WHERE "authorId"=$1 AND "createdAt">NOW()-INTERVAL '10 seconds')::int AS burst
+        FROM "ForeverBridgeMessage"`,
+        [message.author.id],
       );
       if (
         counts &&
@@ -449,6 +462,11 @@ export class BridgeStore {
       await audit(sql, "system:bridge", bridgeId, "paused", { reason });
     });
   }
+  async pauseChannel(guildId: string, channelId: string): Promise<void> {
+    const pair = await this.pairForChannel(guildId, channelId);
+    if (pair)
+      await this.pause(pair.id, "permission_change_revalidation_required");
+  }
   async claim(): Promise<Job | null> {
     return this.transaction(async (sql) => {
       const runtime = await this.runtime(sql);
@@ -539,13 +557,7 @@ export class BridgeStore {
       );
       await sql.query(
         'UPDATE "ForeverBridgeProjection" SET "messageId"=$2,"state"=$3,"appliedRevision"=GREATEST("appliedRevision",$4),"fingerprint"=COALESCE($5,"fingerprint"),"checkedAt"=NOW() WHERE "rootId"=$1',
-        [
-          rootId,
-          messageId,
-          "live",
-          revision,
-          fingerprint,
-        ],
+        [rootId, messageId, "live", revision, fingerprint],
       );
       await sql.query(
         'UPDATE "ForeverDiscordOutbox" SET "state"=CASE WHEN "operation"=\'remove\' THEN \'pending\' ELSE \'done\' END,"dueAt"=NOW(),"finishedAt"=CASE WHEN "operation"=\'remove\' THEN NULL ELSE NOW() END WHERE "rootId"=$1 AND "state"=\'uncertain\'',
@@ -590,12 +602,12 @@ export class BridgeStore {
   }
   async recover(): Promise<void> {
     await this.transaction(async (sql) => {
-      await sql.query(
-        'UPDATE "ForeverBridgeRuntime" SET "mode"=\'cleanup_only\',"version"="version"+1,"gateway"=\'recovering\',"gapAt"=NOW() WHERE "id"=\'singleton\'',
-      );
       const bridges = await rows<Bridge>(
         sql,
-        'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' FOR UPDATE',
+        'SELECT * FROM "ForeverDiscordBridge" WHERE "state"<>\'retired\' ORDER BY "id" FOR UPDATE',
+      );
+      await sql.query(
+        'UPDATE "ForeverBridgeRuntime" SET "mode"=\'cleanup_only\',"version"="version"+1,"gateway"=\'recovering\',"gapAt"=NOW(),"error"=NULL,"heartbeatAt"=NULL,"leaderId"=NULL WHERE "id"=\'singleton\'',
       );
       for (const bridge of bridges) {
         await sql.query(

@@ -11,11 +11,13 @@ const policies: Record<string, { title: string; body: string }> = {
     title: "Shared Discord channels",
     body: `## Two communities, one opted-in conversation
 
-WoWForeverBot can connect one dedicated shared text channel in KFC Global Pugs with one in WoW Forever Discord, in both directions. This is an independent community service operated by the WoW Forever Discord team, with KFC organizers. It is not a Blizzard or Discord service. No channel is connected just because the bot is installed.
+WoWForeverBot can connect up to three approved pairs of text channels between KFC Global Pugs and WoW Forever Discord, in both directions. Each pair is a separate conversation, not a combined feed. Existing channels can participate only after staff approve the exact pair and publish sharing notices. This is an independent community service operated by the WoW Forever Discord team, with KFC organizers. It is not a Blizzard or Discord service. No channel is connected just because the bot is installed.
 
 ## Your choice
 
-Use **/bridge join** and accept the confirmation in the server you want to share messages from. You must belong to both servers and be permitted to speak in both shared channels. Opt in separately in each server you post from. Only new eligible text after confirmation and channel activation can be shared. Old messages are not imported. Pauses or configuration changes can require a new opt-in.
+Use **/bridge join inside the channel** you want to share from and accept the confirmation for its exact pair. You must belong to both servers and be permitted to speak in both paired channels. Opt in separately in each channel you post from; joining one pair never enrolls you in another. Only new eligible text after confirmation and channel activation can be shared. Old messages are not imported, including old messages edited after activation. Pauses or configuration changes can require a new opt-in.
+
+Some approved KFC discussions are role-gated. Their original access rules remain in place, but readers of the paired public WoW Forever channel can see opted-in copies even if they cannot open the original. Accept sharing only when you intend that audience. A read-only participant cannot use the bridge to post into a restricted channel.
 
 Copies visibly identify the original Discord username and community and include a source link. People in the other shared channel can read them and reply. A moderator-reviewed pilot may require approval before each copy appears. Delivery is not guaranteed and stale messages are dropped rather than replayed later.
 
@@ -25,7 +27,7 @@ The bridge does not copy private messages, other channels, bot or webhook posts,
 
 ## Stop sharing or remove a copy
 
-**/bridge leave** stops your participation in both directions and queues removal of your managed copies. **/bridge remove** takes an exact message link and queues removal of that copy. **/bridge status** shows participation and outstanding cleanup. Deleting an original also requests removal of its copy. Deleting the bot's copy suppresses it; it is not recreated automatically. Edits can update the existing copy or cause it to be removed. In manual review mode, editing a reviewed post retracts the copy; post a new eligible message for fresh review.
+Run **/bridge leave inside a paired channel** to stop your participation in both directions of that pair and queue removal of its managed copies. Other pairs are unchanged; repeat in each pair you want to leave. **/bridge remove** takes an exact message link from that pair and queues removal of that copy. **/bridge status** shows that pair's participation and outstanding cleanup. If you lose access to a channel, contact staff privately to withdraw and request cleanup. Deleting an original also requests removal of its copy. Deleting the bot's copy suppresses it; it is not recreated automatically. Edits can update the existing copy or cause it to be removed. In manual review mode, editing a reviewed post retracts the copy; post a new eligible message for fresh review.
 
 Managed replies to removed messages may also be removed to avoid retaining a reply preview. The bridge never deletes human originals. Outages, permission changes or an emergency hard stop can delay cleanup. Staff retain unresolved message IDs until cleanup is confirmed. We cannot delete other people's screenshots, independently quoted messages or data retained by Discord itself.
 
@@ -51,13 +53,13 @@ We retain source and destination server/channel/message IDs, the author's Discor
 
 ## Audiences and access
 
-The shared channels in KFC Global Pugs and WoW Forever Discord are the two audiences. Bot copies contain a Discord username and source link. Approved community staff can access participation and delivery metadata, but there is no website chat archive. To inspect an original, staff must have access to it in Discord. The worker's database identity is restricted to bridge data, not private player reports or website staff credentials.
+Each approved pair in KFC Global Pugs and WoW Forever Discord has two audiences. A paired public channel may have a wider audience than its role-gated counterpart. Participation is recorded separately for every pair and originating channel. Bot copies contain a Discord username and source link. Approved community staff can access participation and delivery metadata, but there is no website chat archive. To inspect an original, staff must have access to it in Discord. The worker's database identity is restricted to bridge data, not private player reports or website staff credentials.
 
 ## Retention and removal
 
 Bot copies are removed after 30 days. Message mappings and tombstones are retained until removal is confirmed, then seven days. Unresolved outputs are retained until staff can verify and remove them. Interaction receipts and completed job metadata are retained up to seven days. Withdrawn consent records are retained while copies remain and for up to 37 days after withdrawal, including the cleanup and replay-protection window. Staff blocks remain until lifted. Bridge control audit entries are retained for 90 days; separate player moderation case policies are unchanged.
 
-Use /bridge leave or /bridge remove, or contact staff, to request removal. Human originals are not deleted by this service. Deleting a managed parent can also retract its managed reply chain. We cannot remove human screenshots, independent reposts or Discord's own retained data.
+Use /bridge leave or /bridge remove inside the relevant paired channel, or contact staff, to request removal. Commands apply only to that pair; repeat for other pairs you want to leave. Human originals are not deleted by this service. Deleting a managed parent can also retract its managed reply chain. We cannot remove human screenshots, independent reposts or Discord's own retained data.
 
 ## Backups and incidents
 
@@ -83,7 +85,7 @@ Staff may hold or reject content, restrict participation, pause delivery or reti
 
 ## Withdrawal and cleanup
 
-Use /bridge leave to stop sharing or /bridge remove with a message link to request removal. Managed reply chains may also be removed. Human originals remain unchanged. Outages and missing permissions can delay cleanup; copies or screenshots independently made by other people are outside our control.
+Use /bridge leave inside a paired channel to stop both directions of that pair, or /bridge remove there with a message link to request removal. Other pairs are unaffected. Contact staff privately for help when you cannot access the channel. Managed reply chains may also be removed. Human originals remain unchanged. Outages and missing permissions can delay cleanup; copies or screenshots independently made by other people are outside our control.
 
 ## Changes and support
 

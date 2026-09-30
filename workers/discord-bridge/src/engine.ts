@@ -367,7 +367,7 @@ export class BridgeEngine {
               policyVersion: receipt.policyVersion,
             },
           );
-          return "You are opted in from this server. Only new eligible text in the shared channel can be relayed. Use /bridge leave to stop and request removal. Join separately in the other server to share messages from there.";
+          return "You are opted in from this channel for this pair only. Only new eligible text can be relayed. Use /bridge leave here to stop both directions of this pair and request removal. Other pairs require separate opt-ins. Join in the counterpart channel to share messages from there.";
         });
         await this.store.pool.query(
           'UPDATE "ForeverDiscordInteraction" SET "ack"=$2 WHERE "id"=$1 AND "state"=\'processing\'',

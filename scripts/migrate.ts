@@ -19,6 +19,7 @@ async function main(): Promise<void> {
       "003_discord_bridge",
       "004_bridge_audit_boundary",
       "005_bridge_admin_receipts",
+      "006_bridge_channel_pairs",
     ]) {
       const sql = await readFile(`prisma/migrations/${id}.sql`, "utf8");
       const checksum = createHash("sha256").update(sql).digest("hex");

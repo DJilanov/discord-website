@@ -6,17 +6,17 @@ export const bridgeCommand = {
   options: [
     {
       name: "join",
-      description: "Review and accept shared-channel participation",
+      description: "Opt in to this channel pair only",
       type: 1,
     },
     {
       name: "status",
-      description: "Check your participation and cleanup status",
+      description: "Check participation and cleanup for this channel pair",
       type: 1,
     },
     {
       name: "leave",
-      description: "Stop sharing and remove your managed copies on both sides",
+      description: "Stop both directions of this pair and remove your copies",
       type: 1,
     },
     {

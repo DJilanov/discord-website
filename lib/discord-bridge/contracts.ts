@@ -7,6 +7,12 @@ export const guilds = {
 } as const;
 export const applicationId = "1554796912673169428";
 export const policyVersion = 1;
+export const maxBridgePairs = 3;
+// Owner-selected existing KFC discussions. No other role-gated channel is eligible.
+export const existingKfcChannels: readonly string[] = [
+  "1548519535177629707",
+  "1548747530790248610",
+];
 export const bridgeStates = [
   "draft",
   "validating",
@@ -24,6 +30,7 @@ export type ProjectionState =
 
 export interface Bridge {
   id: string;
+  slot: number;
   name: string;
   guildA: string;
   channelA: string;

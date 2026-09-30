@@ -1,5 +1,14 @@
 # Implementation Status
 
+## Existing-Channel Follow-Up
+
+The owner replaced the dedicated-channel plan with two existing KFC discussions:
+discussion pairs with WoW Forever general, and leveling with a new group-leveling
+channel. Who-plays-what was explicitly withdrawn; guild-invite requests remain
+unshared. Channel topics and the leveling destination are prepared without widening
+existing permissions or posting messages. See the [pair mapping and owner notice](shared-channels-existing-chats.md).
+The multi-pair follow-up is being verified for deployment; publication remains off.
+
 ## Shared-Channel Infrastructure Deployed
 
 September 30: the [implementation and rollout runbook](shared-channels-release.md)

@@ -88,14 +88,26 @@ export async function bridgeInteraction(
       [value.id],
     );
     if (previous) {
-      if (previous.actorId !== actor || previous.guildId !== value.guild_id)
+      const previousBridge = await store.bridge(previous.bridgeId, sql);
+      if (
+        previous.actorId !== actor ||
+        previous.guildId !== value.guild_id ||
+        value.channel_id !==
+          (value.guild_id === previousBridge.guildA
+            ? previousBridge.channelA
+            : previousBridge.channelB)
+      )
         throw new BridgeError(403, "receipt_identity_mismatch");
       return previous.ack;
     }
-    const selected = await store.pairForGuild(value.guild_id, sql);
+    const selected = await store.pairForChannel(
+      value.guild_id,
+      value.channel_id,
+      sql,
+    );
     if (!selected)
       return ephemeral(
-        "Shared channels are not configured yet. No messages are being shared.",
+        "This channel is not connected. Run /bridge inside the specific shared channel. No participation was changed. Contact a moderator privately if you can no longer access it and need copies removed.",
       );
     const bridge = await store.bridge(selected.id, sql, true);
     const recent = await one<{ count: number }>(
@@ -144,12 +156,12 @@ export async function bridgeInteraction(
         !consent.blocked &&
         consent.generation === bridge.generation;
       ack = ephemeral(
-        `Shared channels: ${bridge.state}. Your participation from this server: ${consent?.blocked ? "blocked by staff" : participating ? "opted in" : "not opted in"}. Copies awaiting removal: ${outstanding?.count || 0}.`,
+        `Channel pair: ${bridge.name} (${bridge.state}). Your participation from this channel: ${consent?.blocked ? "blocked by staff" : participating ? "opted in" : "not opted in"}. Copies awaiting removal: ${outstanding?.count || 0}. Other pairs have separate participation.`,
       );
     } else if (operation === "leave") {
       await store.withdraw(sql, bridge, actor);
       ack = ephemeral(
-        "Sharing has stopped for you in both servers. Removal of managed copies and their managed reply chains is queued. Your original messages remain. Cleanup can be delayed by outages or a hard stop.",
+        "Sharing has stopped for you in both directions of this channel pair. Removal of its managed copies and reply chains is queued. Other pairs are unchanged; use /bridge leave in each pair you want to leave. Your originals remain. Cleanup can be delayed by outages or a hard stop.",
       );
       await audit(sql, `discord:${actor}`, bridge.id, "consent_withdrawn");
     } else if (operation === "remove") {
@@ -190,7 +202,7 @@ export async function bridgeInteraction(
       challengeId = randomBytes(18).toString("hex");
       state = "challenge";
       ack = ephemeral(
-        `This is a TWO-WAY shared conversation between KFC Global Pugs and WoW Forever Discord. Only new eligible text in the shared channel after you opt in is copied, with your Discord name and a source link. You must belong to and be able to speak in BOTH servers. Copies expire after 30 days. The service stores IDs and consent, not a chat transcript. Use /bridge leave or /bridge remove to request cleanup; outages can delay it.\nTerms, privacy and removal: https://www.wowforeverdiscord.online/bot/shared-channels\nConfirm only if you accept sharing with both audiences (policy ${bridge.policyVersion}). Opt in separately in each server you want to share from.`,
+        `This is a TWO-WAY shared conversation between KFC Global Pugs and WoW Forever Discord. This confirmation covers only <#${bridge.channelA}> and <#${bridge.channelB}>. Only new eligible text after you opt in is copied, with your Discord name and a source link. You must belong to and be able to speak in BOTH channels. Readers in the other community may not have access to your original channel. Copies expire after 30 days. The service stores IDs and consent, not a chat transcript. Use /bridge leave or /bridge remove in this channel to request cleanup; outages can delay it.\nTerms, privacy and removal: https://www.wowforeverdiscord.online/bot/shared-channels\nConfirm only if you accept both audiences (policy ${bridge.policyVersion}). Opt in separately in each channel you want to share from; other pairs are not included.`,
       );
       ack.data.components = [
         {

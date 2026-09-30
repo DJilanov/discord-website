@@ -11,6 +11,7 @@ const ownerEmail = "bridge-e2e-owner@example.invalid",
   editorEmail = "bridge-e2e-editor@example.invalid";
 const origin = `http://127.0.0.1:${process.env.PLAYWRIGHT_PORT || "19300"}`;
 let bridgeId: string | null = null;
+const additionalIds: string[] = [];
 test.beforeAll(async () => {
   if (new URL(process.env.DATABASE_URL || "").port !== "55432")
     throw new Error("Local isolated database required.");
@@ -36,7 +37,9 @@ test.beforeAll(async () => {
   await mkdir("artifacts", { recursive: true });
 });
 test.afterAll(async () => {
-  if (bridgeId) {
+  for (const id of [bridgeId, ...additionalIds]) {
+    if (!id) continue;
+    const bridgeId = id;
     await db.foreverDiscordOutbox.deleteMany({ where: { bridgeId } });
     await db.foreverDiscordInteraction.deleteMany({ where: { bridgeId } });
     await db.foreverBridgeProjection.deleteMany({
@@ -178,6 +181,77 @@ test("bridge admin draft, offline, confirmation, responsive and accessibility st
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
 });
+test("pair selection scopes participation, delivery and actions across mobile and desktop", async ({
+  page,
+}) => {
+  await login(page, ownerEmail);
+  await page.goto("/admin/discord");
+  await page.getByRole("tab", { name: "Shared channels" }).click();
+  for (const [name, channelA, channelB] of [
+    ["Group leveling test", "1800000000000000031", "1800000000000000032"],
+    ["Separate pair test", "1800000000000000041", "1800000000000000042"],
+  ]) {
+    await page.getByLabel("Pair name").fill(name);
+    await page.getByLabel("KFC channel ID").fill(channelA);
+    await page.getByLabel("WoW Forever channel ID").fill(channelB);
+    await page.getByRole("button", { name: "Create draft" }).click();
+    await expect(
+      page.getByRole("heading", { name, exact: true }),
+    ).toBeVisible();
+    additionalIds.push(
+      (await db.foreverDiscordBridge.findFirstOrThrow({ where: { name } })).id,
+    );
+  }
+  await expect(page.getByLabel("Pair name")).toHaveCount(0);
+  await page.getByRole("tab", { name: "Participation" }).click();
+  await expect(page.getByText("No participation recorded.")).toBeVisible();
+  await page.getByRole("tab", { name: "Delivery" }).click();
+  await expect(page.getByText("No shared messages recorded.")).toBeVisible();
+  await page
+    .getByLabel("Channel pair", { exact: true })
+    .selectOption(bridgeId!);
+  await expect(
+    page.getByRole("button", { name: "Resolve", exact: true }),
+  ).toBeVisible();
+  const expected = await db.foreverDiscordBridge.findUniqueOrThrow({
+    where: { id: bridgeId! },
+  });
+  await page.getByRole("tab", { name: "Shared channels" }).click();
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await page
+    .getByLabel("Reason for audit log")
+    .fill("Verify the selected pair receives the action");
+  await page.getByRole("button", { name: "Confirm", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  expect(
+    (
+      await db.foreverDiscordBridge.findUniqueOrThrow({
+        where: { id: bridgeId! },
+      })
+    ).version,
+  ).toBe(expected.version + 1);
+  expect(
+    (
+      await db.foreverDiscordBridge.findUniqueOrThrow({
+        where: { id: additionalIds[0] },
+      })
+    ).state,
+  ).toBe("draft");
+  for (const width of [320, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    await page.screenshot({
+      path: `artifacts/bridge-pairs-${width}.png`,
+      fullPage: true,
+    });
+  }
+});
+
 test("bridge APIs reject unauthenticated, cross-origin and editor access", async ({
   page,
   request,

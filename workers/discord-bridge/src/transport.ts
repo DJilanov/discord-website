@@ -16,6 +16,8 @@ import {
 } from "../../../lib/discord-audit.js";
 import {
   applicationId,
+  existingKfcChannels,
+  guilds,
   parseMessageLink,
   snowflake,
   sourceSchema,
@@ -199,9 +201,12 @@ export class DiscordTransport implements BridgeTransport {
         guild,
         [],
       );
+      const existingPair = existingKfcChannels.includes(bridge.channelA);
+      const selectedKfc = existingPair && guild === guilds.kfc;
       if (
-        !hasDiscordPermission(everyone, 1n << 10n) ||
-        !/^forever-shared-chat(?:-[a-z0-9-]+)?$/.test(endpoint.channel.name)
+        (!selectedKfc && !hasDiscordPermission(everyone, 1n << 10n)) ||
+        (!existingPair &&
+          !/^forever-shared-chat(?:-[a-z0-9-]+)?$/.test(endpoint.channel.name))
       )
         throw new DiscordFailure("forbidden");
       const topic = endpoint.channel.topic || "";

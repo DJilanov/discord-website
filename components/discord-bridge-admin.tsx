@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import type { SerializedSnapshot } from "@/lib/discord-bridge/admin";
 import type { Control, Mode } from "@/lib/discord-bridge/contracts";
-import { messageLink } from "@/lib/discord-bridge/contracts";
+import { maxBridgePairs, messageLink } from "@/lib/discord-bridge/contracts";
 
 const tabs = [
   "Connections",
@@ -37,6 +37,8 @@ const tabs = [
 type Tab = (typeof tabs)[number];
 interface ActionDialog {
   title: string;
+  bridgeId?: string;
+  bridgeVersion?: number;
   action?: Control["action"];
   mode?: Mode;
   rootId?: string;
@@ -67,8 +69,10 @@ export function DiscordBridgeAdmin({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [now, setNow] = useState(initial.observedAt);
-  const bridge =
-    data.bridges.find((b) => b.state !== "retired") || data.bridges[0];
+  const bridge = data.bridges.find((pair) => pair.id === data.selectedBridgeId);
+  const availableSlots =
+    maxBridgePairs -
+    data.bridges.filter((pair) => pair.state !== "retired").length;
   const online =
     data.runtime.gateway === "ready" &&
     !!data.runtime.heartbeatAt &&
@@ -84,11 +88,15 @@ export function DiscordBridgeAdmin({
     return () => clearInterval(timer);
   }, []);
   useEffect(() => {
-    if (dialog || busy) return;
+    if (dialog || busy || refreshing) return;
     const controller = new AbortController();
     const timer = setInterval(() => {
       if (document.visibilityState !== "visible") return;
-      void fetch(`/api/admin/discord/status?offset=${data.deliveryOffset}`, {
+      const query = new URLSearchParams({
+        offset: String(data.deliveryOffset),
+      });
+      if (data.selectedBridgeId) query.set("bridgeId", data.selectedBridgeId);
+      void fetch(`/api/admin/discord/status?${query}`, {
         cache: "no-store",
         signal: controller.signal,
       })
@@ -111,17 +119,19 @@ export function DiscordBridgeAdmin({
       clearInterval(timer);
       controller.abort();
     };
-  }, [dialog, busy, data.deliveryOffset]);
+  }, [dialog, busy, refreshing, data.deliveryOffset, data.selectedBridgeId]);
 
-  async function refresh(offset = data.deliveryOffset): Promise<void> {
+  async function refresh(
+    offset = data.deliveryOffset,
+    selectedId: string | null = data.selectedBridgeId,
+  ): Promise<void> {
     setRefreshing(true);
     try {
-      const response = await fetch(
-        `/api/admin/discord/status?offset=${offset}`,
-        {
-          cache: "no-store",
-        },
-      );
+      const query = new URLSearchParams({ offset: String(offset) });
+      if (selectedId) query.set("bridgeId", selectedId);
+      const response = await fetch(`/api/admin/discord/status?${query}`, {
+        cache: "no-store",
+      });
       if (!response.ok)
         throw new Error(
           "Status is unavailable. Your last loaded configuration remains below.",
@@ -153,7 +163,10 @@ export function DiscordBridgeAdmin({
         throw new Error(result.error || "The change could not be completed.");
       setDialog(null);
       setSuccess("Change recorded.");
-      await refresh();
+      await refresh(
+        action === "draft" ? 0 : data.deliveryOffset,
+        action === "draft" ? null : data.selectedBridgeId,
+      );
     } catch (value) {
       setError(
         value instanceof Error
@@ -195,10 +208,10 @@ export function DiscordBridgeAdmin({
       });
       return;
     }
-    if (!bridge) return;
+    if (!dialog.bridgeId || !dialog.bridgeVersion) return;
     const payload: Record<string, unknown> = {
-      id: bridge.id,
-      version: bridge.version,
+      id: dialog.bridgeId,
+      version: dialog.bridgeVersion,
       action: dialog.action,
       reason,
       rootId: dialog.rootId,
@@ -229,7 +242,17 @@ export function DiscordBridgeAdmin({
     action: Control["action"],
     warning: string,
     extra: Partial<ActionDialog> = {},
-  ): void => setDialog({ title, action, warning, ...extra });
+  ): void => {
+    if (busy || refreshing || !bridge) return;
+    setDialog({
+      title,
+      action,
+      warning,
+      bridgeId: bridge.id,
+      bridgeVersion: bridge.version,
+      ...extra,
+    });
+  };
 
   return (
     <div className="bridge-workspace">
@@ -261,6 +284,23 @@ export function DiscordBridgeAdmin({
           <Check size={16} />
           {success}
         </p>
+      )}
+      {data.bridges.length > 0 && (
+        <label className="field bridge-pair-selector">
+          <span id="bridge-pair-label">Channel pair</span>
+          <select
+            aria-labelledby="bridge-pair-label"
+            value={data.selectedBridgeId || ""}
+            disabled={busy || refreshing || !!dialog}
+            onChange={(event) => void refresh(0, event.target.value)}
+          >
+            {data.bridges.map((pair) => (
+              <option key={pair.id} value={pair.id}>
+                {pair.name} ({pair.state})
+              </option>
+            ))}
+          </select>
+        </label>
       )}
       <div className="bridge-summary">
         <div>
@@ -435,7 +475,7 @@ export function DiscordBridgeAdmin({
                           command(
                             "Approve KFC endpoint",
                             "approve",
-                            "Confirm this new shared channel and its public notice are approved by KFC staff.",
+                            "Confirm this exact channel, its other-server audience and its sharing notice are approved by KFC staff. Existing messages will not be imported.",
                             { side: "a" },
                           )
                         }
@@ -452,7 +492,7 @@ export function DiscordBridgeAdmin({
                           command(
                             "Approve Forever endpoint",
                             "approve",
-                            "Confirm this new shared channel and its public notice are approved by Forever staff.",
+                            "Confirm this exact channel, its other-server audience and its sharing notice are approved by Forever staff. Existing messages will not be imported.",
                             { side: "b" },
                           )
                         }
@@ -518,7 +558,10 @@ export function DiscordBridgeAdmin({
                   </button>
                 </div>
               </>
-            ) : data.canManage ? (
+            ) : !data.canManage ? (
+              <p>No shared channels are assigned to your account.</p>
+            ) : null}
+            {data.canManage && availableSlots > 0 && (
               <>
                 <h2>New shared-channel pair</h2>
                 <form
@@ -572,8 +615,6 @@ export function DiscordBridgeAdmin({
                   </button>
                 </form>
               </>
-            ) : (
-              <p>No shared channels are assigned to your account.</p>
             )}
           </>
         )}

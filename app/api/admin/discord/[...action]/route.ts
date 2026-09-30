@@ -55,8 +55,12 @@ export async function GET(
       .min(0)
       .max(10000)
       .parse(new URL(request.url).searchParams.get("offset") || "0");
+    const selectedId = z
+      .uuid()
+      .optional()
+      .parse(new URL(request.url).searchParams.get("bridgeId") || undefined);
     return Response.json(
-      serializeSnapshot(await snapshot(store, staff, offset)),
+      serializeSnapshot(await snapshot(store, staff, offset, selectedId)),
       {
         headers,
       },
