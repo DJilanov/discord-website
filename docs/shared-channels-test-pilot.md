@@ -37,8 +37,8 @@ on the new state rather than treating it as an ordinary active connection.
 
 The bot successfully posted and immediately verified all four labelled notices.
 Later exact-ID GETs returned Discord `10008` (unknown message) for KFC discussion,
-KFC leveling and Forever general. Forever group-leveling's notice remains:
-[published notice](https://discord.com/channels/1554316932948172940/1554898196721967137/1554909439717277786).
+KFC leveling and Forever general. The fourth original notice was also confirmed
+missing immediately before launch; none of the original notices remains.
 The bot has no View Audit Log permission in either server. The owner subsequently
 confirmed personally deleting the three notices because inactive announcements
 looked like spam. Do not repost while inactive. Use concise launch notices only
@@ -46,8 +46,14 @@ when the restricted test is ready to start, without disabling moderation.
 
 The owner's endpoint approvals and original notice links were recorded through the
 normal audited control functions. Validation rejected the missing notices and
-paused both pairs. No consent, conversational copy or successful live test has been
-recorded. A fresh notice and validation pass is required at test startup.
+paused both pairs. Once deployment finished, four concise replacement notices and
+the matching topic disclosures were verified without changing permissions or
+duplicating the already-posted replacements:
+
+- [KFC discussion](https://discord.com/channels/1411533815356194968/1548519535177629707/1554916018563063889)
+- [Forever general](https://discord.com/channels/1554316932948172940/1554322593589235732/1554916040729960558)
+- [KFC leveling](https://discord.com/channels/1411533815356194968/1548747530790248610/1554916043334361249)
+- [Forever leveling](https://discord.com/channels/1554316932948172940/1554898196721967137/1554916391876960396)
 
 Chrome exposed no open window. A targeted bot lookup, not a personal-session token
 or member-list scrape, identified the same owner of both servers. That account is
@@ -66,9 +72,25 @@ Successful revalidation now cancels only older failed validation jobs for that
 same pair, retaining their error and audit history. Failed deliveries and failures
 for other pairs are untouched. A regression test covers replacement notices.
 
-Production deployment is in progress. Keep publication stopped while notices are
-missing. At test startup, verify the exact concise notice IDs, approve
-and revalidate both endpoints, then start the one-account test. The tester must
+Production website and worker release `0cd1af4` is deployed, including the pilot
+implementation from `ef97a9a`. Migration 007 was applied and a second migration run
+confirmed the schema current. Linux website/worker builds and the isolated worker
+production install passed. Only Forever services were restarted; KFC and both
+Helper process IDs/restart counters were unchanged. Live verification passed all
+34 sitemap pages and desktop/mobile rendering, assets, accessibility, metadata,
+redirects and authorization checks. Bot policies additionally passed at
+320/390/768/1440px. A post-migration backup restored into an isolated scratch
+database and passed archive integrity verification.
+
+At 18:03 UTC on September 30, both pairs passed fresh Discord endpoint validation
+and entered the manually reviewed, one-account pilot through the normal audited
+control actions. Both expire at approximately **19:03 UTC / 22:03 Europe/Sofia**.
+Runtime is `running`, Gateway `ready`, build `0cd1af4`, with no runtime error or
+failed/uncertain jobs. The four old validation failures were superseded only after
+successful replacement validation. There are still zero consent records and zero
+relayed messages: no human live test or general-launch sign-off is claimed.
+
+The tester must
 confirm `/bridge join` in each originating channel and send clearly labelled test
 text. Review it within two minutes in Delivery; verify both directions, replies,
 edits, source deletion, `/bridge remove` and `/bridge leave`. Record actual results,

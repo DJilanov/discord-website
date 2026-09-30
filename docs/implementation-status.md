@@ -4,12 +4,19 @@
 
 The [restricted test follow-up](shared-channels-test-pilot.md) adds a one-hour,
 explicit-opt-in, allowlisted and manually reviewed stage before general activation.
-The owner authorized bot notices, which were posted and verified. Three subsequently
-were deleted by the owner because inactive notices looked like spam; Discord
-validation correctly paused both pairs. Concise notices will be published only at
-test startup. No human opt-ins or relayed conversations were fabricated.
-Local checks passed 110 tests on two full reruns and all 32 browser tests; deployment
-is in progress. The owner account was identified through the bot, not Chrome tokens.
+The owner deleted the initial notices because inactive announcements looked like
+spam; Discord validation correctly paused both pairs. Release `0cd1af4` is now
+deployed to the website and worker with migration 007. Four concise replacement
+notices and updated topics were verified at startup, without permission changes.
+Both pairs entered the owner-only pilot at 18:03 UTC on September 30, expiring at
+19:03 UTC / 22:03 Sofia time. The Gateway is ready, with no failed or uncertain
+jobs; general publication remains closed. No human opt-ins, relayed conversations
+or successful live lifecycle test have been fabricated.
+Local checks passed 111 tests (46 bridge tests), all 32 browser tests, lint,
+typecheck and builds. Linux builds, live public/mobile checks and post-migration
+backup restoration passed. KFC/Helper processes were untouched. The owner account
+was identified through the bot, not Chrome tokens. Earlier entries below are
+historical snapshots superseded by this release.
 
 ## Existing-Channel Follow-Up
 
