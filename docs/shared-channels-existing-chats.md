@@ -62,9 +62,45 @@ tests, all 31 browser tests, lint, strict typecheck, production website build an
 worker build passed. The isolated worker-package installation/build/disabled-start
 check passed. The pair selector and actions were checked at 320/390/768/1440px,
 including accessibility and cross-pair authorization. These tests use simulated
-Discord transport, not member conversations. Production deployment is in progress.
+Discord transport, not member conversations.
+
+Commit `fb1ff2b` is deployed to the website and independent worker. Verified on
+September 30, 2026, approximately 17:08 UTC:
+
+- Website build `.next-release-pairs-fb1ff2b` and worker release
+  `/home/wow-forever-bridge/releases/fb1ff2b` are live. Only these two PM2 services
+  were restarted; KFC and Helper retained their original PIDs and restart counts.
+  The website's Node interpreter, worker's Node 24 runtime and local PostgreSQL
+  arrangement are unchanged. No Docker or new public listener was introduced.
+- Migration `006_bridge_channel_pairs` applied; a rerun reports the schema current.
+  Pre-release and post-migration backups restored into isolated scratch databases.
+  The earlier source and builds are retained. Never roll back the shared database;
+  do not run the old single-pair code against multiple publishing pairs.
+- The production-only worker dependency installation passed with zero reported
+  vulnerabilities. A release-local npm cache resolved an initial cache-permission
+  failure without changing global ownership or packages.
+- `/bridge` descriptions were updated in both fixed guilds using the reviewed
+  registration digest; unrelated commands were not replaced.
+- Both exact pairs above exist as `draft`, with manual review required. The worker
+  reports `healthy`, Gateway `ready`, runtime `cleanup_only`, and zero uncertain,
+  failed, stale or cleanup records. There are zero consents and zero message maps.
+  An argument-order error in the one-off setup script was rejected by database
+  validation before insertion, corrected, and the final mappings were verified.
+- The final read-only Discord check confirms both topics/destinations are prepared.
+  No owner notices, staff approvals, human opt-ins or conversational posts were
+  fabricated. No channel history was fetched or copied.
+- Live verification passed all 34 sitemap pages, existing security/metadata/asset
+  checks, and the bot policies at 320/390/768/1440px with no overflow, accessibility
+  violations or browser errors. The new pair-specific policy text is served live.
+  Anonymous bridge-admin access and unsigned Discord requests remain denied.
 
 Keep both pairs stopped until their notices, moderation/retention approvals and
 truthful live-test sign-off are complete. Off-host secret recovery and independent
 alerting remain outstanding from the initial release. Never record a human opt-in
 or a successful live relay test on someone's behalf.
+
+The initial activation gate requires live-test sign-off before general activation.
+It is not satisfied by the local simulated-transport suite. A restricted test-pilot
+workflow must be resolved before requesting that sign-off; do not tick it merely
+to get past activation. Owner notices are the next required input, not the last
+remaining launch prerequisite.

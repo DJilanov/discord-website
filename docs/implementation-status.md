@@ -7,7 +7,13 @@ discussion pairs with WoW Forever general, and leveling with a new group-levelin
 channel. Who-plays-what was explicitly withdrawn; guild-invite requests remain
 unshared. Channel topics and the leveling destination are prepared without widening
 existing permissions or posting messages. See the [pair mapping and owner notice](shared-channels-existing-chats.md).
-The multi-pair follow-up is being verified for deployment; publication remains off.
+Commit `fb1ff2b` is deployed to the website and worker. Both exact pairs are saved as
+manual-review drafts, the worker is healthy in cleanup-only mode, and there are
+zero participants or relayed messages. Verification passed 104 unit/integration
+tests, 31 browser tests, lint, typecheck, local/Linux builds, backup restoration and
+live desktop/mobile/public-route checks. Owner notices, governance approvals and
+truthful live lifecycle sign-off remain pending, along with the earlier off-host
+recovery and external-alerting gates. Publication remains off.
 
 ## Shared-Channel Infrastructure Deployed
 
@@ -16,9 +22,9 @@ adds the independent worker, bridge-only persistence, consent/withdrawal command
 two-way delivery lifecycle, moderation and recovery, bot policies and the responsive
 `/admin/discord` workspace. Commit `d721bcd` is deployed; the independent PM2 worker
 is healthy in cleanup-only mode. The signed interaction endpoint and `/bridge`
-commands in both servers are configured. A dedicated WoW Forever channel exists;
-KFC still needs its channel or a temporary Manage Channels grant. No pair or member
-participation is active. Notices, permission review, moderator coverage, live
+commands in both servers are configured. The initial dedicated-channel choice was
+replaced by the existing-channel follow-up above. No pair or member participation
+is active. Notices, permission review, moderator coverage, live
 opted-in lifecycle tests, off-host secret recovery and external alerting remain
 activation gates. Automated checks, Linux build/backup restore and live responsive
 site verification passed. No conversations have been relayed.
