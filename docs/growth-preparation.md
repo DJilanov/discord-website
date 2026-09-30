@@ -1,9 +1,12 @@
 # Growth Content and Integration Preparation
 
-September 30, 2026. Prepared locally; no commit, push, production publication,
-Nginx reload or bot activation is included in this task.
+September 30, 2026. Historical preparation record, followed by the production
+[community tools release](community-tools-release.md), commit `3f0e061`. That
+release corrected the ruleset model and published the prepared articles/templates
+with two additional guides. The earlier results below describe the preparation
+stage, not current production counts. No bot activation or Nginx reload was needed.
 
-## Publication Hold: Game Model Review
+## Resolved Publication Hold: Game Model Review
 
 Later September 30 research found that current Blizzard documentation describes
 ruleset selection instead of traditional realms. Prepared launch/recruitment
@@ -12,7 +15,9 @@ review those passages before following the publication steps below; passing
 the earlier tests does not validate their game facts. Review affected forms
 and group ruleset data too. The [community plan](community-excellence-plan.md)
 records primary sources, affected files and the separate full-name/addon
-identity compatibility gate. No production correction is claimed yet.
+identity compatibility gate. The community tools release subsequently corrected
+the guide/template passages and guild/group data/forms before publication. The
+separate report/alert and game-addon identity gates remain unresolved.
 
 ## Delivered in Source
 

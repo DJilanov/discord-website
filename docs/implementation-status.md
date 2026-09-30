@@ -1,16 +1,20 @@
 # Implementation Status
 
-## Community Tools Implemented Locally
+## Community Tools Released
 
-September 30: the [first tools/content batch](community-tools-release.md) adds a
+September 30: the [tools/content release](community-tools-release.md), commit
+`3f0e061`, is live. It adds a
 WoW Trader hub and introduction, five tester assignments and report downloads,
 two original guides, corrected preparation articles, and explicit guild/group
 character rulesets. Historical listing fields and editor revisions are preserved.
 The owner clarified that market freshness depends on voluntary app uploads; the
-new copy distinguishes scan age from history coverage. Migration and article
-publication have been applied only to the isolated local database. Deployment,
-Discord publishing, bot activation, Helper crawler changes and raid-addon tests
-remain separate.
+new copy distinguishes scan age from history coverage. The additive migration
+and guarded publication are complete in production: four guides created, five
+refreshed, one unchanged, ten published in total. Local verification passed 65
+unit/integration tests and 27 browser tests; the Linux build and live checks passed
+for 34 sitemap routes, the new mobile/desktop screens and downloads. Existing
+editor metadata and KFC/Helper processes were preserved. Discord publishing,
+bot activation, Helper crawler changes and raid-addon tests remain separate.
 
 ## Content and Tools Plan
 
@@ -24,7 +28,7 @@ September 30: after the owner's credential/permission confirmation, the separate
 
 September 30: the [community excellence plan](community-excellence-plan.md) is prepared from the live configuration audit, public competitor pages and official platform documentation. It covers onboarding, forums, staffing, hosted activities, governance, reporting, bot/addon sequencing, growth and verification. It preserves the owner's intentional privileged staff role, BOT onboarding choices and member-readable report forums. Competitor conversations and the owner's personal Discord session were not accessed. No Discord configuration changes, outreach, commit or deployment are part of this planning work.
 
-The follow-up covers public metadata for all four owner-selected comparison servers and a capacity model informed by the owner's reported 560 guild raids per year. It also identifies a release prerequisite: review realm-required forms, draft realm-selection guidance, group ruleset fields and legacy addon identity against Blizzard's current ruleset/full-name documentation. Those compatibility changes are planned, not implemented; prepared content must pass that review before publication.
+The follow-up covers public metadata for all four owner-selected comparison servers and a capacity model informed by the owner's reported 560 guild raids per year. Its realm/ruleset release prerequisite was addressed for guides, templates and guild/group forms by the community tools release above. Report/alert identity and legacy addon full-name matching remain separate compatibility gates; they are not claimed as completed.
 
 ## WoWForeverBot Read-Only Preparation
 
@@ -32,7 +36,7 @@ September 30: [WoWForeverBot setup and configuration audit](kfcbot-setup.md) are
 
 ## Growth and Bot Preparation
 
-September 30: three guide improvements, two preparation articles, copyable/downloadable templates and an exact-version guarded publisher are prepared locally, not yet deployed. The [preparation handoff](growth-preparation.md) records publication and rollback steps. The expanded [website/Discord blueprint](web-discord-integration-blueprint.md) defines the next bot task, later member ownership/signups and privacy-preserving synchronization. Outreach drafts are prepared; external requests and account actions are not claimed as complete.
+September 30: the guide improvements, two preparation articles, copyable/downloadable templates and exact-version guarded publisher shipped with the community tools release after ruleset corrections. The [preparation handoff](growth-preparation.md) retains the earlier checks and publication history. The expanded [website/Discord blueprint](web-discord-integration-blueprint.md) defines the next bot task, later member ownership/signups and privacy-preserving synchronization. Outreach drafts are prepared; external requests and account actions are not claimed as complete.
 
 ## Discord and Editorial Release
 
@@ -47,7 +51,7 @@ Redesign verification passed 16 unit/integration tests, 14 Playwright tests, lin
 ## Delivered Website
 
 - Separate WoW Forever identity and official game logo with visible unofficial-community disclosure. Organizer history is limited to About and Privacy.
-- Public homepage, Discord invitation and live counts, EU/NA and faction/playstyle pages, searchable guild directory and guild profiles, group listings, six evergreen guides, FAQ, policies, transparency, addon information, and staff sign-in.
+- Public homepage, Discord invitation and live counts, EU/NA and faction/playstyle pages, searchable guild directory and guild profiles, ruleset-aware group listings, ten published guides, tools and tester resources, FAQ, policies, transparency, and staff sign-in.
 - Server-rendered public content, canonical metadata, social share image, Article/Organization/WebSite/Breadcrumb structured data, sitemap, crawler policies, and a factual llms.txt.
 - Independent admin with owner/admin/moderator/editor permissions, settings, invitations, guide preview/publishing, guild/group approval, reports/evidence, appeals, alerts, releases, analytics/CSV, staff access, and audits.
 - Bounded, validated public forms; self-hosted anti-spam checks; private image evidence with metadata removal; receipt keys hashed at rest; two-reviewer publication; stale-write protection; independent appeal handling; expiry-aware public exports.
