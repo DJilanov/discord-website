@@ -1342,6 +1342,51 @@ test("editor, unassigned moderator, stale config and unverified activation are r
     0,
   );
 });
+test("fresh validation resolves only older validation failures for the same pair", async () => {
+  await readyForPilot();
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET "noticeA"=$2,"noticeB"=$3 WHERE "id"=$1',
+    [
+      bridge.id,
+      messageLink(guilds.kfc, channelA, id()),
+      messageLink(guilds.forever, channelB, id()),
+    ],
+  );
+  const second = await extraPair("1800000000000000071", "1800000000000000072");
+  for (const pair of [bridge, second]) {
+    const jobId = randomUUID();
+    await pool.query(
+      'INSERT INTO "ForeverDiscordOutbox" ("id","bridgeId","operation","revision","dedupeKey","state","error") VALUES ($1,$2,\'validate\',0,$1,\'failed\',\'invalid\')',
+      [jobId, pair.id],
+    );
+  }
+  await control(
+    store,
+    {
+      id: bridge.id,
+      version: bridge.version,
+      action: "validate",
+      reason: "Recheck replacement notice",
+    },
+    owner,
+  );
+  await drain();
+  assert.equal((await store.bridge(bridge.id)).state, "ready");
+  const old = await one<{ state: string; error: string }>(
+    pool,
+    'SELECT state,error FROM "ForeverDiscordOutbox" WHERE "bridgeId"=$1 AND revision=0',
+    [bridge.id],
+  );
+  assert.deepEqual(old, { state: "cancelled", error: "invalid" });
+  assert.equal(
+    (await one<{ state: string }>(
+      pool,
+      'SELECT state FROM "ForeverDiscordOutbox" WHERE "bridgeId"=$1',
+      [second.id],
+    ))!.state,
+    "failed",
+  );
+});
 test("restricted pilot retains activation gates, staff authorization and bounded tester IDs", async () => {
   await readyForPilot();
   const input = {

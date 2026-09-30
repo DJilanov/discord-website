@@ -69,6 +69,10 @@ export class BridgeEngine {
           );
           await audit(sql, "system:bridge", bridge.id, "validated");
           await sql.query(
+            'UPDATE "ForeverDiscordOutbox" SET "state"=\'cancelled\',"finishedAt"=NOW() WHERE "bridgeId"=$1 AND "operation"=\'validate\' AND "state"=\'failed\' AND "revision"<$2',
+            [bridge.id, job.revision],
+          );
+          await sql.query(
             'UPDATE "ForeverBridgeRuntime" SET "error"=NULL WHERE "id"=\'singleton\' AND "error"<>\'unauthorized\'',
           );
         });

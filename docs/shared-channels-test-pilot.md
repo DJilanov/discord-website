@@ -56,12 +56,15 @@ This does not prove which account is signed into Chrome.
 
 ## Verification And Handoff
 
-Local verification passed 45 focused bridge tests, 110 unit/integration tests on
-two consecutive full reruns, all 32 browser tests, lint, strict typecheck, website
+Local verification passed all 111 unit/integration tests, including 46 bridge
+tests, all 32 browser tests, lint, strict typecheck, website
 and worker builds, and the standalone worker-package install/build/disabled-start
 check. One earlier full run had three failures that did not recur on those reruns;
 do not describe that earlier run as passing. Responsive/axe checks cover the test
 controls and state at 320/390/768/1440px. These use simulated Discord transport.
+Successful revalidation now cancels only older failed validation jobs for that
+same pair, retaining their error and audit history. Failed deliveries and failures
+for other pairs are untouched. A regression test covers replacement notices.
 
 Production deployment is in progress. Keep publication stopped while notices are
 missing. At test startup, verify the exact concise notice IDs, approve
