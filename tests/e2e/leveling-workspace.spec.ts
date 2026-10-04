@@ -90,6 +90,10 @@ test("Next step does not complete a card, while Done completes it and advances w
   const done = page.getByRole("button", { name: "Done", exact: true });
   const first = pane.locator("[data-reader-step]").first();
   const second = pane.locator("[data-reader-step]").nth(1);
+  // Resolving the class can reveal an optional instruction before the persisted reading position.
+  await first
+    .getByRole("button", { name: /^(Select|Show) source step/ })
+    .click();
   await expect(first).toHaveAttribute("data-selected", "true");
   await first.getByRole("checkbox").check();
   await expect(first).toHaveAttribute("data-selected", "true");
@@ -249,6 +253,10 @@ test("responsive split and map/list focus retain scroll and progress, and non-re
     await page.setViewportSize({ width, height });
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(map).toBeInViewport();
+    const canvasBox = await map.locator("svg[role=group]").boundingBox();
+    expect(canvasBox?.height).toBeGreaterThan(
+      height >= 768 && width <= 600 ? 100 : 0,
+    );
     await expect(pane).toBeVisible();
     expect(
       await page

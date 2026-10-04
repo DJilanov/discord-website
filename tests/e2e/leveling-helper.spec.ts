@@ -67,7 +67,9 @@ test("leveling setup, preserved list, local progress and independent characters"
     .getByLabel("Saved character")
     .selectOption({ label: "1. Human · Mage" });
   await page.getByRole("link", { name: "Resume my route" }).click();
-  await page.getByRole("link", { name: /Open KFC preview/ }).click();
+  await expect(page).toHaveURL(
+    new RegExp(`${chapterPath.replaceAll("?", "\\?")}#route-`),
+  );
   await expect(checks.first()).toBeChecked();
   expect(errors).toEqual([]);
 });
