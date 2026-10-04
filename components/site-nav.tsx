@@ -5,12 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ShieldCheck, ArrowUpRight } from "lucide-react";
 import { Brand } from "@/components/ui";
+import { traderLinks } from "@/content/community-tools";
 
 const links = [
   ["/discord", "Discord"],
   ["/guild-recruitment", "Find a guild"],
   ["/lfg", "Find a group"],
   ["/guides", "Guides"],
+  [traderLinks.leveling, "Leveling"],
   ["/addons", "Addons & tools"],
 ] as const;
 

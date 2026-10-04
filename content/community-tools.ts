@@ -2,6 +2,7 @@ export const traderLinks = {
   workspace: "https://helper.kfcguild.online/forever/trader",
   encyclopedia: "https://helper.kfcguild.online/forever/encyclopedia",
   collector: "https://helper.kfcguild.online/forever/addon",
+  leveling: "https://helper.kfcguild.online/forever/leveling",
 } as const;
 
 export const traderScreenshot = {
