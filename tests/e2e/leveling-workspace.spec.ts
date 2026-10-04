@@ -40,7 +40,7 @@ test("desktop map stays fixed while lower quest selection, checkboxes and links 
   await button.click();
   await expect(row).toHaveAttribute("data-selected", "true");
   await expect(
-    map.getByRole("button", { name: "Follow next step" }),
+    page.getByRole("button", { name: "Next step", exact: true }),
   ).toBeEnabled();
   await expect(map.locator("circle[data-location-id]").first()).toBeVisible();
   expect(await pane.evaluate((element) => element.scrollTop)).toBeCloseTo(
@@ -81,18 +81,23 @@ test("desktop map stays fixed while lower quest selection, checkboxes and links 
   expect(errors).toEqual([]);
 });
 
-test("follow-next progression, pinned selection and anchor refresh preserve independent character progress", async ({
+test("Next step does not complete a card, while Done completes it and advances with a persistent anchor", async ({
   page,
 }) => {
   await openReader(page);
   const pane = page.getByRole("region", { name: "Scrollable quest list" });
-  const follow = page.getByRole("button", { name: "Follow next step" });
+  const next = page.getByRole("button", { name: "Next step", exact: true });
+  const done = page.getByRole("button", { name: "Done", exact: true });
   const first = pane.locator("[data-reader-step]").first();
   const second = pane.locator("[data-reader-step]").nth(1);
   await expect(first).toHaveAttribute("data-selected", "true");
   await first.getByRole("checkbox").check();
+  await expect(first).toHaveAttribute("data-selected", "true");
+  await expect(done).toBeDisabled();
+  await next.click();
   await expect(second).toHaveAttribute("data-selected", "true");
-  await expect(follow).toBeDisabled();
+  await expect(second.getByRole("checkbox")).not.toBeChecked();
+  await expect(done).toBeEnabled();
   const lower = pane
     .getByRole("button", { name: /^Show source step .* on map:/ })
     .nth(6);
@@ -104,16 +109,27 @@ test("follow-next progression, pinned selection and anchor refresh preserve inde
   await expect(lowerRow).toHaveAttribute("data-selected", "true");
   await expect(lower).toBeInViewport();
   await expect(first.getByRole("checkbox")).toBeChecked();
-  await follow.click();
-  await expect(lowerRow).toHaveAttribute("data-selected", "true");
-  await expect(follow).toBeDisabled();
-  await expect(page).toHaveURL(new RegExp(`#${id}$`));
-  await page.getByRole("link", { name: "Resume next step ↓" }).click();
-  await expect(lowerRow).toBeInViewport();
+  const following = lowerRow.locator("xpath=following-sibling::li[1]");
+  const followingId = await following.getAttribute("id");
+  await next.click();
+  await expect(lowerRow.getByRole("checkbox")).not.toBeChecked();
+  await expect(following).toHaveAttribute("data-selected", "true");
+  await expect(page).toHaveURL(new RegExp(`#${followingId}$`));
+  await expect(following).toBeInViewport();
+  const afterDone = following.locator("xpath=following-sibling::li[1]");
+  const afterDoneId = await afterDone.getAttribute("id");
+  await done.click();
+  await expect(following.getByRole("checkbox")).toBeChecked();
+  await expect(afterDone).toHaveAttribute("data-selected", "true");
+  await page.reload();
+  await expect(page).toHaveURL(new RegExp(`#${afterDoneId}$`));
+  await expect(afterDone).toHaveAttribute("data-selected", "true");
+  await expect(following.getByRole("checkbox")).toBeChecked();
+  await expect(lowerRow.getByRole("checkbox")).not.toBeChecked();
   expect(await page.evaluate(() => scrollY)).toBe(0);
 });
 
-test("Elwynn step 51 follows from that position across progress, undo, hiding completed and refresh", async ({
+test("Elwynn step 51 advances from that position without jumping to the beginning, across undo, hiding completed and refresh", async ({
   page,
 }) => {
   await openReader(page);
@@ -126,20 +142,23 @@ test("Elwynn step 51 follows from that position across progress, undo, hiding co
     .locator("xpath=following-sibling::li[1]")
     .getAttribute("id");
   const next = pane.locator(`#${nextId}`);
-  const follow = page.getByRole("button", { name: "Follow next step" });
+  const advance = page.getByRole("button", { name: "Next step", exact: true });
+  const done = page.getByRole("button", { name: "Done", exact: true });
   await expect(current).toHaveAttribute("data-selected", "true");
-  const beforeScroll = await pane.evaluate((element) => element.scrollTop);
-  await follow.click();
-  await expect(current).toHaveAttribute("data-selected", "true");
-  await expect(follow).toBeDisabled();
-  expect(await pane.evaluate((element) => element.scrollTop)).toBeCloseTo(
-    beforeScroll,
-    0,
-  );
+  await advance.click();
+  await expect(next).toHaveAttribute("data-selected", "true");
+  await expect(next).toBeInViewport();
+  await expect(current.getByRole("checkbox")).not.toBeChecked();
   await expect(
     pane.locator("[data-reader-step]").first().getByRole("checkbox"),
   ).not.toBeChecked();
-  await current.getByRole("checkbox").check();
+  await current
+    .getByRole("button", {
+      name: /^(Show source step .* on map|Select source step \d+):/,
+    })
+    .click();
+  await done.click();
+  await expect(current.getByRole("checkbox")).toBeChecked();
   await expect(next).toHaveAttribute("data-selected", "true");
   await expect(page).toHaveURL(new RegExp(`#${nextId}$`));
   await current.getByRole("checkbox").uncheck();
@@ -155,14 +174,19 @@ test("Elwynn step 51 follows from that position across progress, undo, hiding co
     "data-selected",
     "true",
   );
-  await expect(follow).toBeDisabled();
-  await page.getByRole("link", { name: "Resume next step ↓" }).click();
   await expect(pane.locator(`#${nextId}`)).toBeInViewport();
-  await expect(follow).toBeDisabled();
+  await expect(advance).toBeEnabled();
+  await expect(done).toBeEnabled();
+  await expect(
+    page.getByRole("button", { name: "Follow next step" }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Resume next step ↓" }),
+  ).toHaveCount(0);
   expect(await page.evaluate(() => scrollY)).toBe(0);
 });
 
-test("following the final step never wraps to earlier unfinished steps when the final card is hidden", async ({
+test("Done on the final step completes it without wrapping to earlier unfinished steps", async ({
   page,
 }) => {
   await openReader(page);
@@ -177,12 +201,14 @@ test("following the final step never wraps to earlier unfinished steps when the 
     .getAttribute("id");
   const finalRow = pane.locator(`#${finalId}`);
   await finalButton.click();
-  await page.getByRole("button", { name: "Follow next step" }).click();
-  await finalRow.getByRole("checkbox").check();
+  const next = page.getByRole("button", { name: "Next step", exact: true });
+  const done = page.getByRole("button", { name: "Done", exact: true });
+  await expect(next).toBeDisabled();
+  await expect(done).toBeEnabled();
+  await done.click();
+  await expect(finalRow.getByRole("checkbox")).toBeChecked();
   await expect(finalRow).toHaveAttribute("data-selected", "true");
-  await expect(
-    page.getByRole("link", { name: "Resume next step ↓" }),
-  ).toHaveCount(0);
+  await expect(done).toBeDisabled();
   await page
     .getByRole("checkbox", { name: "Hide completed", exact: true })
     .check();
@@ -193,14 +219,15 @@ test("following the final step never wraps to earlier unfinished steps when the 
   await expect(
     pane.locator("[data-reader-step]").first().getByRole("checkbox"),
   ).not.toBeChecked();
+  await expect(next).toBeDisabled();
+  await expect(done).toBeDisabled();
   await page.reload();
   await expect(pane.locator(`#${finalId}`)).toHaveAttribute(
     "data-selected",
     "true",
   );
-  await expect(
-    page.getByRole("button", { name: "Follow next step" }),
-  ).toBeDisabled();
+  await expect(next).toBeDisabled();
+  await expect(done).toBeDisabled();
 });
 
 test("responsive split and map/list focus retain scroll and progress, and non-reader pages keep their frame", async ({
@@ -252,11 +279,23 @@ test("responsive split and map/list focus retain scroll and progress, and non-re
   await page.getByRole("button", { name: "Map focus", exact: true }).click();
   await expect(map).toBeVisible();
   await expect(pane).not.toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Next step", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Done", exact: true }),
+  ).toBeVisible();
   await page
     .getByRole("button", { name: "Quest list focus", exact: true })
     .click();
   await expect(map).not.toBeVisible();
   await expect(pane).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Next step", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Done", exact: true }),
+  ).toBeVisible();
   expect(await pane.evaluate((element) => element.scrollTop)).toBe(scroll);
   await page.getByRole("button", { name: "Split view", exact: true }).click();
   await expect(map).toBeVisible();
@@ -268,6 +307,78 @@ test("responsive split and map/list focus retain scroll and progress, and non-re
       .locator(".page-frame")
       .evaluate((element) => element.getBoundingClientRect().width),
   ).toBeLessThan(390);
+});
+
+test("mobile map focus can advance, then reveals the selected step when the quest pane is reopened", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openReader(page);
+  const pane = page.getByRole("region", { name: "Scrollable quest list" });
+  const current = pane.locator("[data-reader-step]").nth(8);
+  await current
+    .getByRole("button", {
+      name: /^(Show source step .* on map|Select source step \d+):/,
+    })
+    .click();
+  const next = current.locator("xpath=following-sibling::li[1]");
+  const nextId = await next.getAttribute("id");
+  await page.getByRole("button", { name: "Map focus", exact: true }).click();
+  await page.getByRole("button", { name: "Next step", exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`#${nextId}$`));
+  await page
+    .getByRole("button", { name: "Quest list focus", exact: true })
+    .click();
+  await expect(next).toHaveAttribute("data-selected", "true");
+  await expect(next).toBeInViewport();
+  await expect(current.getByRole("checkbox")).not.toBeChecked();
+  const afterDone = next.locator("xpath=following-sibling::li[1]");
+  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await expect(next.getByRole("checkbox")).toBeChecked();
+  await expect(afterDone).toHaveAttribute("data-selected", "true");
+  await expect(afterDone).toBeInViewport();
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+});
+
+test("the original edition uses the same separate Next step and Done actions", async ({
+  page,
+}) => {
+  await openReader(page);
+  await page.goto(`${helper}${original}`);
+  const pane = page.getByRole("region", { name: "Scrollable quest list" });
+  const first = pane.locator("[data-reader-step]").first();
+  const second = pane.locator("[data-reader-step]").nth(1);
+  const third = pane.locator("[data-reader-step]").nth(2);
+  await expect(first).toHaveAttribute("data-selected", "true");
+  await page.getByRole("button", { name: "Next step", exact: true }).click();
+  await expect(first.getByRole("checkbox")).not.toBeChecked();
+  await expect(second).toHaveAttribute("data-selected", "true");
+  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await expect(second.getByRole("checkbox")).toBeChecked();
+  await expect(third).toHaveAttribute("data-selected", "true");
+  await page.reload();
+  await expect(third).toHaveAttribute("data-selected", "true");
+  await expect(second.getByRole("checkbox")).toBeChecked();
+  await expect(first.getByRole("checkbox")).not.toBeChecked();
+});
+
+test("unsaved visitors may browse with Next step but cannot complete a character's steps", async ({
+  page,
+}) => {
+  await page.goto(`${helper}${chapter}`);
+  const pane = page.getByRole("region", { name: "Scrollable quest list" });
+  const first = pane.locator("[data-reader-step]").first();
+  const second = pane.locator("[data-reader-step]").nth(1);
+  await expect(first).toHaveAttribute("data-selected", "true");
+  await expect(
+    page.getByRole("button", { name: "Done", exact: true }),
+  ).toBeDisabled();
+  await page.getByRole("button", { name: "Next step", exact: true }).click();
+  await expect(second).toHaveAttribute("data-selected", "true");
+  await expect(first.getByRole("checkbox")).not.toBeChecked();
+  await expect(
+    page.getByRole("button", { name: "Done", exact: true }),
+  ).toBeDisabled();
 });
 
 test("original preview uses the same workspace and its calculator deep links scroll only the quest pane", async ({

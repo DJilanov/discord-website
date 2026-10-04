@@ -211,7 +211,12 @@ test("native zone artwork, projected circles, map selection and completion undo 
   await progress.uncheck();
   await page.reload();
   await expect(progress).not.toBeChecked();
-  const skip = page.getByRole("button", { name: /^Skip source step/ }).first();
+  const progressRowId = await progress
+    .locator("xpath=ancestor::li[1]")
+    .getAttribute("id");
+  const skip = page.locator(`#${progressRowId}`).getByRole("button", {
+    name: /^(Skip|Undo skip) source step/,
+  });
   await skip.click();
   await expect(progress).not.toBeChecked();
   await expect(skip).toHaveAttribute("aria-pressed", "true");
