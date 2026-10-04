@@ -1013,6 +1013,20 @@
   color: var(--muted);
 }
 
+@media (max-width: 1280px) {
+  .public-site .desktop-nav {
+    display: none;
+  }
+  .public-site .mobile-disclosure {
+    display: block;
+  }
+  .public-site .mobile-toggle {
+    display: inline-flex;
+  }
+  .public-site .nav-end {
+    margin-left: auto;
+  }
+}
 @media (max-width: 1200px) {
   .public-site .nav-inner {
     padding-inline: 24px;
