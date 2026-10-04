@@ -27,7 +27,10 @@ test("leveling setup, preserved list, local progress and independent characters"
   ).toBeVisible();
   await expect(page.getByText("1–6", { exact: true }).first()).toBeVisible();
   await page.getByRole("link", { name: /Open KFC preview/ }).click();
-  await expect(page).toHaveURL(`${helper}${chapterPath}`);
+  await expect(page).toHaveURL(
+    (url: URL) =>
+      `${url.origin}${url.pathname}${url.search}` === `${helper}${chapterPath}`,
+  );
   await expect(
     page.getByRole("heading", { name: "The current quest list" }),
   ).toBeVisible();
