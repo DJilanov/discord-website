@@ -17,11 +17,12 @@ import { CommunityActivity } from "@/components/community-activity";
 import { Markdown } from "@/components/markdown";
 import { communityFaq, communities } from "@/content/community";
 import { SITE_URL } from "@/lib/config";
+import { channelReviewDate, classDiscussions } from "@/content/community-paths";
 
 export const dynamic = "force-dynamic";
 export const metadata = pageMetadata(
-  "WoW Forever Discord - PvE, PvP & RP Community",
-  "Join the unofficial WoW Forever Discord for Alliance and Horde. Find guilds and groups, meet PvE, PvP and RP players, and see how to get started.",
+  "WoW Forever Discord | Join the Community",
+  "Join the independent WoW Forever Discord: EU and NA, Alliance and Horde. Find guilds, PvE and PvP groups, class discussions and practical tools. Free to join.",
   "/discord",
 );
 
@@ -154,8 +155,8 @@ export default async function DiscordPage(): Promise<React.JSX.Element> {
             <br />A space for your next group.
           </h2>
           <p>
-            Begin with <strong>rules</strong> and <strong>verification</strong>,
-            then say hello in <strong>newcomers</strong>.
+            Begin with <strong>rules</strong> in Start Here, choose your roles
+            in Discord&apos;s welcome flow, then say hello in <strong>introductions</strong>.
           </p>
           <dl className="channel-map">
             <div>
@@ -163,22 +164,22 @@ export default async function DiscordPage(): Promise<React.JSX.Element> {
               <dd>
                 Alliance and Horde each have <code>lfg-pve</code>,{" "}
                 <code>lfg-pvp</code>, <code>lf-guild</code>,{" "}
-                <code>guild-recruitment</code>, and <code>pugs-adverts</code>.
+                <code>guild-recruitment</code>, and <code>scheduled-runs</code> forums.
                 Start with the faction&apos;s <code>post-rules</code>.
               </dd>
             </div>
             <div>
               <dt>Classes &amp; addons</dt>
               <dd>
-                Dedicated class discussions, plus <code>addon-discussion</code>{" "}
-                and <code>help-support</code> under Addons &amp; Tools.
+                Nine class discussions, plus <code>addon-discussion</code>,{" "}
+                <code>tool-directory</code> and <code>tool-support</code> under Addons &amp; Tools.
               </dd>
             </div>
             <div>
               <dt>Updates &amp; useful links</dt>
               <dd>
-                <code>announcements</code>, <code>relevant-links</code>, and{" "}
-                <code>wow-forever-faq</code> keep the basics together.
+                <code>announcements</code>, <code>useful-links</code>, and{" "}
+                <code>faq</code> keep the basics together.
               </dd>
             </div>
           </dl>
@@ -186,23 +187,29 @@ export default async function DiscordPage(): Promise<React.JSX.Element> {
             Find your first conversation <ArrowRight size={16} />
           </Link>
         </div>
-        <figure className="server-preview">
-          <a
-            href="/images/discord-welcome.png"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open the full Discord channel screenshot"
-          >
-            <Image
-              src="/images/discord-welcome.png"
-              alt="Actual server information channels: announcements, rules, verification, newcomers, relevant-links and wow-forever-faq"
-              width={856}
-              height={2064}
-              sizes="(max-width: 700px) 300px, 340px"
-            />
-          </a>
-          <figcaption>Server channel list, September 29, 2026.</figcaption>
-        </figure>
+        <div className="discord-current-channels">
+          <h3>Your first stops</h3>
+          <dl className="channel-map">
+            <div><dt>Start Here</dt><dd>rules · introductions · useful-links · faq</dd></div>
+            <div><dt>Community</dt><dd>general · new-player-help · group-leveling</dd></div>
+            <div><dt>Trading</dt><dd>alliance-trade · horde-trade · auction-house</dd></div>
+            <div><dt>Social &amp; Media</dt><dd>streamers · live-now · Community Streams</dd></div>
+          </dl>
+          <p className="fine-print">Channel names and forum types checked through the server bot on {channelReviewDate}. Decorative prefixes omitted. This is a channel reference, not a screenshot or a claim of live host coverage.</p>
+        </div>
+      </section>
+      <section className="section" id="classes" aria-labelledby="classes-title">
+        <SectionHeading eyebrow="CLASSES & TOOLS" title="Bring your class. Compare your ideas." />
+        <h3 id="classes-title">Nine class discussions, one community</h3>
+        <p className="section-lead">Ask in your class channel, compare a build in the linked calculator, and share the client build and activity you tested. Read the tool&apos;s evidence labels before treating beta talents as settled advice.</p>
+        <div className="discord-class-links">
+          {classDiscussions.map(({ name, channel, calculator }) => (
+            <a key={channel} href={calculator} target="_blank" rel="noopener noreferrer">
+              <span><strong>{name}</strong><small>#{channel} · talent calculator</small></span><ArrowUpRight size={18} />
+            </a>
+          ))}
+        </div>
+        <Link href="/guides/join-wow-forever-discord" className="text-link">Class questions and your first evening <ArrowRight size={16} /></Link>
       </section>
       {settings.discordOnboarding && (
         <section className="section narrow">

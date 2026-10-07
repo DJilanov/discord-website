@@ -2,10 +2,13 @@ import type { EditorialGuide } from "./guides";
 import { guideAdditions, preparationGuides } from "./growth";
 import history from "./editorial-history.json";
 import { toolGuides } from "./tool-guides";
+import october7History from "./editorial-october7-history.json";
+import { classDiscussionTable } from "./community-paths";
 
 // Retain exact published revisions so later updates cannot overwrite admin edits.
 export const september29Guides: EditorialGuide[] = history.september29Guides;
 export const september30Guides: EditorialGuide[] = history.september30Guides;
+export const preOctober7Guides: EditorialGuide[] = october7History;
 
 const communityGuides: EditorialGuide[] = [
   {
@@ -25,7 +28,7 @@ The website's member and online counts are approximate figures from Discord, not
 
 ## Find your region and interests
 
-In the **Informations** category, read **rules**, follow the instructions in **verification**, and use **newcomers** for your first introduction. **announcements**, **relevant-links**, and **wow-forever-faq** hold updates and useful references. The screenshots below were supplied by the server owner on September 29, 2026; channel names in this guide omit their decorative emoji prefixes.
+**Channel layout checked through the server bot on October 7, 2026.** In **Start Here**, read **rules**, follow Discord's current welcome questions, and use **introductions** for your first hello. **announcements**, **useful-links**, and **faq** hold updates and references. Channel names here omit decorative emoji prefixes. The historical screenshots below were supplied by the owner on September 29; some labels have since changed, so use the checked names in this text rather than copying the old images.
 
 ![The actual WoW Forever Discord welcome and information channels](/images/discord-welcome.png)
 
@@ -47,13 +50,23 @@ This is an example, not a real member testimonial. Replace the details with your
 
 For a long-term home, browse the [guild directory](/guild-recruitment) and compare schedules, language, playstyle, and contact details. Our [guild-selection guide](/guides/find-your-wow-forever-guild) explains which questions are worth asking before a trial.
 
-In Discord, both **Alliance** and **Horde** have **post-rules**, **lfg-pve**, **lfg-pvp**, **lf-guild**, **guild-recruitment**, and **pugs-adverts**. Read **post-rules** first. Use **lf-guild** when you are seeking a guild and **guild-recruitment** when advertising one; use the activity-specific LFG spaces for a single session.
+In Discord, both **Alliance** and **Horde** have **post-rules**, **lfg-pve**, **lfg-pvp**, **lf-guild**, **guild-recruitment**, and **scheduled-runs**. The group and recruitment spaces are forums: open a relevant post or create one with the requested details and tags, rather than dropping an unrelated message into another group's conversation. Read **post-rules** first. Use **lf-guild** when seeking a guild, **guild-recruitment** when advertising one, and **scheduled-runs** for planned sessions. **group-leveling** is a separate community forum.
 
 ![Alliance and Horde group and recruitment channels in the actual server](/images/discord-faction-groups.png)
 
 For one evening, you can also use the website's [looking for group](/lfg). Read the region, faction, time zone, activity, and organizer's expectations before making contact. The [group guide](/guides/find-or-organize-wow-forever-group) covers what a complete post should contain. A listing is a way to start a conversation, not an automatic signup or guaranteed place.
 
-For class discussion, look under **Class Channels**. For addon questions, read the **Addons & Tools** rules and use **addon-discussion** or **help-support**. Trading has its own **trade-rules**, **alliance-trade**, and **horde-trade** spaces. Do not assume a public channel is a private place to share evidence or account details.
+For addon questions, read **tool-rules** under **Addons & Tools**. Use **addon-discussion** for conversation, **tool-directory** for tool posts and **tool-support** for a specific support request. Trading has **trade-rules** and the **alliance-trade**, **horde-trade**, and **auction-house** forums. Auction tips depend on contributor scans; silence is preferable to a recommendation based on stale data. Public forums are not private places to share evidence or account details.
+
+## Find your class discussion and compare a build
+
+The **Classes** category contains all nine channels below. You do not need a separate class-server invitation. Ask a specific question in your class channel and use the linked public Helper calculator to compare your idea. These tools are maintained separately from Blizzard; a recorded talent is not proof of current beta balance or a recommended best build.
+
+${classDiscussionTable}
+
+Include the game version, client build if known, level, intended role and activity. Distinguish what you personally tested from a theory or a tooltip you read. A dungeon-tanking question, a leveling question and a PvP question can have different answers even for the same class. Check the calculator's source/build labels before sharing its result; never silently substitute TBC talents for Forever evidence.
+
+For a first evening, introduce yourself, open one class conversation, and browse one actual group post. If nothing fits your hours, post a concrete request with a date, region, faction, ruleset and desired role. There is no need to join every channel or wait for a complete raid roster before meeting people.
 
 ## If something does not work
 
@@ -259,9 +272,9 @@ To get started, [join the Discord](/discord) and follow the [onboarding guide](/
 
 ## Read the practical details first
 
-Check the region, character ruleset, faction, activity, start time, and host's contact. Public group times are displayed in UTC. Convert that to your own time for the actual date, and check again when clocks change. The [friends checklist](/guides/wow-forever-playing-with-friends) explains the distinction between a character ruleset and an activity.
+Check the region, character ruleset, faction, activity, start time, and host's contact. Public group times use **Central Europe for EU**, **New York for NA**, and **UTC for OCE**. Read the displayed UTC offset for the actual date; EU and North American daylight-saving changes can differ. The [friends checklist](/guides/wow-forever-playing-with-friends) explains the distinction between a character ruleset and an activity.
 
-Read the description before messaging. The directory does not reserve a place or maintain an automatic signup roster. Contact the organizer and confirm that a suitable space remains available.
+Read the description before messaging. Ordinary group listings do not reserve a place; contact the organizer to confirm availability. The separately labelled **Scheduled events** on the same page link to our event manager, with character/spec signup and the host's roster and loot rules. Those controls require Discord sign-in and membership of this community server; browsing a listing is not a signup.
 
 ## Write a post people can answer
 
@@ -287,11 +300,19 @@ The form above was captured from this website on September 29, 2026. It is an em
 
 This is a writing example, not a live group. Fill it with your actual plan before submitting. The [loot checklist](/guides/clear-loot-rules-better-groups) helps you avoid ambiguous rules.
 
-## Submit and wait for review
+## Submit a listing or create a signup event
 
-[Submit a group](/lfg/new) with a realistic start time and enough notice for moderation. Posts are reviewed before they become public, and publication is not guaranteed. The form currently supports dungeon, raid, PvP premade, RP, and questing activities. Do not label a Discord-only welcome conversation as a raid just to fit those choices.
+[Submit a group](/lfg/new) with a future date and a complete description. With your explicit public-sharing consent, the listing appears immediately on the website and is queued for the matching faction/activity Discord forum. Moderators review afterward and may hide posts that break the rules. Discord delivery is asynchronous: an available website listing does not prove that its Discord post has already arrived. Follow the confirmation's Discord link and allow the worker to deliver it; contact staff if delivery remains missing instead of submitting duplicates.
 
-The website is not a personal event-management account. If a submitted or published post needs correction or cancellation, contact staff in the [Discord community](/discord) with the post title, date, and exact change. Do not assume that editing a Discord message also edits the website.
+The form supports dungeon, raid, PvP premade, battleground, world PvP, RP, questing, social and other activities. A character's PvP ruleset does not turn a dungeon session into a PvP activity. Choose both fields for what they actually describe. Do not advertise unavailable content as a confirmed run.
+
+For character/spec signups, roster selection and supported loot reservations, use [the event manager](/raids). Sign in with Discord, join the community first if needed, and read the selected game version and host rules. Event publication and website approval are separate from the immediate-publication listing form. Only staff can override the normal posting channel. A website approval is not a guarantee of a raid place or the host's conduct.
+
+For an ordinary group listing that needs correction or cancellation, contact staff in the [Discord community](/discord) with its title, date and exact change. For a managed event you created, use its event controls; changes are recorded in its history. An unrelated ordinary Discord message is not a synchronized website listing.
+
+## Read a real planning post carefully
+
+The October 7 directory contains an EU Alliance PvP-ruleset questing plan titled **5ftofNovemberpowerleveling**, scheduled for November 5 at 08:30 Central Europe (UTC+1). That is a future plan, not a completed session or a promise of open places. Check the [current directory](/lfg) before responding because listings and availability change. Notice that its activity is Questing even though its character ruleset is PvP. Read the described starting location, level checkpoints and organizer contact before asking to join. A useful post lets you answer when, where and which character without inferring those details from the title.
 
 ## Confirm the plan before the session
 
@@ -361,7 +382,7 @@ Before using the [submission form](/guild-recruitment/new), check:
 - The public recruiter handle and optional invitation work.
 - The description is specific and does not expose private information.
 
-Listings are moderated before publication. Review checks the post against community standards; it is not an endorsement or a guarantee that applicants will arrive.
+With your explicit sharing consent, listings publish immediately on the website and are queued for the matching Discord recruitment forum. Moderators review them afterward and may hide rule-breaking posts. Publication is not proof that the post has already been reviewed, an endorsement, or a guarantee that applicants will arrive. Discord delivery can lag behind website publication; use the confirmation link and contact staff if delivery fails rather than submitting duplicates.
 
 ## Keep it current
 

@@ -10,6 +10,7 @@ import {
   guideReadingPaths,
   september29Guides,
   september30Guides,
+  preOctober7Guides,
 } from "../content/editorial";
 import { artwork, coverChoices, getArtwork } from "../content/artwork";
 import {
@@ -142,7 +143,7 @@ test("publisher preserves custom content, titles, excerpts and drafts", () => {
 });
 
 test("growth publication recognizes exact published history but never customizations or drafts", () => {
-  for (const source of [...september29Guides, ...september30Guides]) {
+  for (const source of [...september29Guides, ...september30Guides, ...preOctober7Guides]) {
     const historical = { ...source, published: true };
     assert.equal(canRefreshEditorialGuide(historical), true);
     for (const field of ["title", "excerpt", "content"] as const) {
@@ -161,7 +162,7 @@ test("growth publication recognizes exact published history but never customizat
     );
   }
   for (const source of editorialGuides) {
-    const recognized = [...september29Guides, ...september30Guides].some(
+    const recognized = [...september29Guides, ...september30Guides, ...preOctober7Guides].some(
       (guide) =>
         guide.slug === source.slug &&
         guide.title === source.title &&

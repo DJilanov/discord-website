@@ -1,6 +1,6 @@
 import type { ForeverGuide } from "@prisma/client";
 import { initialGuides } from "@/content/guides";
-import { september29Guides, september30Guides } from "@/content/editorial";
+import { september29Guides, september30Guides, preOctober7Guides } from "@/content/editorial";
 
 export function canRefreshStarterGuide(
   guide: Pick<
@@ -46,7 +46,7 @@ export function canRefreshEditorialGuide(
   if (canRefreshStarterGuide(guide)) return true;
   return (
     guide.published &&
-    [...september29Guides, ...september30Guides].some(
+    [...september29Guides, ...september30Guides, ...preOctober7Guides].some(
       (previous): boolean =>
         previous.slug === guide.slug &&
         previous.title === guide.title &&

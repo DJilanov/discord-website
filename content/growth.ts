@@ -12,7 +12,7 @@ Start with what Discord actually says, rather than assuming every problem means 
 | Invalid invitation | Open the original link rather than retyping its case-sensitive code. Ask staff for a replacement if it still fails |
 | Server limit reached | Check Discord's current account/server limit. This is an account limit, not proof the community invitation is broken |
 | A ban message | Ask the server's administrators about review. Do not make replacement accounts or evade a ban |
-| Joined, but channels are missing | Check the signed-in account, **rules**, **verification**, selected roles and available channels |
+| Joined, but channels are missing | Check the signed-in account, **rules**, the current welcome questions, selected roles and available channels |
 
 On mobile, confirm that the browser and Discord app are using the account you intended. If opening the app loses your place, return to the website's invitation page and check the preview again. Never share a login code, session token or password with someone offering to fix access.
 
@@ -35,7 +35,7 @@ ${templateMarkdown("guild-recruitment")}
 
 This is a writing example, not a real guild or an available roster place. Add your actual days, named time zone, roles and recruiter before posting. Do not copy an example as if its plans were your own.
 
-Keep one maintained [website listing](/guild-recruitment/new), then share its URL in the relevant Discord recruitment space. Today the website and ordinary Discord posts are separate: corrections still need staff review. Our planned bot is not an active synchronization service.
+Keep one maintained [website listing](/guild-recruitment/new). With your explicit consent, the bot queues it for the matching Discord recruitment forum. Do not create duplicates while delivery is pending. Corrections to ordinary listings still need staff; editing a separate Discord message is not a website-editing control.
 
 If you are coordinating the first week with an existing roster, use the [friends and guild launch checklist](/guides/wow-forever-launch-group-checklist).`,
   "find-or-organize-wow-forever-group": `## Blank group-post template
@@ -49,7 +49,7 @@ ${templateMarkdown("group-post")}
 1. Pick the calendar date before converting any time.
 2. Use a named zone such as Europe/Sofia or America/New_York, not only "server time" or "evening."
 3. Check the UTC equivalent for that date in your calendar. Do not reuse an offset from a different season.
-4. In the website form, follow its displayed time-zone label. Compare the resulting public UTC time with your original plan.
+4. In the website form, follow its displayed time-zone label. Compare the resulting regional time and UTC offset with your original plan.
 5. Ask one other participant to confirm the same instant before recruiting more players.
 
 Example only: a weekly group can remain at 20:00 in its organizer's local zone while its UTC time changes when local clocks change. A fixed 20:00 UTC group makes a different commitment. EU and North American clock changes can fall on different dates; do not silently shift a recurring group's schedule.
@@ -97,7 +97,7 @@ Do not turn the original announcement's week-one level limits into claims about 
 
 Use the [community Discord](/discord) to discuss region, faction, available hours and interests. Read the relevant faction's **post-rules** before using its activity-specific group channel. A role label in Discord does not establish in-game compatibility.
 
-For a website listing, use the [group-post guide and blank template](/guides/find-or-organize-wow-forever-group). Include the calendar date, named time zone, expected finish, intended test activity and public organizer handle. Agree on region, character ruleset and faction first; see [playing with friends](/guides/wow-forever-playing-with-friends) and confirm current test availability. The website listing is reviewed and does not create an automatic Discord event or signup roster.
+For a website listing, use the [group-post guide and blank template](/guides/find-or-organize-wow-forever-group). Include the date, named time zone, expected finish, test activity and public organizer handle. Agree on region, character ruleset and faction first; see [playing with friends](/guides/wow-forever-playing-with-friends) and confirm test availability. Listings publish immediately with sharing consent and are queued for the Discord forum, then reviewed by moderators. A listing is not an automatic signup; managed events have separate signup controls.
 
 ## Agree on the fallback before login
 

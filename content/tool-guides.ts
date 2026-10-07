@@ -55,7 +55,7 @@ A market label in WoW Trader is also not a character-creation instruction. It id
 
 ## Publish only a real session
 
-When the host, activity and time are confirmed, use [looking for group](/lfg/new). Listings are reviewed before appearing. Do not advertise an unavailable activity or a speculative roster as a ready-to-join session.
+When the host, activity and time are confirmed, use [looking for group](/lfg/new). With sharing consent, listings publish immediately and are queued for the Discord forum, then reviewed by moderators. Do not advertise unavailable content or a speculative roster as a ready-to-join session.
 
 If plans change, contact staff with the listing URL and the exact correction, and update any ordinary Discord posts separately. The two do not synchronize automatically today. A short, maintained plan helps more than several confident but conflicting announcements.
 

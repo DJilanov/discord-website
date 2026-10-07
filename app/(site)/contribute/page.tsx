@@ -42,7 +42,7 @@ export default function ContributePage(): React.JSX.Element {
           </p>
           <p>
             These are suggested assignments, not a live claim queue. Tell the
-            team which task you are taking in <strong>help-support</strong>,
+            team which task you are taking in <strong>tool-support</strong>,
             then use the report below. Maintainers review results manually.
           </p>
           <a href="#assignments" className="text-link">
@@ -127,7 +127,7 @@ export default function ContributePage(): React.JSX.Element {
           <h2 id="report-title">Leave a useful trail</h2>
           <p>
             For a non-sensitive browser or guide result, use{" "}
-            <strong>help-support</strong> in our Discord and include the task
+            <strong>tool-support</strong> in our Discord and include the task
             ID. Check for an existing report first, then keep follow-up in the
             same conversation.
           </p>

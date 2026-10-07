@@ -22,7 +22,7 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   return pageMetadata(
     "WoW Forever LFG - Dungeons, Raids, PvP & RP",
-    "Find a WoW Forever group for dungeons, raids, PvP premades, questing and roleplay. Group posts with region, ruleset, faction and start time.",
+    "Find or post a WoW Forever group: EU and NA, Alliance and Horde, dungeons, raids, PvP and questing. Compare times, roles and organizer contacts before joining.",
     "/lfg",
     Object.keys(await searchParams).length > 0,
   );
@@ -158,13 +158,16 @@ export default async function LfgPage({
         <h2>A little clarity goes a long way.</h2>
         <p className="section-lead">
           Include your region, character ruleset, faction, start time, needed
-          roles, and loot rules. Posts are reviewed before appearing and expire
-          after the session. For a regular roster, explore{" "}
+          roles, and loot rules. Group listings publish immediately and are
+          queued for the matching Discord forum. Moderators review them afterward
+          and can hide rule-breaking posts. Listings expire after the session.
+          Scheduled events have their own signup and approval flow. For a regular roster, explore{" "}
           <Link className="text-link" href="/guild-recruitment">
             guild recruitment
           </Link>
           .
         </p>
+        <p className="fine-print">This is a community group board, not Blizzard&apos;s in-game group finder. EU times use Central Europe, NA times use New York, and OCE times use UTC; the displayed offset accounts for the date. <Link href="/guides/find-or-organize-wow-forever-group" className="text-link">Read the posting and signup guide</Link>.</p>
       </section>
     </div>
   );

@@ -56,7 +56,7 @@ No harassment, threats, hateful conduct, doxxing, or targeted pile-ons. Disagree
 
 Post in the relevant faction and region. Include your schedule, playstyle, contact, and written loot rules. Do not impersonate another guild or inflate achievements. Repeated unsolicited direct messages and recruitment spam are not welcome.
 
-Listings are reviewed before publication. A published listing is not an endorsement or a guarantee of a guild's conduct. Staff can hide misleading, inactive, or abusive listings. Guilds can request corrections from staff in Discord with the listing URL.
+Guild and group listings publish immediately on the website and are queued for the matching Discord forum, with the submitter's explicit public-sharing consent. Moderators review them afterward and can hide misleading, inactive, or abusive listings. Publication is not an endorsement, a verified misconduct finding, or a guarantee of a guild's conduct. Guilds can request corrections from staff in Discord with the listing URL. Scheduled events use a separate website-approval process.
 
 ## 3. Set expectations before the run
 
@@ -133,7 +133,7 @@ WoW Forever Discord is an independent fan community organized by the KFC communi
 
 ## Public directory information
 
-Guild and group submissions contain the details you choose to publish, including character or guild names, character ruleset, region, schedules, descriptions, and recruitment contacts. Approved entries become public and may be indexed by search engines. Do not submit a real name, private phone number, or contact belonging to someone who has not agreed.
+Guild and group submissions contain the details you choose to publish, including character or guild names, character ruleset, region, schedules, descriptions, and recruitment contacts. With your explicit consent, new submissions publish immediately on the website and are queued for the matching public Discord faction forum. Moderators review afterward and can hide posts that break the rules; publication does not mean the listing has already been checked. Discord delivery may be delayed or fail independently of website publication. Long submissions include a public full-text attachment in Discord. Existing submissions are not copied without sharing consent. Public website entries may be indexed by search engines. Scheduled events have a separate approval process. Do not submit a real name, private phone number, or contact belonging to someone who has not agreed. Discord and search engines may retain copies after website removal.
 
 ## Private reports and evidence
 
