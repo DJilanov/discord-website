@@ -1,5 +1,13 @@
 # October 7 search and onboarding release
 
+Deployed and verified as `.next-release-20261007-seo-r1`, following commit
+`76b107a`. All 45 community sitemap pages returned 200, one matching canonical,
+one H1, valid JSON-LD and indexable metadata; 14 referenced static assets returned
+200. Live screenshots and checks passed at 320, 390 and 1440 pixels. Health was
+200, anonymous evidence/member/channel APIs were 401, and existing canonical
+redirects remained 301. No Discord worker was restarted. Rollback source and
+previous build selection are retained in `.data/private/20261007-seo-r1`.
+
 The community remains independent and unofficial, welcoming other guilds, both
 factions and EU/NA players. KFC recruitment uses KFC's own website and invitation.
 No membership, moderator-coverage or completed-event claims were invented.
@@ -32,6 +40,10 @@ The local editorial dry-run and apply each found five updates, zero new articles
 and five preserved articles. Production publication requires a fresh backup and
 the same dry-run review; no schema migration or bot-worker restart is required.
 Desktop/mobile screenshots, Linux builds and live smoke checks are release gates.
+All those gates passed. Production publication updated five known revisions,
+created zero new articles and preserved five. A fresh database/private-file
+backup succeeded before publication after correcting ownership of this project's
+old recovery directories. The normal seven-copy retention policy remains.
 
 ## Growth work that requires real participation
 
