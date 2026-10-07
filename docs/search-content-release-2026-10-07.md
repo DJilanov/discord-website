@@ -73,4 +73,5 @@ or a ChatGPT recommendation. Useful original content, reliable service, real
 activity and independent references remain the next growth inputs.
 
 The reference crawler is a separate, lower-priority release at the owner's
-request. Staged catalog facts remain unpublished pending completion and review.
+request. Staged catalog facts remain unpublished pending explicit review and
+publication; selected fresh approved batches need not wait for the full queue.
