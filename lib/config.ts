@@ -1,3 +1,5 @@
+import { CANONICAL_TOOLS_URL, canonicalToolHref } from "../content/tool-links";
+
 export const SITE_NAME = "WoW Forever Discord";
 export const SITE_URL = (
   process.env.SITE_URL || "https://www.wowforeverdiscord.online"
@@ -86,4 +88,3 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   googleVerification: "",
   bingVerification: "",
 };
-import { CANONICAL_TOOLS_URL, canonicalToolHref } from "../content/tool-links";

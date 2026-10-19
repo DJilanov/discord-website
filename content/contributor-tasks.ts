@@ -1,3 +1,5 @@
+import { traderLinks } from "./community-tools";
+
 export interface ContributorTask {
   id: string;
   title: string;
@@ -123,4 +125,3 @@ What remains untested:
 Public screenshot attached only after removing private information: yes / no
 Public credit requested: no / approved display name`,
 };
-import { traderLinks } from "./community-tools";

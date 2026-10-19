@@ -1,3 +1,5 @@
+import { traderLinks } from "./community-tools";
+
 export const channelReviewDate = "7 October 2026";
 
 export const classDiscussions = [
@@ -24,4 +26,3 @@ export const classDiscussionTable = [
       `| **${channel}** | [${name} calculator](${calculator}) |`,
   ),
 ].join("\n");
-import { traderLinks } from "./community-tools";

@@ -7,6 +7,16 @@ import { traderLinks } from "../content/community-tools";
 import { classDiscussions } from "../content/community-paths";
 import { contributorTasks } from "../content/contributor-tasks";
 import { Markdown } from "../components/markdown";
+import { HELPER_URL } from "../lib/config";
+
+test("the research configuration initializes with the canonical public base", () => {
+  assert.equal(
+    HELPER_URL,
+    canonicalToolHref(
+      process.env.HELPER_PUBLIC_URL || CANONICAL_TOOLS_URL,
+    ).replace(/\/$/, ""),
+  );
+});
 
 test("all maintained public tool links use the canonical tools mount", () => {
   for (const href of [
