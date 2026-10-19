@@ -90,9 +90,14 @@ Record `{ "commit": "<full SHA>", "buildDirectory": ".next-release-<short SHA>" 
 `sh deploy/activate-source-release.sh /home/wow-forever-discord-source-releases/<full SHA>`.
 The script validates that the path and recorded commit agree, verifies the compiled output,
 reloads only the website, saves PM2's exact source/build selection and waits for database health.
+When moving to another source directory it recreates only this named PM2 process: PM2's reload
+keeps the old cwd/executable. The script checks the new cwd and executable explicitly and restores
+the prior process definition if activation or health fails. It does not delete application files.
 Check the public site afterward, including every sitemap page's outbound tool links. The legacy
 `activate.sh` is only for the old fixed-root deployment/rollback, not this source-release workflow.
 Workers and cron remain pinned to the existing source root unless explicitly deployed separately.
+Attach the `.data` link after compilation, before starting the candidate: Turbopack must not trace
+private runtime state or follow its external symlinks during a build.
 
 Public tool navigation uses `https://kfcguild.online/tools`, including class calculators and the
 research feed. Stored Markdown is canonicalized while rendering, without rewriting editorial
