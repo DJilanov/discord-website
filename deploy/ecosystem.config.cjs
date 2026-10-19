@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "wow-forever-discord",
-      cwd: "/home/wow-forever-discord",
+      cwd: process.env.FOREVER_RELEASE_ROOT || "/home/wow-forever-discord",
       script: "node_modules/next/dist/bin/next",
       args: "start --hostname 127.0.0.1 -p 19320",
       interpreter: "node",

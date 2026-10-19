@@ -227,7 +227,7 @@ test("desktop/mobile layouts, accessibility, real icons, metadata and legacy dee
   await page.goto(`${helper}${chapterPath}#route-accept-westfall`);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    `https://helper.kfcguild.online${chapterPath.split("?")[0]}`,
+    `https://kfcguild.online/tools${chapterPath.split("?")[0]}`,
   );
   await page.goto(
     `${helper}/forever/leveling/routes/horde-orc/chapters/chapter-125-13-15-westfall`,
@@ -247,10 +247,7 @@ test("community navigation exposes the same leveling destination without overflo
       page
         .getByRole("link", { name: "Leveling", exact: true })
         .filter({ visible: true }),
-    ).toHaveAttribute(
-      "href",
-      "https://helper.kfcguild.online/forever/leveling",
-    );
+    ).toHaveAttribute("href", "https://kfcguild.online/tools/forever/leveling");
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

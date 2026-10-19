@@ -77,6 +77,28 @@ The supplied migration runner is checksum-protected and creates only this projec
 
 ## Updating
 
+### Commit-bound source releases
+
+Public website updates now use a new directory named
+`/home/wow-forever-discord-source-releases/<full-pushed-commit>`. Export that exact commit with
+`git archive`; never upload a dirty working tree. Install from its lockfiles, generate Prisma,
+and build inside that candidate, not the active output. Keep `.env.local` and `.data` linked to
+the existing private application state. Do not copy those links or their contents into Git.
+
+Record `{ "commit": "<full SHA>", "buildDirectory": ".next-release-<short SHA>" }` in its
+`release-source.json`, then run the build guard and loopback browser/asset checks. Activate with
+`sh deploy/activate-source-release.sh /home/wow-forever-discord-source-releases/<full SHA>`.
+The script validates that the path and recorded commit agree, verifies the compiled output,
+reloads only the website, saves PM2's exact source/build selection and waits for database health.
+Check the public site afterward, including every sitemap page's outbound tool links. The legacy
+`activate.sh` is only for the old fixed-root deployment/rollback, not this source-release workflow.
+Workers and cron remain pinned to the existing source root unless explicitly deployed separately.
+
+Public tool navigation uses `https://kfcguild.online/tools`, including class calculators and the
+research feed. Stored Markdown is canonicalized while rendering, without rewriting editorial
+database records. Legacy Helper-host support remains for backwards compatibility and the separate
+authenticated ingestion endpoint; it is not used for public website navigation.
+
 Before activation, `deploy/activate.sh` verifies the selected build's manifests, server entries,
 JavaScript and CSS. HTTP 200 HTML or a running PM2 process is not sufficient evidence of a
 healthy release. After switching, check public assets and browser navigation as well as health.

@@ -1,8 +1,10 @@
+import { CANONICAL_TOOLS_URL } from "./tool-links";
+
 export const traderLinks = {
-  workspace: "https://helper.kfcguild.online/forever/trader",
-  encyclopedia: "https://helper.kfcguild.online/forever/encyclopedia",
-  collector: "https://helper.kfcguild.online/forever/addon",
-  leveling: "https://helper.kfcguild.online/forever/leveling",
+  workspace: `${CANONICAL_TOOLS_URL}/forever/trader`,
+  encyclopedia: `${CANONICAL_TOOLS_URL}/forever/encyclopedia`,
+  collector: `${CANONICAL_TOOLS_URL}/forever/addon`,
+  leveling: `${CANONICAL_TOOLS_URL}/forever/leveling`,
 } as const;
 
 export const traderScreenshot = {

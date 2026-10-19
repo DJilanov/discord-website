@@ -4,8 +4,8 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 export const INDEXABLE =
   process.env.SITE_INDEXABLE === "true" && SITE_URL.startsWith("https://");
-export const HELPER_URL = (
-  process.env.HELPER_PUBLIC_URL || "https://helper.kfcguild.online"
+export const HELPER_URL = canonicalToolHref(
+  process.env.HELPER_PUBLIC_URL || CANONICAL_TOOLS_URL,
 ).replace(/\/$/, "");
 export const REGIONS = ["EU", "NA", "OCE"] as const;
 export const FACTIONS = ["Alliance", "Horde"] as const;
@@ -86,3 +86,4 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   googleVerification: "",
   bingVerification: "",
 };
+import { CANONICAL_TOOLS_URL, canonicalToolHref } from "../content/tool-links";

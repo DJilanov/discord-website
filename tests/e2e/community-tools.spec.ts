@@ -143,7 +143,7 @@ test("new resources are linked, canonical and included in the sitemap", async ({
   await page.goto("/addons");
   await expect(
     page.getByRole("link", { name: "Open WoW Trader", exact: true }),
-  ).toHaveAttribute("href", "https://helper.kfcguild.online/forever/trader");
+  ).toHaveAttribute("href", "https://kfcguild.online/tools/forever/trader");
   await page.getByRole("link", { name: "Pick an assignment" }).click();
   await expect(page).toHaveURL(/\/contribute$/);
   await page.goto("/lfg/new");

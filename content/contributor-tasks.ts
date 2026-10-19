@@ -16,7 +16,7 @@ export const contributorTasks: ContributorTask[] = [
     title: "Read one market quote",
     status: "Open browser check",
     time: "15 minutes",
-    target: "https://helper.kfcguild.online/forever/trader",
+    target: traderLinks.workspace,
     targetLabel: "Open the workspace",
     purpose:
       "Can a new visitor tell which market they are reading and how old its prices are?",
@@ -123,3 +123,4 @@ What remains untested:
 Public screenshot attached only after removing private information: yes / no
 Public credit requested: no / approved display name`,
 };
+import { traderLinks } from "./community-tools";

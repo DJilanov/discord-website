@@ -5,6 +5,7 @@ import { remarkContents } from "@/lib/markdown-contents";
 import { getArtwork } from "@/content/artwork";
 import { isValidElement } from "react";
 import { CopyButton } from "@/components/copy-button";
+import { canonicalToolHref } from "@/content/tool-links";
 
 export function Markdown({
   children,
@@ -43,16 +44,22 @@ export function Markdown({
               </div>
             );
           },
-          a: ({ href, children }) => (
-            <a
-              href={href}
-              {...(href?.startsWith("https://")
-                ? { target: "_blank", rel: "noopener noreferrer nofollow" }
-                : {})}
-            >
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) => {
+            // Stored guides may predate the move; preserve editor content in storage.
+            const canonicalHref = href ? canonicalToolHref(href) : href;
+            return (
+              <a
+                href={canonicalHref}
+                {...(canonicalHref?.startsWith("https://")
+                  ? { target: "_blank", rel: "noopener noreferrer nofollow" }
+                  : {})}
+              >
+                {typeof children === "string" && children === href
+                  ? canonicalHref
+                  : children}
+              </a>
+            );
+          },
           img: ({ src, alt }) => {
             const approved =
               typeof src === "string" ? getArtwork(src) : undefined;
