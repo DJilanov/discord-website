@@ -1,5 +1,47 @@
 # Production Deployment
 
+## October 19, 2026: active-build recovery and server-wide audit
+
+The running Discord process selected `.next-release-event-sync-20261008-r1`, but that directory
+contained only 600 KiB of cache: `BUILD_ID`, manifests, server bundles, CSS and JavaScript were
+missing. The process still returned cached HTML with HTTP 200 while twelve referenced static
+assets returned HTTP 500. Together with the earlier guild-site failure, this is consistent with
+the server cleanup removing selected custom build outputs rather than only obsolete artifacts.
+An HTTP-only health check did not detect the damage.
+
+The deployed source was copied into an isolated staging directory and rebuilt without running
+cleanup, migrations or worker commands. Preview checks verified five page asset sets and actual
+desktop/mobile navigation before switching only `wow-forever-discord`. The persisted active
+`FOREVER_BUILD_DIR` is now `.next-release-asset-recovery-20261019-r1`, with build ID
+`build-TfctsWXpff2fKS`, 38 JavaScript/CSS chunks and 68 server entries. The production build,
+TypeScript check, four build-guard regression tests and targeted lint passed. The guard was
+committed and pushed as `5410ceb`; the restored application itself uses the existing deployed
+source, not unrelated local work-in-progress. Existing activation-script permission handling
+was preserved when installing the guard. No database, bridge, auction, listing or raid worker
+was restarted or changed.
+
+Post-activation browser checks at 1440×1000 and 390×844 passed homepage image decoding, overflow,
+mobile menu/Escape behavior, Guides navigation and Raids rendering with no page or asset errors.
+Database health returned HTTP 200. The wider public audit checked all sixteen configured real
+Nginx hostnames and verified 147 deduplicated assets across fourteen reachable application pages.
+
+| Site/group                                            | Audit result                                                            |
+| ----------------------------------------------------- | ----------------------------------------------------------------------- |
+| WoW Forever Discord                                   | Recovered; public images, styles, scripts, navigation and health passed |
+| KFC guild, Tools, Forever and legacy Helper redirect  | Public asset checks passed                                              |
+| Gigsy admin aliases, SEO Improve and its admin, AI CV | Public asset checks passed                                              |
+| ALB Engineering                                       | Origin and 47 assets passed; public TLS certificate expired May 3, 2026 |
+| `kfcwow.live` and `www.kfcwow.live`                   | DNS does not resolve; current KFC domain is healthy                     |
+
+ALB certificate expiry and the old KFC domain's DNS require separate attention; neither is an
+application-build cleanup failure. This was a public-page/assets audit, not an authenticated
+end-to-end audit of every application. No additional cleanup was run during recovery.
+
+The shared asset smoke now follows the canonical destination's origin when a legacy hostname
+redirects across origins (`wow-trader` commit `1113b11`, four passing regression tests). The
+operational copy is `/home/wow-trader-system/shared/ops/smoke-site-assets.mjs`; pass page URLs as
+arguments. Keep this check, actual browser checks and deployment build validation together.
+
 ## Host Layout
 
 - Host: `89.167.46.193`; DNS apex and www point to this host.
