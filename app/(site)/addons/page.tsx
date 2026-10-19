@@ -108,6 +108,23 @@ export default function AddonsPage(): React.JSX.Element {
           <article>
             <BookOpen size={24} />
             <div>
+              <span className="tool-status caution">Free browser preview</span>
+              <h3>Forever leveling guide & XP planner</h3>
+              <p>
+                Start with Alliance Westfall 13–15. Compare a Hall of Thanes
+                visit around level 14 against crowded outdoor quests, including
+                preparation, lost XP and the return trip. Enter your current
+                rewards; the route still needs a beta playthrough. Later zones,
+                Horde routes and supporter downloads are not available yet.
+              </p>
+            </div>
+            <a className="text-link" href={traderLinks.leveling}>
+              Plan a dungeon detour <ArrowUpRight size={16} />
+            </a>
+          </article>
+          <article>
+            <BookOpen size={24} />
+            <div>
               <span className="tool-status available">Public reference</span>
               <h3>Forever Encyclopedia</h3>
               <p>

@@ -1,0 +1,119 @@
+{
+  "schema": "tbc-event-artwork.v1",
+  "edition": "tbc",
+  "generatedOn": "2026-10-03",
+  "provenance": "AI-generated interpretive fan art, not official screenshots, maps or verified encounters.",
+  "source": "https://www.wowhead.com/tbc/guide/raids-overview-burning-crusade-classic",
+  "items": [
+    {
+      "id": "karazhan",
+      "label": "Karazhan",
+      "eventType": "raid",
+      "aliases": ["Karazhan", "Kara"],
+      "alt": "Generated TBC fan art for Karazhan: The haunted ivory stone tower of Karazhan in Deadwind Pass, twisting Gothic spires above a foreboding rocky valley, violet arcane light in high windows, twisted leafless trees and ravens, pale moonlight. The iconic tall multi-tier mage tower is the clear primary subject, small armored adventurers on the path show scale.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 238502,
+      "file": "karazhan.webp"
+    },
+    {
+      "id": "gruuls-lair",
+      "label": "Gruul's Lair",
+      "eventType": "raid",
+      "aliases": ["Gruul's Lair", "Gruuls Lair", "Gruul"],
+      "alt": "Generated TBC fan art for Gruul's Lair: An enormous ochre ogre cavern in the Blade's Edge Mountains, stone tusks and giant rough timber palisades surrounding a huge shadowed opening. A gigantic hulking gronn silhouette rises inside, tiny armed adventurers approaching a dusty rocky ledge. Copper canyon daylight, neutral stone, clear readable cavern detail.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 262536,
+      "file": "gruuls-lair.webp"
+    },
+    {
+      "id": "magtheridons-lair",
+      "label": "Magtheridon's Lair",
+      "eventType": "raid",
+      "aliases": [
+        "Magtheridon's Lair",
+        "Magtheridons Lair",
+        "Magtheridon",
+        "Mag"
+      ],
+      "alt": "Generated TBC fan art for Magtheridon's Lair: A vast circular demonic prison beneath Hellfire Citadel, a gigantic chained red pit lord restrained at the center, five violet magical cubes spaced around the chamber, iron chains and rune-carved cracked stone. Crimson firelight and violet highlights, high overhead three-quarter camera, clear geometry and scale.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 254136,
+      "file": "magtheridons-lair.webp"
+    },
+    {
+      "id": "serpentshrine-cavern",
+      "label": "Serpentshrine Cavern",
+      "eventType": "raid",
+      "aliases": ["Serpentshrine Cavern", "SSC"],
+      "alt": "Generated TBC fan art for Serpentshrine Cavern: Coilfang Reservoir's immense subterranean naga sanctuary, blue-green water around sweeping sculpted stone platforms, turquoise luminous mushrooms, naga fin-shaped architecture, tall waterfalls and an immense intricate serpentine dais with a six-armed naga silhouette. Clear cool underwater-cavern atmosphere, bright teal focal light.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 294170,
+      "file": "serpentshrine-cavern.webp"
+    },
+    {
+      "id": "the-eye",
+      "label": "The Eye",
+      "eventType": "raid",
+      "aliases": ["The Eye", "Tempest Keep", "TK"],
+      "alt": "Generated TBC fan art for The Eye: The Eye of Tempest Keep, a huge floating crimson and golden elven citadel against Netherstorm's violet sky. Sweeping crystal spires and blood-elven architecture, a brilliant energy conduit and floating stone causeway, tiny adventurers in foreground. Sharp magenta, ivory and gold, citadel clearly recognizable and not obscured.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 253372,
+      "file": "the-eye.webp"
+    },
+    {
+      "id": "hyjal-summit",
+      "label": "Hyjal Summit",
+      "eventType": "raid",
+      "aliases": [
+        "Hyjal Summit",
+        "Mount Hyjal",
+        "Battle for Mount Hyjal",
+        "Hyjal",
+        "MH"
+      ],
+      "alt": "Generated TBC fan art for Hyjal Summit: The Burning Crusade Battle for Mount Hyjal raid, defending the ancient enormous World Tree Nordrassil in bright green forest and night-elven ruins. A towering blue-skinned horned demon, Archimonde, approaches in the middle distance, Alliance and Horde defenders with unlabeled banners together below. Emerald forest, clear sky, ivory ancient stone. Depict the TBC defense, not an underground Forever raid.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 336866,
+      "file": "hyjal-summit.webp"
+    },
+    {
+      "id": "black-temple",
+      "label": "Black Temple",
+      "eventType": "raid",
+      "aliases": ["Black Temple", "BT"],
+      "alt": "Generated TBC fan art for Black Temple: Black Temple's monumental dark stone stepped fortress in Shadowmoon Valley, its huge menacing entrance and sharp crenellated towers are the main subject. Fel-green cracks in the sky, distant purple ridges, faint green braziers, small adventurers on broad steps. Clearly readable fortress facade with controlled light, not a dark indistinct silhouette.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 167416,
+      "file": "black-temple.webp"
+    },
+    {
+      "id": "zulaman",
+      "label": "Zul'Aman",
+      "eventType": "raid",
+      "aliases": ["Zul'Aman", "Zul Aman", "ZA"],
+      "alt": "Generated TBC fan art for Zul'Aman: The forest troll fortress of Zul'Aman, tall carved wooden gates with eagle and bear spirit motifs, heavy red tribal cloth, mossy stone walls and ancient Amani trees. A broad bright jungle approach with a small adventurer party and drums beside the gates. Verdant green, red cloth and cool daylight, visibly Warcraft Amani architecture.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 297682,
+      "file": "zulaman.webp"
+    },
+    {
+      "id": "sunwell-plateau",
+      "label": "Sunwell Plateau",
+      "eventType": "raid",
+      "aliases": ["Sunwell Plateau", "Sunwell", "SWP"],
+      "alt": "Generated TBC fan art for Sunwell Plateau: Sunwell Plateau on the Isle of Quel'Danas, elegant ivory blood-elven terraces, soaring golden spires and crimson banners around a radiant arcane well. Clear pale blue sea beyond, violet arcane power swirling at the well, a distant demonic presence on the far terrace. Polished ivory and gold, azure sky, crimson details, bright readable grand finale.",
+      "width": 1672,
+      "height": 941,
+      "bytes": 302274,
+      "file": "sunwell-plateau.webp"
+    }
+  ]
+}

@@ -1,5 +1,165 @@
 # Implementation Status
 
+## Research and Data Feedback Loop
+
+October 4: the public `/research` library now turns Helper evidence into seven stable,
+server-rendered reports covering build changes, economy signals, profession coverage, aggregate
+guild demand, discovery coverage, world data, and public datasets. It validates the versioned Helper
+contract and displays explicit evidence gaps when the feed, history, or confirmation level is not
+enough. Sitewide navigation, footer links, metadata, Article/Dataset structure, and sitemap entries
+make the reports discoverable without duplicating Helper entity pages.
+
+Anonymous report feedback enters a staff queue at `/admin/research`; no contact, Discord, or
+character identity is collected. Staff status changes are audited. First-party analytics distinguish
+research actions, dataset downloads, and feedback submissions while continuing to respect DNT/GPC.
+Recruiting demand uses approved listings, shows freshness and sample size, and suppresses cells below
+three. Migration `034_research_feedback` is applied in production and build directory
+`.next-release-research-20261004-r2` is active. The pre-migration backup restored successfully in an
+isolated scratch database. Live checks covered every report, sitemap/robots, Article/Dataset
+metadata, and a real feedback submission; the exact verification row was removed afterward. See
+[research-feedback-loop.md](research-feedback-loop.md).
+
+## Dual-Community Raid Access Deployed
+
+October 4: the production raid-manager access gate now accepts a current member of
+either KFC Guild or WoW Forever Discord. Both guild lookups run through the same
+read-only bot boundary; any confirmed membership grants access, every guild must
+confirm absence before the UI calls someone a non-member, and a partial Discord
+failure remains a fail-closed availability error. Existing disabled-account,
+session-revocation and private-event audience checks are unchanged.
+
+The denied state now explains that either community is sufficient and offers a
+separate join action for each server. OAuth can safely return to a specific
+`/raids/[id]/reserves` page instead of falling back to the event list. Release
+`.next-release-party-roster-20261004-r6` is active; its production auth check
+confirms both eligible server IDs and no new Discord installation was required.
+
+## Forever Raid Manager Private Pilot
+
+October 2 auth follow-up: Discord-only member sign-in now checks actual server
+membership at login and each session validation, with a join-server dialog for
+outsiders and fail-closed handling of Discord outages. Existing protected bot
+configuration is reused. Local OAuth/client and separate session secrets are
+configured. Read-only Discord checks confirmed the intended app, guild and
+approved tester, and all three local/production callback URLs are registered.
+The tester completed real Discord authorization and reached Events; the active
+member record was verified locally. Production member OAuth remains disabled.
+Staff password authorization remains separate. Nothing was deployed or activated.
+
+October 2 character follow-up: Forever first/last names now work across member
+forms, database snapshots and native command tests. Extra spaces and Unicode
+are normalized, invalid names get accessible field feedback, and failed requests
+can be retried without losing the form. The responsive sweep covers public pages,
+published guides, every admin section and the raid workflows. Keyboard scrolling
+was corrected for mobile tables/code blocks, and repeated breadcrumb URLs no
+longer produce duplicate React keys. Existing production configuration is unchanged.
+
+October 2: the [first working private slice](forever-raid-manager-private-pilot.md)
+now implements isolated member OAuth, private event/character screens and APIs,
+transactional roster/bench/SR rules, independent deadlines, policy acknowledgement,
+immutable catalog review and locked native exports, plus ephemeral raid-command
+handlers. Public activation is off. Production OAuth, compact Discord delivery,
+Verified publication, supported Wowhead extraction and Forever addon handoff
+remain launch gates. M0-M2 are partial; M3-M5 are not implemented.
+
+October 2: the [native raid-manager blueprint](forever-raid-manager-implementation-plan.md)
+defines a Forever-only event/roster/soft-reserve product inside WoWForeverBot and
+the website. It covers isolated member identity, reviewed build-pinned items,
+concurrent capacity/reserve handling, loot-policy locks and exports, dynamic
+Discord verification, human Verified publication, calendar/reminder delivery,
+mobile/admin UX, M0-M5 milestones and private-pilot/rollback gates. No other WoW
+edition or item fallback is supported by the proposed implementation. This is
+a blueprint with a local private pilot: no new commands, schema, catalog or
+production service has been deployed or activated.
+
+The [Wowhead raid-loot import plan](forever-wowhead-loot-import-plan.md) extends
+the catalog work with scoped collection/offline parsing, source-access checks,
+Forever-only validation, item/boss/trash/token mapping, staged diffs and immutable
+reviewed publication. Wowhead's currently incomplete raid rewards, inherited
+comments and source-reported versus client-observed evidence are explicit gates.
+No crawling, item import, scheduler or catalog publication has been activated.
+
+## Group-Finding Channel Release
+
+The [October 1 native group release](discord-group-channel-release.md) is live:
+four PvE/PvP forums, six standardized guild/run forums, improved recurring
+leveling, matching faction ordering, direct onboarding routes and two pinned
+current posting guides. Four original text chats are preserved read-only;
+all old forum/tag IDs and onboarding role mappings/traps remain. Three product
+entries now credit Open source contributors. All 60 focused tests and independent
+live verification passed; final apply made zero changes. The inventory retains
+all 65 previous entries plus four new forums. Structured signup/reminder bot,
+native-client testing, staffing and website-copy refresh remain separate work.
+
+## Non-LFG Channel Release
+
+The [October 1 native Discord release](discord-channel-experience-release.md)
+is live: newcomer names/defaults, tool directory/support forums, three real
+product entries, class/social/trade guidance, safety process tags and preserved
+read-only archives. Independent member/access checks and an idempotent rerun
+passed. No messages/channels or original roles/questions were deleted or replaced.
+The prior leveling archive was already missing before this release and returned
+404; native Server Guide resource setup, staffing and website-copy refresh remain
+explicit follow-ups. Faction LFG conversion is now covered by the later release
+above; structured bot work remains separate.
+
+## Channel Experience Plan
+
+The [October 1 channel plan](discord-channel-ux-plan.md) covers all 62 channels
+and categories returned by a fresh read-only audit. It defines four faction LFG
+forums with clear session times and group status, consistent recruitment/PUG
+settings, newcomer routing, preserved archives, addon forums and later bot work.
+Forum settings, member permissions, command registration and event metadata were
+inspected; no live configuration or production services changed during this work.
+The planning audit is historical; the native non-LFG release above records the
+subsequent implementation.
+
+## Group Leveling Forum
+
+WoW Forever [group-leveling is now a native forum](group-leveling-forum.md), with
+separate group posts, region/faction/status tags and posting guidelines. Live
+configuration and member create/reply permissions were verified. The old text
+channel was retained as `group-leveling-archive` with unchanged permissions, and
+its incompatible text relay was retired through audited controls. KFC channels
+are unchanged. No posts were published; the new forum is not bridged to KFC.
+The October 1 release found the earlier text archive already missing (HTTP 404);
+it did not delete or recreate it. See the release's archive discrepancy.
+
+## Historical Import Withdrawn
+
+The owner rejected the historical bot-copy format and requested deletion. Both
+[history batches](shared-channels-history.md) were rolled back using audited
+controls, and the runtime is `cleanup_only` with publication disabled. The 95
+managed copies reached removed/suppressed states. Read-only Discord checks
+confirmed all 95 copies absent and all 95 originals present with original authors.
+Historical grants are withdrawn and general live participation
+remains off. The history-capable release `history-e4fe94f8` remains installed;
+this follow-up changes operational state, not application code. Earlier test
+and import-start snapshots are superseded.
+
+## Test Account Corrected
+
+The signed `/bridge join` request at 18:31 UTC came from `djilanov`, not the
+server-owner account `Psyrogue` that the operator had incorrectly selected.
+Targeted bot member lookups confirmed `djilanov` in both servers. The two pairs
+were paused, revalidated and restarted through audited controls with only the
+correct tester allowlisted, expiring at 19:34:23 UTC / 22:34:23 Sofia on September 30. No consent was fabricated, public disclosure restored or general sharing
+enabled. This was a configuration correction; the deployed application is unchanged.
+
+## Public Bridge Disclosure Removed
+
+The owner requested removal of standalone notices and channel-topic disclosures.
+The [removal follow-up](shared-channels-disclosure-removal.md) replaces those gates
+with the existing private `/bridge join` confirmation. Staff approvals, consent,
+attribution and permission checks remain. Working-tree release
+`no-notices-ec0b4b88` is deployed, and all four bot announcements and exact topic
+suffixes were removed without changing permissions or unrelated text. Both pairs
+passed actual Discord validation with no disclosures and resumed owner-only tests
+until 19:28:56 UTC / 22:28:56 Sofia on September 30; general sharing remains closed.
+Verification passed 112 tests, five focused browser tests, lint, typecheck, Linux
+builds, backup restoration and live mobile/desktop checks. KFC/Helper services were
+untouched. Earlier notice requirements below are historical and superseded.
+
 ## Restricted Bridge Test
 
 The [restricted test follow-up](shared-channels-test-pilot.md) adds a one-hour,
@@ -77,6 +237,18 @@ bot activation, Helper crawler changes and raid-addon tests remain separate.
 ## Content and Tools Plan
 
 September 30: the [content, tools and tester program](content-tools-and-community-plan.md) is prepared after reviewing the community and WoW Trader repositories, public endpoints and primary platform guidance. It accepts the owner's confirmation that WoW Trader is Forever-tested, other guild addons await raid testing, and testers are already invited. It prioritizes a tool hub, original reviewed guides, tester assignments and B0/B1 bot services; Companion distribution and ingestion retention remain separate gates. Live Helper robots output blocks OAI-SearchBot while the community permits it, so a separate search-only policy review is planned. No articles, crawler settings, bot services or production releases were changed by this planning work.
+
+## Raid Party Composition
+
+October 4: the private raid manager now persists five-player party placement,
+supports organizer drag/drop plus accessible group selectors, explains party-local
+effect coverage, and ranks both available signups and recruitment targets. TBC and
+Forever use separate pinned composition revisions; talent/setup-dependent and
+provisional Forever effects are never labeled as confirmed. New v2 lock snapshots
+include party positions while existing v1 snapshots remain immutable. See the
+[party roster release](raid-party-roster-release.md) for the data contract,
+deployment and verification boundary. The production event page gives its creator
+a direct **Roster builder** action on desktop and mobile.
 
 ## Channel Cleanup Partially Applied
 

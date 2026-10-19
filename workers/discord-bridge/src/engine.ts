@@ -23,6 +23,7 @@ import type {
   Root,
 } from "../../../lib/discord-bridge/contracts.js";
 import { DiscordFailure, type BridgeTransport } from "./transport.js";
+import { historyFingerprint } from "../../../lib/discord-bridge/history.js";
 
 interface Continuation {
   id: string;
@@ -82,7 +83,7 @@ export class BridgeEngine {
           await this.store.finish(job, "cancelled");
           return true;
         }
-        const { root, projection, bridge, consent } = bundle;
+        const { root, projection, bridge, consent, history } = bundle;
         if (job.operation === "resolve") {
           if (projection.state !== "uncertain" || !projection.candidateId) {
             await this.store.finish(job, "cancelled");
@@ -139,8 +140,10 @@ export class BridgeEngine {
           if (
             root.state !== "live" ||
             root.revision !== job.revision ||
-            root.generation !== bridge.generation ||
-            !publicationAllowed(bridge, root.authorId) ||
+            (!root.historyBatchId && root.generation !== bridge.generation) ||
+            !(root.historyBatchId
+              ? history
+              : publicationAllowed(bridge, root.authorId)) ||
             ["suppressed", "removed", "uncertain", "sending"].includes(
               projection.state,
             )
@@ -173,7 +176,7 @@ export class BridgeEngine {
             root.messageId,
           );
           const denial = source
-            ? eligibility(bridge, consent, source)
+            ? eligibility(bridge, consent, source, Date.now(), history)
             : "source_deleted";
           if (
             denial ||
@@ -187,6 +190,25 @@ export class BridgeEngine {
             );
             await this.store.finish(job, "cancelled");
             return true;
+          }
+          if (root.historyBatchId && !projection.messageId) {
+            const preview = await one<{ fingerprint: string }>(
+              this.store.pool,
+              'SELECT fingerprint FROM "ForeverBridgeImportItem" WHERE "batchId"=$1 AND "rootId"=$2',
+              [root.historyBatchId, root.id],
+            );
+            if (
+              !preview ||
+              preview.fingerprint !==
+                historyFingerprint(source, this.fingerprintKey)
+            ) {
+              await this.store.remove(
+                root.id,
+                "history_source_changed_before_send",
+              );
+              await this.store.finish(job, "cancelled");
+              return true;
+            }
           }
           // A held revision was reviewed at its source link; edits after that review invalidate it.
           if (
@@ -216,7 +238,13 @@ export class BridgeEngine {
                 ? parent.root.messageId
                 : parent.projection.messageId || undefined;
           }
-          const body = renderMessage(source, bridge, projection.nonce, replyId);
+          const body = renderMessage(
+            source,
+            bridge,
+            projection.nonce,
+            replyId,
+            Boolean(root.historyBatchId),
+          );
           const hash = payloadFingerprint(body.content, this.fingerprintKey);
           if (projection.messageId) {
             const output = await this.transport.output(projection);
@@ -485,7 +513,11 @@ export class BridgeEngine {
           );
           if (!source)
             await this.store.remove(bundle.root.id, "source_deleted");
-          else if (publicationAllowed(bundle.bridge, bundle.root.authorId))
+          else if (
+            bundle.root.historyBatchId
+              ? bundle.history
+              : publicationAllowed(bundle.bridge, bundle.root.authorId)
+          )
             await this.store.observe(source, bundle.bridge.id, true);
         }
       }
@@ -548,6 +580,8 @@ export class BridgeEngine {
       await sql.query(`DELETE FROM "ForeverBridgeConsent" c WHERE NOT c."blocked" AND c."withdrawnAt"<NOW()-INTERVAL '37 days'
         AND NOT EXISTS (SELECT 1 FROM "ForeverBridgeMessage" m WHERE m."bridgeId"=c."bridgeId" AND m."authorId"=c."actorId")`);
       await sql.query("SELECT forever_bridge_prune_audit()");
+      await sql.query(`DELETE FROM "ForeverBridgeImport" b WHERE b."createdAt"<NOW()-INTERVAL '90 days'
+        AND NOT EXISTS (SELECT 1 FROM "ForeverBridgeMessage" m WHERE m."historyBatchId"=b.id)`);
     });
   }
 }

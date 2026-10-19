@@ -12,6 +12,7 @@ export function GET(): Response {
 - [EU community](${SITE_URL}/discord/eu)
 - [NA community](${SITE_URL}/discord/na)
 - [Guides](${SITE_URL}/guides): Original community guidance with authors and update dates.
+- [Research and data](${SITE_URL}/research): Build-scoped client changes, evidence-gated market and profession reports, aggregate recruiting demand, discovery/world coverage, methods, and public data links. Candidate relationships are not confirmed drops.
 
 ## Trust and tools
 - [WoW Trader](${SITE_URL}/addons/wow-trader): Public Forever market tools; prices depend on player uploads. Optional collection software remains in controlled testing.

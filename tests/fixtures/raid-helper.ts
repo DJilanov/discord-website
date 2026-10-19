@@ -1,0 +1,50 @@
+import type { RaidHelperExport } from "../../lib/raids/signup-import";
+
+export const raidHelperFixture = {
+  id: "1556000000000000900",
+  serverId: "1554316932948172940",
+  channelId: "1556000000000000901",
+  title: "Synthetic group leveling export",
+  startTime: 1793863800,
+  signUps: [
+    {
+      userId: "1556000000000000061",
+      name: "<TEST> Organizer",
+      className: "Tank",
+      specName: "Protection",
+      roleName: "Tanks",
+      status: "primary",
+      position: 1,
+      entryTime: 1789791782,
+    },
+    {
+      userId: "1556000000000000062",
+      name: "<TEST>Healer",
+      className: "Shaman",
+      specName: "Restoration1",
+      roleName: "Healers",
+      status: "primary",
+      position: 2,
+      entryTime: 1790617159,
+      note: "Can help the group after leveling.",
+    },
+    {
+      userId: "1556000000000000065",
+      name: "<TEST>Raider",
+      className: "Paladin",
+      specName: "Retribution",
+      roleName: "Melee",
+      status: "primary",
+      position: 3,
+    },
+    {
+      userId: "1556000000000000066",
+      name: "Player_One",
+      className: "Paladin",
+      specName: "Retribution",
+      roleName: "Melee",
+      status: "primary",
+      position: 4,
+    },
+  ],
+} satisfies RaidHelperExport;

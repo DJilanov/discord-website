@@ -31,7 +31,7 @@ export function Markdown({
               typeof children.props.children === "string"
                 ? children.props.children
                 : null;
-            if (!text) return <pre>{children}</pre>;
+            if (!text) return <pre tabIndex={0}>{children}</pre>;
             return (
               <div className="article-template">
                 <CopyButton
@@ -39,7 +39,7 @@ export function Markdown({
                   label="Copy template"
                   errorMessage="Clipboard unavailable. Select the template text or use its download link."
                 />
-                <pre>{children}</pre>
+                <pre tabIndex={0}>{children}</pre>
               </div>
             );
           },

@@ -39,20 +39,38 @@ test("homepage community identity is visible without JavaScript", async ({
       "href",
       /^https?:\/\/[^/]+\/?$/,
     );
-    const siteName = await page
+    const websiteIdentity = await page
       .locator('script[type="application/ld+json"]')
-      .evaluateAll((scripts): string | undefined => {
-        for (const script of scripts) {
-          const data = JSON.parse(script.textContent || "{}") as {
-            "@graph"?: Array<{ "@type"?: string; name?: string }>;
-          };
-          const website = data["@graph"]?.find(
-            (entry: { "@type"?: string }) => entry["@type"] === "WebSite",
-          );
-          if (website) return website.name;
-        }
-      });
-    expect(siteName).toBe("WoW Forever Discord");
+      .evaluateAll(
+        (
+          scripts,
+        ):
+          | { name?: string; alternateName?: string[]; url?: string }
+          | undefined => {
+          for (const script of scripts) {
+            const data = JSON.parse(script.textContent || "{}") as {
+              "@graph"?: Array<{
+                "@type"?: string;
+                name?: string;
+                alternateName?: string[];
+                url?: string;
+              }>;
+            };
+            const website = data["@graph"]?.find(
+              (entry: { "@type"?: string }) => entry["@type"] === "WebSite",
+            );
+            if (website) return website;
+          }
+        },
+      );
+    expect(websiteIdentity).toEqual({
+      "@type": "WebSite",
+      "@id": expect.any(String),
+      url: expect.stringMatching(/^https?:\/\/[^/]+$/),
+      name: "WoW Forever Discord",
+      alternateName: ["WoW Forever Community", "wowforeverdiscord.online"],
+      publisher: { "@id": expect.any(String) },
+    });
   } finally {
     await context.close();
   }

@@ -14,6 +14,12 @@ import {
   verifyChallenge,
 } from "@/lib/security";
 import { deleteStored, storeEvidence } from "@/lib/storage";
+import {
+  guildListingDraft,
+  groupListingDraft,
+  listingDiscordUrl,
+} from "@/lib/discord-listings/contracts";
+import { resolveGroupStart } from "@/lib/group-time";
 
 export const submissionEnvelope = z.object({
   payload: z.unknown(),
@@ -21,11 +27,18 @@ export const submissionEnvelope = z.object({
   website: z.string().max(1000).default(""),
 });
 
+export const publicListingEnvelope = submissionEnvelope.extend({
+  publicDiscordConsent: z.literal(true, {
+    error:
+      "Confirm that your listing and Discord contact may be posted publicly in Discord.",
+  }),
+});
+
 export async function submitGuild(
   raw: unknown,
   ip: string,
-): Promise<{ message: string }> {
-  const envelope = submissionEnvelope.parse(raw);
+): Promise<{ message: string; discordUrl: string }> {
+  const envelope = publicListingEnvelope.parse(raw);
   await verifyChallenge(envelope.challenge, envelope.website);
   const data = guildSchema.parse(envelope.payload);
   const slug = `${
@@ -37,40 +50,85 @@ export async function submitGuild(
       .replace(/^-|-$/g, "")
       .slice(0, 70) || "guild"
   }-${publicId("g").slice(2, 10).toLowerCase()}`;
-  await db.foreverGuild.create({
-    data: {
-      ...data,
-      slug,
-      submittedIpHash: ip,
-      inviteUrl: data.inviteUrl || null,
-      websiteUrl: data.websiteUrl || null,
-    },
+  const forumId = await db.$transaction(async (tx) => {
+    const guild = await tx.foreverGuild.create({
+      data: {
+        ...data,
+        slug,
+        status: "approved",
+        submittedIpHash: ip,
+        inviteUrl: data.inviteUrl || null,
+        websiteUrl: data.websiteUrl || null,
+      },
+    });
+    const job = await tx.foreverListingDiscordJob.create({
+      data: {
+        kind: "guild",
+        entityId: guild.id,
+        ...guildListingDraft(data, guild.id),
+      },
+    });
+    await tx.foreverAuditLog.create({
+      data: {
+        actorId: "website:auto-publication",
+        action: "auto_published",
+        entityType: "guild",
+        entityId: guild.id,
+        details: { reviewStatus: "awaiting_review" },
+      },
+    });
+    return job.forumId;
   });
   return {
+    discordUrl: listingDiscordUrl(forumId),
     message:
-      "Your guild has been submitted for review. It will appear in the directory after approval. Staff can reach you through the Discord contact you provided.",
+      "Your guild is live on the website and queued for the faction's Discord recruitment forum. A moderator has been notified to review it and may hide it if it breaks the posting rules.",
   };
 }
 
 export async function submitGroup(
   raw: unknown,
   ip: string,
-): Promise<{ message: string }> {
-  const envelope = submissionEnvelope.parse(raw);
+): Promise<{ message: string; discordUrl: string }> {
+  const envelope = publicListingEnvelope.parse(raw);
   await verifyChallenge(envelope.challenge, envelope.website);
   const data = groupSchema.parse(envelope.payload);
-  const startsAt = new Date(data.startsAt);
-  await db.foreverGroup.create({
-    data: {
-      ...data,
-      startsAt,
-      expiresAt: new Date(startsAt.getTime() + 6 * 3600000),
-      submittedIpHash: ip,
-    },
+  const startsAt = resolveGroupStart(data.startsAt, data.region);
+  const forumId = await db.$transaction(async (tx) => {
+    const group = await tx.foreverGroup.create({
+      data: {
+        ...data,
+        startsAt,
+        expiresAt: new Date(startsAt.getTime() + 6 * 3600000),
+        status: "approved",
+        submittedIpHash: ip,
+      },
+    });
+    const job = await tx.foreverListingDiscordJob.create({
+      data: {
+        kind: "group",
+        entityId: group.id,
+        ...groupListingDraft(
+          { ...data, startsAt: startsAt.toISOString() },
+          group.id,
+        ),
+      },
+    });
+    await tx.foreverAuditLog.create({
+      data: {
+        actorId: "website:auto-publication",
+        action: "auto_published",
+        entityType: "group",
+        entityId: group.id,
+        details: { reviewStatus: "awaiting_review" },
+      },
+    });
+    return job.forumId;
   });
   return {
+    discordUrl: listingDiscordUrl(forumId),
     message:
-      "Your group is waiting for review. Approved posts remain visible until six hours after their start time.",
+      "Your group is live on the website and queued for the faction's Discord group forum. A moderator has been notified to review it and may hide it if it breaks the posting rules.",
   };
 }
 

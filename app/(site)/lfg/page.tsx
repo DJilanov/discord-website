@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, Plus, Swords } from "lucide-react";
+import { CalendarDays, ExternalLink, Plus, Swords } from "lucide-react";
 import { db } from "@/lib/db";
 import { REGIONS, FACTIONS, RULESETS } from "@/lib/config";
 import { pageMetadata } from "@/lib/seo";
@@ -13,6 +13,9 @@ import {
 import { Breadcrumbs, EmptyState, PageHeader } from "@/components/ui";
 import { FilterSelect, Pagination } from "@/components/directory";
 import { CopyButton } from "@/components/copy-button";
+import { formatGroupStart } from "@/lib/group-time";
+import { approvedRaidEvents } from "@/lib/raids/directory";
+import { listingDiscordUrl } from "@/lib/discord-listings/contracts";
 
 interface Props {
   searchParams: Promise<QueryParams>;
@@ -33,7 +36,7 @@ export default async function LfgPage({
   const query = await searchParams,
     page = pageNumber(query);
   const where = groupFilter(query);
-  const [groups, total] = await Promise.all([
+  const [groups, total, scheduled] = await Promise.all([
     db.foreverGroup.findMany({
       where,
       orderBy: { startsAt: "asc" },
@@ -41,7 +44,26 @@ export default async function LfgPage({
       take: 12,
     }),
     db.foreverGroup.count({ where }),
+    approvedRaidEvents(query),
   ]);
+  const listingJobs = groups.length
+    ? await db.foreverListingDiscordJob.findMany({
+        where: {
+          kind: "group",
+          entityId: { in: groups.map((group) => group.id) },
+          status: "posted",
+          threadId: { not: null },
+        },
+        select: { entityId: true, threadId: true },
+      })
+    : [];
+  const discordUrls = new Map(
+    listingJobs.flatMap((job) =>
+      job.threadId
+        ? [[job.entityId, listingDiscordUrl(job.threadId)] as const]
+        : [],
+    ),
+  );
   return (
     <div className="container">
       <Breadcrumbs items={[{ label: "Find a group", href: "/lfg" }]} />
@@ -78,7 +100,17 @@ export default async function LfgPage({
         <FilterSelect
           name="activity"
           label="Activities"
-          options={["Dungeon", "Raid", "PvP premade", "RP event", "Questing"]}
+          options={[
+            "Dungeon",
+            "Raid",
+            "PvP premade",
+            "Battleground",
+            "World PVP",
+            "RP event",
+            "Questing",
+            "Social event",
+            "Other",
+          ]}
           value={queryValue(query, "activity")}
         />
         <button type="submit" className="button primary">
@@ -88,58 +120,125 @@ export default async function LfgPage({
           Reset
         </Link>
       </form>
+      {scheduled.length > 0 && (
+        <section className="section" aria-label="Approved scheduled events">
+          <h2>Scheduled events</h2>
+          <div className="directory-list">
+            {scheduled.map((event) => (
+              <article
+                className="guild-row"
+                key={event.id}
+                id={`event-${event.id}`}
+              >
+                <div className="guild-sigil">
+                  <CalendarDays size={24} />
+                </div>
+                <div>
+                  <div className="guild-meta">
+                    <span>{event.activity}</span>
+                    <span>{event.faction}</span>
+                    <span>
+                      {event.region} · {event.ruleset}
+                    </span>
+                  </div>
+                  <h3>
+                    <Link href={`/raids/${event.id}`}>{event.title}</Link>
+                  </h3>
+                  <div className="guild-meta">
+                    <time dateTime={event.startsAt.toISOString()}>
+                      {formatGroupStart(event.startsAt, event.region)}
+                    </time>
+                    <span>
+                      {event.accepted}/{event.capacity} accepted
+                    </span>
+                  </div>
+                  {event.description && <p>{event.description}</p>}
+                </div>
+                <div className="button-row scheduled-event-actions">
+                  <Link className="button primary" href={`/raids/${event.id}`}>
+                    Sign up
+                  </Link>
+                  <a
+                    className="button secondary"
+                    href={event.discordUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Discord post
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
       <div className="result-count">
         <span>
           {total} upcoming {total === 1 ? "group" : "groups"}
+          {scheduled.length > 0 && ` · ${scheduled.length} scheduled events`}
         </span>
-        <span>Times shown in UTC</span>
+        <span>EU: Central Europe · NA: New York · OCE: UTC</span>
       </div>
       {groups.length ? (
         <div className="directory-list">
-          {groups.map((group) => (
-            <article
-              className="guild-row"
-              id={`group-${group.id}`}
-              key={group.id}
-            >
-              <div className="guild-sigil">
-                <Swords size={24} />
-              </div>
-              <div>
-                <div className="guild-meta">
-                  <span>{group.activity}</span>
-                  <span>{group.faction}</span>
-                  <span>
-                    {group.region} ·{" "}
-                    {group.gameRuleset === "Unconfirmed"
-                      ? "Ruleset unconfirmed"
-                      : group.gameRuleset}
+          {groups.map((group) => {
+            const discordUrl = discordUrls.get(group.id);
+            return (
+              <article
+                className="guild-row"
+                id={`group-${group.id}`}
+                key={group.id}
+              >
+                <div className="guild-sigil">
+                  <Swords size={24} />
+                </div>
+                <div>
+                  <div className="guild-meta">
+                    <span>{group.activity}</span>
+                    <span>{group.faction}</span>
+                    <span>
+                      {group.region} ·{" "}
+                      {group.gameRuleset === "Unconfirmed"
+                        ? "Ruleset unconfirmed"
+                        : group.gameRuleset}
+                    </span>
+                  </div>
+                  <h3>{group.title}</h3>
+                  <div className="guild-meta">
+                    <span>
+                      <CalendarDays size={13} />
+                      <time dateTime={group.startsAt.toISOString()}>
+                        {formatGroupStart(group.startsAt, group.region)}
+                      </time>
+                    </span>
+                  </div>
+                  <p>{group.description}</p>
+                  <span className="fine-print">
+                    Discord: {group.contactDiscord}
                   </span>
                 </div>
-                <h3>{group.title}</h3>
-                <div className="guild-meta">
-                  <span>
-                    <CalendarDays size={13} />
-                    <time dateTime={group.startsAt.toISOString()}>
-                      {group.startsAt.toLocaleString("en-GB", {
-                        timeZone: "UTC",
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      })}{" "}
-                      UTC
-                    </time>
-                  </span>
+                <div className="button-row scheduled-event-actions">
+                  {discordUrl && (
+                    <a
+                      className="button primary"
+                      href={discordUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <ExternalLink size={16} />
+                      Discord post
+                    </a>
+                  )}
+                  <CopyButton
+                    text={group.contactDiscord}
+                    label="Copy contact"
+                  />
                 </div>
-                <p>{group.description}</p>
-                <span className="fine-print">
-                  Discord: {group.contactDiscord}
-                </span>
-              </div>
-              <CopyButton text={group.contactDiscord} label="Copy contact" />
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
-      ) : (
+      ) : scheduled.length ? null : (
         <EmptyState
           title="The next group could be yours."
           action={

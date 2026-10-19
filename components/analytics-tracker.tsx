@@ -40,7 +40,15 @@ export function AnalyticsTracker(): null {
     } catch {
       /* Tracking remains optional when browser storage is unavailable. */
     }
-    const send = (event: "page_view" | "discord_click", path: string): void => {
+    const send = (
+      event:
+        | "page_view"
+        | "discord_click"
+        | "research_action"
+        | "dataset_download"
+        | "feedback_submit",
+      path: string,
+    ): void => {
       void fetch("/api/analytics/event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,8 +61,18 @@ export function AnalyticsTracker(): null {
     send("page_view", pathname);
     const onClick = (event: MouseEvent): void => {
       const target =
-        event.target instanceof Element ? event.target.closest("a") : null;
-      if (target?.getAttribute("href") === "/join")
+        event.target instanceof Element
+          ? event.target.closest("a, button")
+          : null;
+      if (!target) return;
+      const trackedEvent = target.getAttribute("data-analytics-event");
+      if (
+        trackedEvent === "research_action" ||
+        trackedEvent === "dataset_download"
+      ) {
+        send(trackedEvent, pathname);
+      }
+      if (target.getAttribute("href") === "/join")
         send("discord_click", pathname);
     };
     document.addEventListener("click", onClick);

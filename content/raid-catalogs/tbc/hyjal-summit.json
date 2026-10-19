@@ -1,0 +1,1466 @@
+{
+  "schema": "tbc-atlasloot-loot-candidates.v1",
+  "game": "tbc",
+  "raidName": "Hyjal Summit",
+  "raidSourceUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708",
+  "sourcePatch": "TBC Classic / AtlasLoot Revival 0.2.4",
+  "clientBuild": null,
+  "availability": "confirmed",
+  "coverage": "partial",
+  "capturedAt": "2026-10-03T14:47:06.858Z",
+  "authorizedSource": true,
+  "provenance": {
+    "provider": "AtlasLoot Revival",
+    "version": "0.2.4",
+    "archiveSha256": "dc7169b383572a9348727cb6818602247a3f08ad133a243778c4ccd5e43a8ea2",
+    "fileUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708"
+  },
+  "items": [
+    {
+      "itemId": 30861,
+      "name": "Furious Shackles",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30861",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30862,
+      "name": "Blessed Adamantite Bracers",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30862",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30863,
+      "name": "Deadly Cuffs",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30863",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30864,
+      "name": "Bracers of the Pathfinder",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30864",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30865,
+      "name": "Tracker's Blade",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30865",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30866,
+      "name": "Blood-stained Pauldrons",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30866",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30868,
+      "name": "Rejuvenating Bracers",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30868",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30869,
+      "name": "Howling Wind Bracers",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30869",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30870,
+      "name": "Cuffs of Devastation",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30870",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30871,
+      "name": "Bracers of Martyrdom",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30871",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30872,
+      "name": "Chronicle of Dark Secrets",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30872",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30873,
+      "name": "Stillwater Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30873",
+      "lootSource": "Rage Winterchill",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30874,
+      "name": "The Unbreakable Will",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30874",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30878,
+      "name": "Glimmering Steel Mantle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30878",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30879,
+      "name": "Don Alejandro's Money Belt",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30879",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30880,
+      "name": "Quickstrider Moccasins",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30880",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30881,
+      "name": "Blade of Infamy",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30881",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30882,
+      "name": "Bastion of Light",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30882",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30883,
+      "name": "Pillar of Ferocity",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30883",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30884,
+      "name": "Hatefury Mantle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30884",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30885,
+      "name": "Archbishop's Slippers",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30885",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30886,
+      "name": "Enchanted Leather Sandals",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30886",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30887,
+      "name": "Golden Links of Restoration",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30887",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30888,
+      "name": "Anetheron's Noose",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30888",
+      "lootSource": "Anetheron",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30889,
+      "name": "Kaz'rogal's Hardened Heart",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30889",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30891,
+      "name": "Black Featherlight Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30891",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30892,
+      "name": "Beast-tamer's Shoulders",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30892",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30893,
+      "name": "Sun-touched Chain Leggings",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30893",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30894,
+      "name": "Blue Suede Shoes",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30894",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30895,
+      "name": "Angelista's Sash",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30895",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30896,
+      "name": "Glory of the Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30896",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30897,
+      "name": "Girdle of Hope",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30897",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30898,
+      "name": "Shady Dealer's Pantaloons",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30898",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30899,
+      "name": "Don Rodrigo's Poncho",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30899",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30900,
+      "name": "Bow-stitched Leggings",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30900",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30901,
+      "name": "Boundless Agony",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30901",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30902,
+      "name": "Cataclysm's Edge",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30902",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30903,
+      "name": "Legguards of Endless Rage",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30903",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30904,
+      "name": "Savior's Grasp",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30904",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30905,
+      "name": "Midnight Chestguard",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30905",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30906,
+      "name": "Bristleblitz Striker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30906",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30907,
+      "name": "Mail of Fevered Pursuit",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30907",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30908,
+      "name": "Apostle of Argus",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30908",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30909,
+      "name": "Antonidas's Aegis of Rapt Concentration",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30909",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30910,
+      "name": "Tempest of Chaos",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30910",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30911,
+      "name": "Scepter of Purification",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30911",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30912,
+      "name": "Leggings of Eternity",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30912",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30913,
+      "name": "Robes of Rhonin",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30913",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30914,
+      "name": "Belt of the Crescent Moon",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30914",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30915,
+      "name": "Belt of Seething Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30915",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30916,
+      "name": "Leggings of Channeled Elements",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30916",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30917,
+      "name": "Razorfury Mantle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30917",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30918,
+      "name": "Hammer of Atonement",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30918",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30919,
+      "name": "Valestalker Girdle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30919",
+      "lootSource": "Kaz'rogal",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 31092,
+      "name": "Gloves of the Forgotten Conqueror",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=31092",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Priest",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 31093,
+      "name": "Gloves of the Forgotten Vanquisher",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=31093",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Mage",
+        "Rogue"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 31094,
+      "name": "Gloves of the Forgotten Protector",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=31094",
+      "lootSource": "Azgalor",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Shaman",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 31095,
+      "name": "Helm of the Forgotten Protector",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=31095",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Shaman",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 31096,
+      "name": "Helm of the Forgotten Vanquisher",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=31096",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Mage",
+        "Rogue"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 31097,
+      "name": "Helm of the Forgotten Conqueror",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=31097",
+      "lootSource": "Archimonde",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Priest",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32285,
+      "name": "Design: Flashing Crimson Spinel",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32285",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32289,
+      "name": "Design: Stormy Empyrean Sapphire",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32289",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32295,
+      "name": "Design: Mystic Lionseye",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32295",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32296,
+      "name": "Design: Great Lionseye",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32296",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32297,
+      "name": "Design: Sovereign Shadowsong Amethyst",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32297",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32298,
+      "name": "Design: Shifting Shadowsong Amethyst",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32298",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32303,
+      "name": "Design: Inscribed Pyrestone",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32303",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32307,
+      "name": "Design: Veiled Pyrestone",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32307",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32428,
+      "name": "Heart of Darkness",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32428",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32589,
+      "name": "Hellfire-Encased Pendant",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32589",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32590,
+      "name": "Nethervoid Cloak",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32590",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32591,
+      "name": "Choker of Serrated Blades",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32591",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32592,
+      "name": "Chestguard of Relentless Storms",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32592",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32609,
+      "name": "Boots of the Divine Light",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32609",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32945,
+      "name": "Fist of Molten Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32945",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32946,
+      "name": "Claw of Molten Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32946",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 34009,
+      "name": "Hammer of Judgement",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=34009",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 34010,
+      "name": "Pepe's Shroud of Pacification",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=34010",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+.auction-admin {
+  max-width: 1050px;
+}
+.auction-header,
+.auction-run-heading {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.auction-header h1 {
+  margin: 0;
+}
+.auction-health {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 20px 0 28px;
+}
+.auction-health time,
+.auction-runs time,
+.auction-markets small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.auction-admin fieldset {
+  border: 0;
+  border-top: 1px solid var(--line);
+  padding: 22px 0;
+  min-width: 0;
+}
+.auction-admin legend {
+  font-size: 17px;
+  padding: 0 12px 0 0;
+}
+.auction-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.auction-modes label,
+.auction-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auction-admin input[type="checkbox"],
+.auction-admin input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.auction-admin .form-grid {
+  margin-bottom: 18px;
+  row-gap: 18px;
+}
+.auction-admin .form-grid label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.auction-admin input,
+.auction-admin select {
+  min-width: 0;
+  max-width: 100%;
+}
+.auction-markets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+.auction-markets li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.auction-markets small {
+  display: block;
+  margin-top: 3px;
+}
+.auction-check span,
+.auction-runs h3 {
+  overflow-wrap: anywhere;
+}
+.auction-runs {
+  margin-top: 38px;
+}
+.auction-runs article {
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+}
+.auction-runs h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.auction-runs p {
+  margin: 10px 0;
+}
+.auction-runs details {
+  margin: 14px 0;
+}
+.auction-runs pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.auction-run-heading .badge {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .auction-run-heading {
+    align-items: flex-start;
+  }
+  .auction-admin .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

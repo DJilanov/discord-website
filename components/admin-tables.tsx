@@ -30,7 +30,12 @@ export function AdminList({
           </Link>
         </p>
       )}
-      <div className="table-scroll">
+      <div
+        className="table-scroll"
+        tabIndex={0}
+        role="region"
+        aria-label="Record list"
+      >
         <table>
           <thead>
             <tr>

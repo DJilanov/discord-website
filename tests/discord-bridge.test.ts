@@ -15,6 +15,7 @@ import {
   type Consent,
   type Projection,
   type SourceMessage,
+  type HistoryBatch,
 } from "../lib/discord-bridge/contracts";
 import {
   contentPolicy,
@@ -38,6 +39,15 @@ import {
   type BridgeTransport,
 } from "../workers/discord-bridge/src/transport";
 import type { Staff } from "../lib/auth";
+import { HistoryEngine } from "../workers/discord-bridge/src/history";
+import {
+  createHistory,
+  controlHistory,
+} from "../lib/discord-bridge/history-admin";
+import {
+  historyControlSchema,
+  historyCreateSchema,
+} from "../lib/discord-bridge/history";
 
 if (new URL(process.env.DATABASE_URL || "").port !== "55432")
   throw new Error(
@@ -140,6 +150,21 @@ class FakeTransport implements BridgeTransport {
   deleteError: DiscordFailure | null = null;
   beforeCreate: (() => Promise<void>) | null = null;
   responses: string[] = [];
+  async history(
+    _bridge: Bridge,
+    channelId: string,
+    before: string,
+    limit: number,
+  ): Promise<SourceMessage[]> {
+    return [...this.messages.values()]
+      .filter(
+        (message) =>
+          message.channel_id === channelId &&
+          BigInt(message.id) < BigInt(before),
+      )
+      .sort((a, b) => (BigInt(a.id) > BigInt(b.id) ? -1 : 1))
+      .slice(0, limit);
+  }
   async validate(): Promise<string> {
     return this.validation;
   }
@@ -303,6 +328,9 @@ afterEach(async () => {
     await pool.query('DELETE FROM "ForeverBridgeConsent" WHERE "bridgeId"=$1', [
       pair.id,
     ]);
+    await pool.query('DELETE FROM "ForeverBridgeImport" WHERE "bridgeId"=$1', [
+      pair.id,
+    ]);
     await pool.query('DELETE FROM "ForeverDiscordBridge" WHERE "id"=$1', [
       pair.id,
     ]);
@@ -317,6 +345,315 @@ afterEach(async () => {
 });
 after(async () => {
   await pool.end();
+});
+
+async function historyStep(): Promise<void> {
+  await pool.query(
+    'UPDATE "ForeverBridgeImport" SET "dueAt"=NOW() WHERE "bridgeId"=$1',
+    [bridge.id],
+  );
+  await new HistoryEngine(store, transport, secret).tick();
+}
+async function historyBatch(batchId: string): Promise<HistoryBatch> {
+  return (await one<HistoryBatch>(
+    pool,
+    'SELECT * FROM "ForeverBridgeImport" WHERE id=$1',
+    [batchId],
+  ))!;
+}
+async function historyControl(
+  batchId: string,
+  action: "start" | "pause" | "resume" | "rollback",
+  actors = [author],
+): Promise<void> {
+  const batch = await historyBatch(batchId);
+  await controlHistory(
+    store,
+    historyControlSchema.parse({
+      id: batchId,
+      version: batch.version,
+      action,
+      reason: "Authors explicitly approved this bounded historical scope",
+      ...(action === "start" ? { actorIds: actors, reviewed: true } : {}),
+    }),
+    owner,
+  );
+}
+function oldMessage(
+  offset = 0,
+  overrides: Partial<SourceMessage> = {},
+): SourceMessage {
+  const time = Date.now() - 86400000 + offset;
+  return fixture(guilds.kfc, {
+    id: String(BigInt(time - 1420070400000) << 22n),
+    timestamp: new Date(time).toISOString(),
+    ...overrides,
+  });
+}
+async function previewHistory(messages: SourceMessage[]): Promise<string> {
+  const previousCreates = transport.creates;
+  await pool.query(
+    'UPDATE "ForeverDiscordBridge" SET state=\'ready\',"approvalA"=\'staff:test\',"approvalB"=\'staff:test\',"validatedAt"=NOW() WHERE id=$1',
+    [bridge.id],
+  );
+  for (const message of messages) transport.messages.set(message.id, message);
+  const batchId = await createHistory(
+    store,
+    historyCreateSchema.parse({
+      bridgeId: bridge.id,
+      direction: "both",
+      fromAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+      untilAt: new Date(Date.now() - 300000).toISOString(),
+      limit: 100,
+      reason: "Read-only historical preview for approved channel pair",
+    }),
+    owner,
+  );
+  for (
+    let i = 0;
+    i < 6 && (await historyBatch(batchId)).state === "scanning";
+    i++
+  )
+    await historyStep();
+  assert.equal((await historyBatch(batchId)).state, "preview");
+  assert.equal(transport.creates, previousCreates);
+  return batchId;
+}
+
+test("history preview is metadata-only; explicit historical grants never enroll future messages", async () => {
+  const source = oldMessage();
+  const reply = oldMessage(10, {
+    message_reference: { message_id: source.id, channel_id: channelA },
+  });
+  const disallowed = oldMessage(20, {
+    author: { id: secondAuthor, username: "Not approved" },
+  });
+  const media = oldMessage(30, { attachments: [{}] });
+  const batchId = await previewHistory([source, reply, disallowed, media]);
+  const metadata = await pool.query(
+    'SELECT * FROM "ForeverBridgeImportItem" WHERE "batchId"=$1',
+    [batchId],
+  );
+  assert.equal(metadata.rowCount, 4);
+  assert.ok(!JSON.stringify(metadata.rows).includes(source.content));
+  await historyControl(batchId, "start");
+  const previousConsent = await store.consent(bridge.id, guilds.kfc, author);
+  await historyStep();
+  await drain();
+  await historyStep();
+  await drain();
+  await historyStep();
+  assert.equal(transport.creates, 2);
+  assert.equal((await historyBatch(batchId)).state, "completed");
+  assert.match(transport.bodies[0].content, /Imported from KFC/);
+  assert.ok(
+    transport.bodies[0].content.includes(
+      new Date(source.timestamp).toISOString(),
+    ),
+  );
+  assert.equal(transport.bodies[0].flags, 4100);
+  assert.deepEqual(transport.bodies[0].allowed_mentions, {
+    parse: [],
+    replied_user: false,
+  });
+  assert.ok(transport.bodies[1].message_reference);
+  assert.deepEqual(
+    await store.consent(bridge.id, guilds.kfc, author),
+    previousConsent,
+  );
+  assert.equal(await store.observe(fixture(), bridge.id), null);
+  const ids = (
+    await pool.query(
+      'SELECT id FROM "ForeverBridgeMessage" WHERE "historyBatchId"=$1 ORDER BY "sourceAt"',
+      [batchId],
+    )
+  ).rows;
+  await store.deleted(guilds.kfc, channelA, [source.id]);
+  await drain();
+  assert.equal((await store.bundle(ids[0].id))!.projection.state, "removed");
+  assert.equal((await store.bundle(ids[1].id))!.projection.state, "removed");
+  assert.ok(transport.messages.has(source.id));
+});
+
+test("history controls require authorized, reviewed, versioned author-specific scope", async () => {
+  const batchId = await previewHistory([oldMessage()]);
+  const input = {
+    id: batchId,
+    version: (await historyBatch(batchId)).version,
+    action: "start" as const,
+    reason: "Explicit author approval checked",
+    actorIds: [author],
+    reviewed: true as const,
+  };
+  await assert.rejects(
+    controlHistory(store, input, { ...owner, role: "moderator" }),
+    { status: 403 },
+  );
+  await assert.rejects(
+    controlHistory(store, { ...input, version: input.version - 1 }, owner),
+    { status: 409 },
+  );
+  await assert.rejects(
+    controlHistory(store, { ...input, reviewed: undefined }, owner),
+    { status: 409 },
+  );
+  await assert.rejects(
+    controlHistory(store, { ...input, actorIds: [secondAuthor] }, owner),
+    { status: 400 },
+  );
+  await controlHistory(store, input, owner);
+  await assert.rejects(controlHistory(store, input, owner), { status: 409 });
+  await command("leave");
+  await historyStep();
+  await drain();
+  assert.equal(transport.creates, 0);
+});
+
+test("history rechecks original revisions and permissions immediately before publication", async () => {
+  const changed = oldMessage();
+  const deleted = oldMessage(10);
+  const batchId = await previewHistory([changed, deleted]);
+  await historyControl(batchId, "start");
+  transport.messages.set(changed.id, {
+    ...changed,
+    content: "Changed after approved preview",
+  });
+  transport.messages.delete(deleted.id);
+  await historyStep();
+  await historyStep();
+  await historyStep();
+  await drain();
+  assert.equal(transport.creates, 0);
+  const reasons = (
+    await pool.query(
+      'SELECT reason FROM "ForeverBridgeImportItem" WHERE "batchId"=$1 ORDER BY reason',
+      [batchId],
+    )
+  ).rows.map((row) => row.reason);
+  assert.deepEqual(reasons, ["source_changed_since_preview", "source_deleted"]);
+});
+
+test("history pauses before delivery, resumes without duplicates and rolls back only managed copies", async () => {
+  const source = oldMessage();
+  const batchId = await previewHistory([source]);
+  await historyControl(batchId, "start");
+  await historyStep();
+  await historyControl(batchId, "pause");
+  await drain();
+  assert.equal(transport.creates, 0);
+  await historyControl(batchId, "resume");
+  await drain();
+  await historyStep();
+  assert.equal(transport.creates, 1);
+  await historyStep();
+  await drain();
+  assert.equal(transport.creates, 1);
+  await historyControl(batchId, "rollback");
+  await drain();
+  await historyStep();
+  assert.equal((await historyBatch(batchId)).state, "rolled_back");
+  assert.equal(transport.deletions.length, 1);
+  assert.ok(transport.messages.has(source.id));
+});
+
+test("history withdrawal during HTTP send retracts late copies and never reenrolls the author", async () => {
+  const batchId = await previewHistory([oldMessage()]);
+  await historyControl(batchId, "start");
+  await historyStep();
+  transport.beforeCreate = async () => {
+    await command("leave");
+  };
+  await drain();
+  assert.equal(transport.creates, 1);
+  assert.equal(transport.deletions.length, 1);
+  assert.ok((await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt);
+});
+
+test("restart preserves confirmed history, pauses imports and still cleans live participation", async () => {
+  const batchId = await previewHistory([oldMessage(), oldMessage(10)]);
+  await historyControl(batchId, "start");
+  await historyStep();
+  await drain();
+  const root = await one<{ id: string }>(
+    pool,
+    'SELECT id FROM "ForeverBridgeMessage" WHERE "historyBatchId"=$1',
+    [batchId],
+  );
+  await store.recover();
+  assert.equal((await historyBatch(batchId)).state, "paused");
+  assert.equal((await store.bundle(root!.id))!.projection.state, "live");
+  assert.equal((await store.bundle(root!.id))!.root.state, "live");
+  assert.ok((await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt);
+  await command("leave");
+  await drain();
+  assert.equal((await store.bundle(root!.id))!.projection.state, "removed");
+});
+
+test("historical publication rejects changed staged posts, expired grants and lost membership", async () => {
+  const source = oldMessage();
+  const batchId = await previewHistory([source]);
+  await historyControl(batchId, "start");
+  await historyStep();
+  transport.messages.set(source.id, {
+    ...source,
+    content: "Changed between staging and sending",
+  });
+  await drain();
+  assert.equal(transport.creates, 0);
+  await historyStep();
+  assert.equal((await historyBatch(batchId)).state, "completed");
+  const second = await previewHistory([oldMessage(100)]);
+  await historyControl(second, "start");
+  await pool.query(
+    'UPDATE "ForeverBridgeImportConsent" SET "expiresAt"=NOW()-INTERVAL \'1 second\' WHERE "batchId"=$1',
+    [second],
+  );
+  await historyStep();
+  await drain();
+  await historyStep();
+  assert.equal(transport.creates, 0);
+  const third = await previewHistory([oldMessage(200)]);
+  await historyControl(third, "start");
+  transport.eligibleResult = false;
+  await historyStep();
+  await drain();
+  assert.equal(transport.creates, 0);
+});
+
+test("rollback of completed history remains available during a newer preview", async () => {
+  const batchId = await previewHistory([oldMessage()]);
+  await historyControl(batchId, "start");
+  await historyStep();
+  await drain();
+  await historyStep();
+  const next = await previewHistory([oldMessage(100)]);
+  await historyControl(batchId, "rollback");
+  await drain();
+  await historyStep();
+  assert.equal((await historyBatch(batchId)).state, "rolled_back");
+  assert.equal((await historyBatch(next)).state, "preview");
+});
+
+test("history transport rejects arbitrary endpoints and invalid pagination before a request", async (context) => {
+  const adapter = new DiscordTransport("local-fixture-not-a-real-token");
+  let gets = 0;
+  context.mock.method(adapter.rest, "get", async () => {
+    gets++;
+    throw new DiscordFailure("forbidden");
+  });
+  await assert.rejects(
+    adapter.history(bridge, id(), id(), 100),
+    DiscordFailure,
+  );
+  await assert.rejects(
+    adapter.history(bridge, channelA, id(), 101),
+    DiscordFailure,
+  );
+  await assert.rejects(
+    adapter.history(bridge, channelA, "bad-cursor", 10),
+    DiscordFailure,
+  );
+  assert.equal(gets, 0);
 });
 
 test("three pairs have unique slots and endpoints, including concurrent draft creation", async () => {
@@ -512,8 +849,6 @@ test("only the explicitly selected existing KFC chats may retain a role-gated au
   let privateDestination = false;
   let missingTopic = false;
   let nsfw = false;
-  const noticeA = id(),
-    noticeB = id();
   const permissions = String((1n << 10n) | (1n << 11n) | (1n << 16n));
   context.mock.method(
     adapter.rest,
@@ -554,16 +889,6 @@ test("only the explicitly selected existing KFC chats may retain a role-gated au
             { id: applicationId, type: 1, allow: permissions, deny: "0" },
           ],
         };
-      if (
-        route ===
-        `/channels/${channel}/messages/${destination ? noticeB : noticeA}`
-      )
-        return fixture(guild, {
-          channel_id: channel,
-          id: destination ? noticeB : noticeA,
-          content:
-            "Two-way sharing. /bridge join https://www.wowforeverdiscord.online/bot/shared-channels",
-        });
       if (route === `/applications/${applicationId}/guilds/${guild}/commands`)
         return [
           {
@@ -573,16 +898,12 @@ test("only the explicitly selected existing KFC chats may retain a role-gated au
             })),
           },
         ];
-      throw Error(
-        "Unexpected read outside selected endpoint metadata and exact notices",
-      );
+      throw Error("Unexpected read outside selected endpoint metadata");
     },
   );
   const configured = (): Bridge => ({
     ...bridge,
     channelA: sourceId,
-    noticeA: messageLink(guilds.kfc, sourceId, noticeA),
-    noticeB: messageLink(guilds.forever, channelB, noticeB),
   });
   assert.match(await adapter.validate(configured()), /^[a-f0-9]{64}$/);
   privateDestination = true;
@@ -591,7 +912,7 @@ test("only the explicitly selected existing KFC chats may retain a role-gated au
   privateDestination = false;
   missingTopic = true;
   adapter.invalidate();
-  await assert.rejects(adapter.validate(configured()), DiscordFailure);
+  assert.match(await adapter.validate(configured()), /^[a-f0-9]{64}$/);
   missingTopic = false;
   nsfw = true;
   adapter.invalidate();
@@ -623,14 +944,12 @@ test("late output IDs reopen cleanup accounting without reviving a removed sourc
   assert.equal(transport.messages.has(late.id), false);
 });
 
-test("Discord adapter validates only selected endpoints and targeted member permissions", async (context) => {
+test("Discord adapter validates without public notices or topic text and still checks member permissions", async (context) => {
   const adapter = new DiscordTransport("local-fixture-not-a-real-token");
-  const noticeA = id(),
-    noticeB = id();
   const configured = {
     ...bridge,
-    noticeA: messageLink(guilds.kfc, channelA, noticeA),
-    noticeB: messageLink(guilds.forever, channelB, noticeB),
+    noticeA: null,
+    noticeB: null,
   };
   const calls: string[] = [];
   let timedOut = false;
@@ -666,7 +985,7 @@ test("Discord adapter validates only selected endpoints and targeted member perm
           position: 0,
           parent_id: null,
           nsfw: false,
-          topic: "https://www.wowforeverdiscord.online/bot/shared-channels",
+          topic: null,
           permission_overwrites: [],
         };
       if (route === `/guilds/${guild}/members/${applicationId}`)
@@ -688,25 +1007,26 @@ test("Discord adapter validates only selected endpoints and targeted member perm
             })),
           },
         ];
-      if (
-        route ===
-        `/channels/${channel}/messages/${guild === guilds.kfc ? noticeA : noticeB}`
-      )
-        return fixture(guild, {
-          id: guild === guilds.kfc ? noticeA : noticeB,
-          content:
-            "Two-way shared channel. /bridge join https://www.wowforeverdiscord.online/bot/shared-channels",
-        });
       throw new Error(
         "Unexpected route; no history or member-list reads are allowed.",
       );
     },
   );
-  assert.match(await adapter.validate(configured), /^[a-f0-9]{64}$/);
+  const fingerprint = await adapter.validate(configured);
+  assert.match(fingerprint, /^[a-f0-9]{64}$/);
+  assert.equal(
+    await adapter.validate({
+      ...configured,
+      noticeA: messageLink(guilds.kfc, channelA, id()),
+      noticeB: messageLink(guilds.forever, channelB, id()),
+    }),
+    fingerprint,
+  );
   assert.equal(await adapter.eligible(configured, author), true);
   timedOut = true;
   assert.equal(await adapter.eligible(configured, author), false);
   assert.ok(!calls.some((route) => /\/(messages|members)$/.test(route)));
+  assert.ok(!calls.some((route) => route.includes("/messages/")));
 });
 
 test("Discord adapter sends a fixed identity, stable nonce, safe mentions and bounded reply body", async (context) => {
@@ -1232,6 +1552,116 @@ test("consent confirmation is actor-bound, encrypted, idempotent and checks both
   );
   assert.ok(transport.responses[0].includes("opted in"));
 });
+test("repeated confirmation clicks report status without enrolling twice", async () => {
+  await command("leave");
+  const joined = (await command("join")) as {
+    data: { components: { components: { custom_id: string }[] }[] };
+  };
+  const payload = {
+    type: 3,
+    application_id: applicationId,
+    guild_id: guilds.kfc,
+    channel_id: channelA,
+    token: "local-test-interaction-token",
+    member: { user: { id: author } },
+    data: { custom_id: joined.data.components[0].components[0].custom_id },
+  };
+  assert.equal(
+    (await bridgeInteraction({ ...payload, id: id() }, store, secret)).type,
+    5,
+  );
+  const repeated = { ...payload, id: id() };
+  const pending = await bridgeInteraction(repeated, store, secret);
+  assert.match(pending.data.content || "", /already submitted/);
+  assert.equal(pending.data.flags, 64);
+  assert.deepEqual(await bridgeInteraction(repeated, store, secret), pending);
+  assert.ok((await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt);
+  await engine.consentTick();
+  const enrolled = await store.consent(bridge.id, guilds.kfc, author);
+  assert.equal(enrolled!.withdrawnAt, null);
+  await pool.query(
+    'UPDATE "ForeverDiscordInteraction" SET "expiresAt"=NOW()-INTERVAL \'1 second\' WHERE "challengeId"=$1',
+    [payload.data.custom_id.slice(7)],
+  );
+  const completed = await bridgeInteraction(
+    { ...payload, id: id() },
+    store,
+    secret,
+  );
+  assert.match(completed.data.content || "", /already opted in/);
+  assert.deepEqual(
+    await store.consent(bridge.id, guilds.kfc, author),
+    enrolled,
+  );
+  const confirmations = await one<{ count: number }>(
+    pool,
+    'SELECT COUNT(*)::int AS count FROM "ForeverAuditLog" WHERE "entityType"=\'discord_bridge\' AND "entityId"=$1 AND "action"=\'consent_granted\'',
+    [bridge.id],
+  );
+  assert.equal(confirmations?.count, 1);
+  await command("leave");
+  const afterLeaving = await bridgeInteraction(
+    { ...payload, id: id() },
+    store,
+    secret,
+  );
+  assert.match(afterLeaving.data.content || "", /\/bridge join/);
+  assert.doesNotMatch(afterLeaving.data.content || "", /already opted in/);
+  await engine.consentTick();
+  assert.ok((await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt);
+});
+
+test("expired or changed confirmations explain recovery without granting consent", async () => {
+  await command("leave");
+  for (const condition of [
+    "expired",
+    "swept",
+    "generation",
+    "policy",
+  ] as const) {
+    const joined = (await command("join")) as {
+      data: { components: { components: { custom_id: string }[] }[] };
+    };
+    const customId = joined.data.components[0].components[0].custom_id;
+    if (condition === "expired" || condition === "swept") {
+      await pool.query(
+        'UPDATE "ForeverDiscordInteraction" SET "expiresAt"=NOW()-INTERVAL \'1 second\' WHERE "challengeId"=$1',
+        [customId.slice(7)],
+      );
+      if (condition === "swept") await engine.maintenance();
+    } else {
+      await pool.query(
+        condition === "generation"
+          ? 'UPDATE "ForeverDiscordBridge" SET "generation"="generation"+1 WHERE "id"=$1'
+          : 'UPDATE "ForeverDiscordBridge" SET "policyVersion"="policyVersion"+1 WHERE "id"=$1',
+        [bridge.id],
+      );
+    }
+    const response = await bridgeInteraction(
+      {
+        type: 3,
+        id: id(),
+        application_id: applicationId,
+        guild_id: guilds.kfc,
+        channel_id: channelA,
+        token: "local-test-interaction-token",
+        member: { user: { id: author } },
+        data: { custom_id: customId },
+      },
+      store,
+      secret,
+    );
+    assert.equal(response.type, 4);
+    assert.equal(response.data.flags, 64);
+    assert.match(response.data.content || "", /\/bridge join again/);
+    assert.match(response.data.content || "", /not been changed/);
+    await engine.consentTick();
+    assert.ok(
+      (await store.consent(bridge.id, guilds.kfc, author))!.withdrawnAt,
+    );
+  }
+});
+
 test("leave cancels unprocessed confirmations and rejoining cannot clear a staff block", async () => {
   await command("leave");
   const joined = (await command("join")) as {
@@ -1342,16 +1772,51 @@ test("editor, unassigned moderator, stale config and unverified activation are r
     0,
   );
 });
+test("endpoint approval requires staff and both sides, not notice links", async () => {
+  await store.pause(bridge.id, "test_setup");
+  const input = {
+    id: bridge.id,
+    version: (await store.bridge(bridge.id)).version,
+    action: "approve" as const,
+    reason: "Approve exact endpoint audience without an announcement",
+  };
+  await assert.rejects(control(store, input, owner), {
+    code: "endpoint_side_required",
+  });
+  for (const role of ["editor", "moderator"] as const)
+    await assert.rejects(
+      control(store, { ...input, side: "a" }, { ...owner, role }),
+      {
+        status: 403,
+      },
+    );
+  await assert.rejects(
+    control(store, { ...input, action: "validate" }, owner),
+    {
+      code: "both_endpoint_approvals_required",
+    },
+  );
+  await control(store, { ...input, side: "a" }, owner);
+  input.version = (await store.bridge(bridge.id)).version;
+  await assert.rejects(
+    control(store, { ...input, action: "validate" }, owner),
+    {
+      code: "both_endpoint_approvals_required",
+    },
+  );
+  await control(store, { ...input, side: "b" }, owner);
+  input.version = (await store.bridge(bridge.id)).version;
+  await control(store, { ...input, action: "validate" }, owner);
+  await drain();
+  const approved = await store.bridge(bridge.id);
+  assert.equal(approved.state, "ready");
+  assert.equal(approved.approvalA, `staff:${owner.id}`);
+  assert.equal(approved.approvalB, `staff:${owner.id}`);
+  assert.equal(approved.noticeA, null);
+  assert.equal(approved.noticeB, null);
+});
 test("fresh validation resolves only older validation failures for the same pair", async () => {
   await readyForPilot();
-  await pool.query(
-    'UPDATE "ForeverDiscordBridge" SET "noticeA"=$2,"noticeB"=$3 WHERE "id"=$1',
-    [
-      bridge.id,
-      messageLink(guilds.kfc, channelA, id()),
-      messageLink(guilds.forever, channelB, id()),
-    ],
-  );
   const second = await extraPair("1800000000000000071", "1800000000000000072");
   for (const pair of [bridge, second]) {
     const jobId = randomUUID();
@@ -1366,7 +1831,7 @@ test("fresh validation resolves only older validation failures for the same pair
       id: bridge.id,
       version: bridge.version,
       action: "validate",
-      reason: "Recheck replacement notice",
+      reason: "Recheck endpoint configuration",
     },
     owner,
   );
@@ -1478,6 +1943,8 @@ test("pilot requires explicit tester confirmation and rejects unlisted participa
     };
   };
   assert.match(joined.data.content, /Restricted staff test/);
+  assert.ok(joined.data.content.length <= 2000);
+  assert.match(joined.data.content, /expires in 5 minutes/);
   assert.equal(await store.consent(bridge.id, guilds.kfc, author), null);
   await bridgeInteraction(
     {

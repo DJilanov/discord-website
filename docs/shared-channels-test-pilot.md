@@ -1,5 +1,9 @@
 # Restricted Live Test
 
+Update: the owner subsequently removed both public notice and topic-disclosure
+requirements. See [the removal follow-up](shared-channels-disclosure-removal.md).
+The posting history below describes the earlier release, not current requirements.
+
 September 30, 2026. The owner requested activation and explicitly authorized
 WoWForeverBot to publish the four notices, replacing the earlier personal-posting
 choice. The two approved discussion/leveling pairs are unchanged. Who-plays-what

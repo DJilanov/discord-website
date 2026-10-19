@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>WoW Forever Event Artwork</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        letter-spacing: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #171719;
+        color: #f1f2f3;
+      }
+      main {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 36px 28px 48px;
+      }
+      header {
+        margin-bottom: 24px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        line-height: 1.2;
+        font-weight: 650;
+      }
+      header p {
+        margin: 0;
+        color: #b7bcc2;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      fieldset {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0 0 24px;
+        padding: 0;
+        border: 0;
+      }
+      legend,
+      fieldset input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+      }
+      fieldset label {
+        display: inline-flex;
+        align-items: center;
+        min-height: 38px;
+        padding: 8px 14px;
+        border: 1px solid #44474b;
+        border-radius: 4px;
+        color: #d3d6da;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      fieldset input:checked + label {
+        background: #263b32;
+        border-color: #8dc9ad;
+        color: #ecfff4;
+      }
+      fieldset input:focus-visible + label,
+      a:focus-visible {
+        outline: 3px solid #b1dfc9;
+        outline-offset: 3px;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+      }
+      article {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid #3b3e43;
+        border-radius: 6px;
+        background: #232427;
+      }
+      .artwork {
+        display: block;
+        line-height: 0;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1672 / 941;
+        object-fit: contain;
+        background: #1b1d1e;
+      }
+      .caption {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 8px 16px;
+        padding: 14px 16px 16px;
+      }
+      h2 {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.35;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+      }
+      .caption span {
+        color: #b9c1c9;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      footer {
+        margin-top: 28px;
+        color: #a7afb7;
+        font-size: 13px;
+      }
+      main:has(#category-raid:checked) article:not([data-event-type="raid"]) {
+        display: none;
+      }
+      main:has(#category-dungeon:checked)
+        article:not([data-event-type="dungeon"]) {
+        display: none;
+      }
+      main:has(#category-battleground:checked)
+        article:not([data-event-type="battleground"]) {
+        display: none;
+      }
+      main:has(#category-world_pvp:checked)
+        article:not([data-event-type="world_pvp"]) {
+        display: none;
+      }
+      main:has(#category-questing:checked)
+        article:not([data-event-type="questing"]) {
+        display: none;
+      }
+      main:has(#category-social:checked)
+        article:not([data-event-type="social"]) {
+        display: none;
+      }
+      main:has(#category-other:checked) article:not([data-event-type="other"]) {
+        display: none;
+      }
+      @media (max-width: 680px) {
+        main {
+          padding: 24px 16px 36px;
+        }
+        h1 {
+          font-size: 25px;
+        }
+        .gallery {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 18px;
+        }
+        fieldset label {
+          padding: 8px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>WoW Forever Event Artwork</h1>
+        <p>50 covers. Generated fan art, not official game imagery.</p>
+      </header>
+      <fieldset>
+        <legend>Activity</legend>
+        <input
+          type="radio"
+          name="category"
+          id="category-all"
+          value="all"
+          checked
+        />
+        <label for="category-all">All</label>
+        <input type="radio" name="category" id="category-raid" value="raid" />
+        <label for="category-raid">Raids</label>
+        <input
+          type="radio"
+          name="category"
+          id="category-dungeon"
+          value="dungeon"
+        />
+        <label for="category-dungeon">Dungeons</label>
+        <input
+          type="radio"
+          name="category"
+          id="category-battleground"
+          value="battleground"
+        />
+        <label for="category-battleground">Battlegrounds</label>
+        <input
+          type="radio"
+          name="category"
+          id="category-world_pvp"
+          value="world_pvp"
+        />
+        <label for="category-world_pvp">World PvP</label>
+        <input
+          type="radio"
+          name="category"
+          id="category-questing"
+          value="questing"
+        />
+        <label for="category-questing">Questing</label>
+        <input
+          type="radio"
+          name="category"
+          id="category-social"
+          value="social"
+        />
+        <label for="category-social">Social</label>
+        <input type="radio" name="category" id="category-other" value="other" />
+        <label for="category-other">Other</label>
+      </fieldset>
+      <section class="gallery" aria-label="Event artwork">
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="hall-of-thanes.webp"
+            aria-label="Open The Hall of Thanes artwork"
+          >
+            <img
+              src="hall-of-thanes.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of a monumental underground dwarven hall with stone statues and torchlit stairs."
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>The Hall of Thanes</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="ruins-of-lordaeron.webp"
+            aria-label="Open Ruins of Lordaeron artwork"
+          >
+            <img
+              src="ruins-of-lordaeron.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of a ruined gothic courtyard and an ivy-covered gateway with a faint green glow."
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Ruins of Lordaeron</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="excavation-site-wetlands.webp"
+            aria-label="Open Excavation Site: Wetlands artwork"
+          >
+            <img
+              src="excavation-site-wetlands.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Excavation Site: Wetlands: A sweeping archaeological dig above the marshlands: stepped excavated earth around an immense exposed ancient stone vault, dwarven timber scaffolds and cranes, carved titan relics partly uncovered, pools and green wetlands beyond."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Excavation Site: Wetlands</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="city-of-dalaran.webp"
+            aria-label="Open City of Dalaran artwork"
+          >
+            <img
+              src="city-of-dalaran.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of an arcane city with violet-roofed towers and luminous magical disturbances."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>City of Dalaran</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="drowned-city.webp"
+            aria-label="Open The Drowned City artwork"
+          >
+            <img
+              src="drowned-city.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of sea-worn coastal architecture and partly submerged columns in clear turquoise water."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>The Drowned City</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="kroldok-stronghold.webp"
+            aria-label="Open Krol'dok Stronghold artwork"
+          >
+            <img
+              src="kroldok-stronghold.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Krol'dok Stronghold: A massive outdoor ogre stronghold in lush Riverglades: oversized rugged stone towers, thick wooden spikes and iron gates, a winding river beside the fortress and green upland hills."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Krol'dok Stronghold</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="alcaz-prison.webp"
+            aria-label="Open Alcaz Prison artwork"
+          >
+            <img
+              src="alcaz-prison.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Alcaz Prison: A formidable island prison northeast of a coastal swamp: iron-barred stone gate, watchtowers, thick fortress walls, a wooden landing pier and a rocky path beside open turquoise sea."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Alcaz Prison</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="blackmaw-hold.webp"
+            aria-label="Open Blackmaw Hold artwork"
+          >
+            <img
+              src="blackmaw-hold.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Blackmaw Hold: An interpretive vast furbolg settlement behind ancient gates in northern Azshara: colossal carved timber gate integrated into forest-cloaked rock, bear-inspired wooden totems, elevated log walkways, rooted longhouses and deep green woodland."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Blackmaw Hold</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="shapers-terrace.webp"
+            aria-label="Open Shaper's Terrace artwork"
+          >
+            <img
+              src="shapers-terrace.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Shaper's Terrace: An ancient titan terrace rising above the lush jungle crater of Un'Goro: monumental squared stone platforms, geometric carved pillars, a central stepped gateway with restrained blue energy, tropical ferns and immense distant crater cliffs."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Shaper's Terrace</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="ragefire-chasm.webp"
+            aria-label="Open Ragefire Chasm artwork"
+          >
+            <img
+              src="ragefire-chasm.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Ragefire Chasm: A fiery volcanic cavern beneath Orgrimmar: rugged black basalt arches framing an underground river of molten lava, a rough stone bridge, wooden supports and distant trogg silhouettes."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Ragefire Chasm</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="wailing-caverns.webp"
+            aria-label="Open Wailing Caverns artwork"
+          >
+            <img
+              src="wailing-caverns.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Wailing Caverns: A winding living cavern inspired by the Barrens dungeon: colossal stone columns intertwined with roots, a clear green underground stream, lush ferns and a serpentine stone formation curling over a central path, tiny druids distant only."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Wailing Caverns</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="deadmines.webp"
+            aria-label="Open The Deadmines artwork"
+          >
+            <img
+              src="deadmines.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of The Deadmines: The unforgettable subterranean pirate harbour deep in a mine: a large wooden pirate ship moored inside a gigantic cavern, towering timber scaffold platforms, rope bridges, an abandoned minecart track approaching the harbour."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>The Deadmines</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="shadowfang-keep.webp"
+            aria-label="Open Shadowfang Keep artwork"
+          >
+            <img
+              src="shadowfang-keep.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Shadowfang Keep: A grand haunted gothic castle above the misty Silverpine forest, steep roofs, battlements, a central bridge to the castle gate, moonlit pine trees, subtle distant wolf-like silhouettes on the ramparts."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Shadowfang Keep</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="stockade.webp"
+            aria-label="Open The Stockade artwork"
+          >
+            <img
+              src="stockade.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of The Stockade: An imposing medieval stone prison corridor under Stormwind: iron-barred cells along both sides, a broad central stairway and iron gate, blue cloth without faction emblems, scattered wooden crates, a single distant guard silhouette."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>The Stockade</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="blackfathom-deeps.webp"
+            aria-label="Open Blackfathom Deeps artwork"
+          >
+            <img
+              src="blackfathom-deeps.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Blackfathom Deeps: An ancient half-flooded temple inside a rocky coastal cavern: tall weathered night-elven pillars, broken stone causeways over clear sea water, a central submerged sanctum, barnacles and sea plants."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Blackfathom Deeps</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="gnomeregan.webp"
+            aria-label="Open Gnomeregan artwork"
+          >
+            <img
+              src="gnomeregan.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Gnomeregan: A sprawling underground gnomish mechanical city: enormous bronze gears, riveted walkways, pipes and sturdy steam machinery around a central reactor chamber, a few tiny retro-fantasy robot silhouettes, clean strong engineering shapes."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Gnomeregan</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="razorfen-kraul.webp"
+            aria-label="Open Razorfen Kraul artwork"
+          >
+            <img
+              src="razorfen-kraul.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Razorfen Kraul: A gigantic maze of thorny roots on the dusty Barrens frontier: enormous interlocking brambles form natural archways, rough quilboar huts and leather awnings tucked among roots, raised earth paths and primitive unmarked totems."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Razorfen Kraul</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="scarlet-monastery-graveyard.webp"
+            aria-label="Open Scarlet Monastery: Graveyard artwork"
+          >
+            <img
+              src="scarlet-monastery-graveyard.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Scarlet Monastery: Graveyard: The graveyard wing of a secluded gothic monastery: rows of old carved headstones around a cloister courtyard, mossy stone mausoleum, tall cypress trees, red unmarked hanging cloth at a small chapel gate."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Scarlet Monastery: Graveyard</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="scarlet-monastery-library.webp"
+            aria-label="Open Scarlet Monastery: Library artwork"
+          >
+            <img
+              src="scarlet-monastery-library.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Scarlet Monastery: Library: An immense medieval monastery library: vaulted stone reading hall, towering wooden bookshelves, stairs and mezzanines, a central oak reading table with closed unmarked books, crimson unmarked cloth between archways."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Scarlet Monastery: Library</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="scarlet-monastery-armory.webp"
+            aria-label="Open Scarlet Monastery: Armory artwork"
+          >
+            <img
+              src="scarlet-monastery-armory.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Scarlet Monastery: Armory: A grand monastery armory: vaulted stone training chamber with neatly arrayed medieval weapon racks, red unmarked banners, heavy plate armour on stands and a raised iron doorway at the far end."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Scarlet Monastery: Armory</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="scarlet-monastery-cathedral.webp"
+            aria-label="Open Scarlet Monastery: Cathedral artwork"
+          >
+            <img
+              src="scarlet-monastery-cathedral.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Scarlet Monastery: Cathedral: The great Scarlet Monastery cathedral: soaring gothic vaults, a long nave leading to a central altar, crimson unmarked banners, stained glass using only abstract colour, sunlit cloister garden visible through the entrance."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Scarlet Monastery: Cathedral</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="razorfen-downs.webp"
+            aria-label="Open Razorfen Downs artwork"
+          >
+            <img
+              src="razorfen-downs.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Razorfen Downs: A haunted thorn citadel rising from the Barrens: gigantic dry brambles coil around tiered rough stone burial towers and a central spiral path, sparse dead trees, bone-like architectural ornament but no gore."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Razorfen Downs</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="uldaman.webp"
+            aria-label="Open Uldaman artwork"
+          >
+            <img
+              src="uldaman.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Uldaman: A dwarven excavation opening into an ancient titan vault: towering stone guardian statues flanking a geometric doorway, carved stone disks and angular columns, mining equipment left beside a central stair, dusty tunnels around the monumental hall."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Uldaman</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="zulfarrak.webp"
+            aria-label="Open Zul'Farrak artwork"
+          >
+            <img
+              src="zulfarrak.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Zul'Farrak: An ancient sand-troll city in the Tanaris desert: a monumental stepped sandstone pyramid, broad plazas, carved troll stone faces, worn obelisks and a distant dry desert horizon."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Zul'Farrak</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="maraudon-wicked-grotto.webp"
+            aria-label="Open Maraudon: Wicked Grotto artwork"
+          >
+            <img
+              src="maraudon-wicked-grotto.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Maraudon: Wicked Grotto: The purple crystalline grotto wing of Maraudon: an immense twisting cave with violet crystals, striated lavender rock, roots around a winding central passage and a thin clear stream."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Maraudon: Wicked Grotto</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="maraudon-foulspore-cavern.webp"
+            aria-label="Open Maraudon: Foulspore Cavern artwork"
+          >
+            <img
+              src="maraudon-foulspore-cavern.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Maraudon: Foulspore Cavern: The orange fungal cavern wing of Maraudon: huge warm terracotta cave chambers, enormous orange and red-capped mushrooms, exposed roots, a worn stone path winding above a small emerald stream."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Maraudon: Foulspore Cavern</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="maraudon-earth-song-falls.webp"
+            aria-label="Open Maraudon: Earth Song Falls artwork"
+          >
+            <img
+              src="maraudon-earth-song-falls.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Maraudon: Earth Song Falls: The luminous waterfall sanctuary deep in Maraudon: multiple immense waterfalls cascade into a clear turquoise pool inside a vast cavern, green hanging vines, ancient weathered centaur-inspired stone arches, a central path across pale rock."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Maraudon: Earth Song Falls</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="sunken-temple.webp"
+            aria-label="Open Sunken Temple artwork"
+          >
+            <img
+              src="sunken-temple.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Sunken Temple: An ancient sunken jungle troll temple: monumental carved green-stone stairways descending into a flooded circular sanctuary, serpent-inspired stone columns and reliefs, ivy, clear shallow water and a distant shrine."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Sunken Temple</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="blackrock-depths.webp"
+            aria-label="Open Blackrock Depths artwork"
+          >
+            <img
+              src="blackrock-depths.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Blackrock Depths: An immense Dark Iron dwarven city under Blackrock Mountain: massive black-stone halls, bronze doors, tiered forge balconies, molten channels below bridges and a monumental central anvil chamber."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Blackrock Depths</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="lower-blackrock-spire.webp"
+            aria-label="Open Lower Blackrock Spire artwork"
+          >
+            <img
+              src="lower-blackrock-spire.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Lower Blackrock Spire: The lower fortress passages inside Blackrock Mountain: rugged basalt stairways, stacked narrow bridges, ruined fortified gates, orcish wooden spikes and red unmarked cloth, a faint lava chasm below."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Lower Blackrock Spire</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="upper-blackrock-spire.webp"
+            aria-label="Open Upper Blackrock Spire artwork"
+          >
+            <img
+              src="upper-blackrock-spire.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Upper Blackrock Spire: The upper military fortress inside Blackrock Mountain: a grand high-vaulted black-stone arena, broad staircase, dragon-shaped carved stone guardians beside a huge central iron gate, red unmarked hanging cloth and distant defensive battlements."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Upper Blackrock Spire</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="scholomance.webp"
+            aria-label="Open Scholomance artwork"
+          >
+            <img
+              src="scholomance.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Scholomance: An eerie necromantic academy inside an ancient stone manor: gothic lecture hall, rows of wooden benches, aged books and stone arches, a central ritual study chamber with subtle spectral jade light, a staircase into dim vaults."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Scholomance</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="stratholme.webp"
+            aria-label="Open Stratholme artwork"
+          >
+            <img
+              src="stratholme.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Stratholme: The ruined city of Stratholme: a sweeping cobbled street of tall damaged medieval townhouses and gothic stone gates, roofs burning in the middle distance, broken carts, a central road toward a distant cathedral."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Stratholme</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="dire-maul-east.webp"
+            aria-label="Open Dire Maul: East artwork"
+          >
+            <img
+              src="dire-maul-east.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Dire Maul: East: The overgrown eastern quarter of Dire Maul: ancient highborne white-stone halls open to the sky, immense living roots and lush ferns reclaiming columns, green pools and a sunlit central archway, tiny plant-elemental silhouettes only."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Dire Maul: East</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="dire-maul-north.webp"
+            aria-label="Open Dire Maul: North artwork"
+          >
+            <img
+              src="dire-maul-north.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Dire Maul: North: The northern ogre-occupied halls of Dire Maul: enormous weathered highborne courtyard, broad stone staircase to an oversized throne, rough wooden barricades, crude cooking fires, red unmarked cloth over classical columns, tiny distant ogre silhouettes."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Dire Maul: North</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="dire-maul-west.webp"
+            aria-label="Open Dire Maul: West artwork"
+          >
+            <img
+              src="dire-maul-west.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Dire Maul: West: The western arcane quarter of Dire Maul: grand ruined highborne stone courtyard, tall elegant columns, an ancient central arcane containment structure with restrained sapphire-blue energy, deserted walkways and ivy around pale stone."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Dire Maul: West</h2>
+            <span>Dungeon</span>
+          </div>
+        </article>
+        <article data-event-type="raid">
+          <a
+            class="artwork"
+            href="hyjal-summit.webp"
+            aria-label="Open Hyjal Summit artwork"
+          >
+            <img
+              src="hyjal-summit.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of a vast ancient world tree above green mountain forests and waterfalls."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Hyjal Summit</h2>
+            <span>Raid</span>
+          </div>
+        </article>
+        <article data-event-type="raid">
+          <a
+            class="artwork"
+            href="barrow-deeps.webp"
+            aria-label="Open Barrow Deeps artwork"
+          >
+            <img
+              src="barrow-deeps.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of a subterranean forest sanctuary with ancient roots, carved arches and jade-lit pools."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Barrow Deeps</h2>
+            <span>Raid</span>
+          </div>
+        </article>
+        <article data-event-type="raid">
+          <a
+            class="artwork"
+            href="onyxias-lair.webp"
+            aria-label="Open Onyxia's Lair artwork"
+          >
+            <img
+              src="onyxias-lair.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Onyxia's Lair: The legendary black dragon Onyxia within a vast volcanic lair in Dustwallow Marsh: a formidable black dragon with folded leathery wings stands on a broad rocky ledge beyond a cavern approach, massive horns, molten cracks illuminate obsidian rock, subtle distant eggs in sheltered side niches."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Onyxia's Lair</h2>
+            <span>Raid</span>
+          </div>
+        </article>
+        <article data-event-type="battleground">
+          <a
+            class="artwork"
+            href="darkspear-islands.webp"
+            aria-label="Open Darkspear Islands artwork"
+          >
+            <img
+              src="darkspear-islands.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan art of tropical islands with timber bridges, troll-inspired towers and coloured control-point pennants."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Darkspear Islands</h2>
+            <span>Battleground</span>
+          </div>
+        </article>
+        <article data-event-type="battleground">
+          <a
+            class="artwork"
+            href="warsong-gulch.webp"
+            aria-label="Open Warsong Gulch artwork"
+          >
+            <img
+              src="warsong-gulch.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Warsong Gulch: A recognizable capture-the-flag valley at the border of Ashenvale: lush forest transitions toward a rugged red-earth logging outpost, a graceful timber elven base on one side and a spiked lumber-mill stronghold on the other, plain blue and red flags at equal visual prominence, a winding open middle field."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Warsong Gulch</h2>
+            <span>Battleground</span>
+          </div>
+        </article>
+        <article data-event-type="battleground">
+          <a
+            class="artwork"
+            href="arathi-basin.webp"
+            aria-label="Open Arathi Basin artwork"
+          >
+            <img
+              src="arathi-basin.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Arathi Basin: A pastoral Arathi Highlands battlefield: sweeping grassy basin with an old stone bridge, a lakeside blacksmith, a distant lumber mill on a ridge, farm buildings, stables and a small mine entrance woven into a beautiful panoramic landscape."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Arathi Basin</h2>
+            <span>Battleground</span>
+          </div>
+        </article>
+        <article data-event-type="battleground">
+          <a
+            class="artwork"
+            href="alterac-valley.webp"
+            aria-label="Open Alterac Valley artwork"
+          >
+            <img
+              src="alterac-valley.webp"
+              width="1672"
+              height="941"
+              alt="Generated fan-art interpretation of Alterac Valley: An epic snow-covered mountain battlefield of Alterac: a wide alpine valley, snow-dusted fir trees, fortified timber watchtowers and stone bunkers, a central snowy trail between blue-banner and red-banner outposts, both sides equal."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Alterac Valley</h2>
+            <span>Battleground</span>
+          </div>
+        </article>
+        <article data-event-type="raid">
+          <a class="artwork" href="raid.webp" aria-label="Open Raid artwork">
+            <img
+              src="raid.webp"
+              width="1672"
+              height="941"
+              alt="Generated generic raid artwork of an adventuring party approaching a monumental mountain sanctuary."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Raid</h2>
+            <span>Raid / fallback</span>
+          </div>
+        </article>
+        <article data-event-type="dungeon">
+          <a
+            class="artwork"
+            href="dungeon.webp"
+            aria-label="Open Dungeon artwork"
+          >
+            <img
+              src="dungeon.webp"
+              width="1672"
+              height="941"
+              alt="Generated generic dungeon artwork of a cavern passage, timber bridge, stone doorway and jade crystals."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Dungeon</h2>
+            <span>Dungeon / fallback</span>
+          </div>
+        </article>
+        <article data-event-type="battleground">
+          <a
+            class="artwork"
+            href="battleground.webp"
+            aria-label="Open Battleground artwork"
+          >
+            <img
+              src="battleground.webp"
+              width="1672"
+              height="941"
+              alt="Generated generic battleground artwork of a green valley and outposts with red and blue pennants."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Battleground</h2>
+            <span>Battleground / fallback</span>
+          </div>
+        </article>
+        <article data-event-type="world_pvp">
+          <a
+            class="artwork"
+            href="world-pvp.webp"
+            aria-label="Open World PvP artwork"
+          >
+            <img
+              src="world-pvp.webp"
+              width="1672"
+              height="941"
+              alt="Generated world PvP artwork of opposing adventuring groups approaching a frontier watchtower."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>World PvP</h2>
+            <span>World PvP / fallback</span>
+          </div>
+        </article>
+        <article data-event-type="questing">
+          <a
+            class="artwork"
+            href="questing.webp"
+            aria-label="Open Questing &amp; Group Leveling artwork"
+          >
+            <img
+              src="questing.webp"
+              width="1672"
+              height="941"
+              alt="Generated questing artwork of three adventurers walking toward a village along a sunlit woodland road."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Questing &amp; Group Leveling</h2>
+            <span>Questing / fallback</span>
+          </div>
+        </article>
+        <article data-event-type="social">
+          <a
+            class="artwork"
+            href="social.webp"
+            aria-label="Open Social Gathering artwork"
+          >
+            <img
+              src="social.webp"
+              width="1672"
+              height="941"
+              alt="Generated social artwork of a mixed fantasy party sharing a riverside tavern terrace at sunset."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Social Gathering</h2>
+            <span>Social event / fallback</span>
+          </div>
+        </article>
+        <article data-event-type="other">
+          <a
+            class="artwork"
+            href="community-expedition.webp"
+            aria-label="Open Community Expedition artwork"
+          >
+            <img
+              src="community-expedition.webp"
+              width="1672"
+              height="941"
+              alt="Generated neutral community artwork of a lantern-lit campsite overlooking a mountain lake."
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <div class="caption">
+            <h2>Community Expedition</h2>
+            <span>Other / fallback</span>
+          </div>
+        </article>
+      </section>
+      <footer>Open source contributors</footer>
+    </main>
+  </body>
+</html>

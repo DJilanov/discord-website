@@ -37,6 +37,12 @@ export const adminSections: {
     roles: ["owner", "admin", "moderator"],
   },
   {
+    path: "/admin/raids",
+    label: "Raid catalogs",
+    icon: "swords",
+    roles: ["owner", "admin", "moderator"],
+  },
+  {
     path: "/admin/reports",
     label: "Reports",
     icon: "shield",
@@ -73,9 +79,21 @@ export const adminSections: {
     roles: ["owner", "admin"],
   },
   {
+    path: "/admin/research",
+    label: "Research feedback",
+    icon: "book",
+    roles: ["owner", "admin", "editor"],
+  },
+  {
     path: "/admin/discord",
     label: "Discord bridge",
     icon: "discord",
+    roles: ["owner", "admin", "moderator"],
+  },
+  {
+    path: "/admin/auction",
+    label: "Auction House",
+    icon: "chart",
     roles: ["owner", "admin", "moderator"],
   },
   {

@@ -1,5 +1,14 @@
 # Existing Forever Chats
 
+Latest override: WoW Forever leveling is now a
+[separate native forum](group-leveling-forum.md). The old leveling text endpoint
+was retained as an archive and its bridge retired. The table below records the
+earlier text-channel pairing, not an active forum relay. Historical imports were
+rolled back and publication remains off.
+
+Current override: public notices and topic disclosures were removed at the owner's
+request. See [the removal follow-up](shared-channels-disclosure-removal.md).
+
 The later [restricted test follow-up](shared-channels-test-pilot.md) records the
 owner's bot-notice authorization, posted/deleted notices and test-mode rollout.
 Its current state supersedes the historical rollout below.

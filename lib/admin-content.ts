@@ -90,7 +90,7 @@ export async function saveGuild(
 ): Promise<void> {
   const data = guildSchema
     .extend({
-      status: z.enum(["pending", "approved", "hidden", "rejected"]),
+      status: z.enum(["approved", "hidden", "rejected"]),
       featured: z.boolean(),
     })
     .parse(raw);
@@ -222,6 +222,44 @@ export async function saveStaff(
           role: input.role,
           active: input.active,
           passwordChanged: Boolean(passwordHash),
+        },
+      },
+    });
+  });
+}
+
+export async function reviewResearchFeedback(
+  id: string,
+  raw: unknown,
+  staff: Staff,
+): Promise<void> {
+  const input = z
+    .object({ status: z.enum(["new", "reviewing", "resolved", "dismissed"]) })
+    .strict()
+    .parse(raw);
+  await db.$transaction(async (transaction) => {
+    const feedback = await transaction.foreverResearchFeedback.findUnique({
+      where: { id },
+    });
+    if (!feedback) throw new HttpError(404, "Research feedback not found.");
+    await transaction.foreverResearchFeedback.update({
+      where: { id },
+      data: {
+        status: input.status,
+        reviewedBy: staff.id,
+        reviewedAt: new Date(),
+      },
+    });
+    await transaction.foreverAuditLog.create({
+      data: {
+        actorId: staff.id,
+        action: "research_feedback.reviewed",
+        entityType: "research_feedback",
+        entityId: id,
+        details: {
+          previousStatus: feedback.status,
+          status: input.status,
+          path: feedback.path,
         },
       },
     });

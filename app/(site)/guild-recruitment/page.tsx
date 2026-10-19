@@ -60,7 +60,7 @@ export default async function GuildDirectory({
         <span>
           {total} {total === 1 ? "guild" : "guilds"} found
         </span>
-        <span>Most recently reviewed first</span>
+        <span>New and recently reviewed listings first</span>
       </div>
       {guilds.length ? (
         <div className="directory-list">
@@ -94,8 +94,9 @@ export default async function GuildDirectory({
         <div>
           <h3>Make an informed choice.</h3>
           <p>
-            Listings are reviewed for posting standards, not a guarantee of
-            conduct. Ask about schedules and loot rules. Read{" "}
+            Listings publish immediately and are reviewed afterward for posting
+            standards; review is not a guarantee of conduct. Ask about schedules
+            and loot rules. Read{" "}
             <Link href="/guides/find-your-wow-forever-guild">
               our guild-finding guide
             </Link>{" "}

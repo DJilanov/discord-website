@@ -156,8 +156,14 @@ export async function bridgeInteraction(
         !consent.withdrawnAt &&
         !consent.blocked &&
         consent.generation === bridge.generation;
+      const history = await one<{ count: number }>(
+        sql,
+        `SELECT COUNT(*)::int AS count FROM "ForeverBridgeImportConsent" c JOIN "ForeverBridgeImport" b ON b.id=c."batchId"
+        WHERE b."bridgeId"=$1 AND c."actorId"=$2 AND c."withdrawnAt" IS NULL AND c."expiresAt">NOW() AND b.state NOT IN ('rolling_back','rolled_back')`,
+        [bridge.id, actor],
+      );
       ack = ephemeral(
-        `Channel pair: ${bridge.name} (${bridge.state}). Your participation from this channel: ${consent?.blocked ? "blocked by staff" : participating ? "opted in" : "not opted in"}. Copies awaiting removal: ${outstanding?.count || 0}. Other pairs have separate participation.`,
+        `Channel pair: ${bridge.name} (${bridge.state}). Your participation from this channel: ${consent?.blocked ? "blocked by staff" : participating ? "opted in" : "not opted in"}. Historical sharing approvals for this pair: ${history?.count || 0}. History approval does not opt you in to future messages. Copies awaiting removal: ${outstanding?.count || 0}. Other pairs have separate participation. Use /bridge leave to withdraw both live and historical sharing for this pair.`,
       );
     } else if (operation === "leave") {
       await store.withdraw(sql, bridge, actor);
@@ -203,7 +209,7 @@ export async function bridgeInteraction(
       challengeId = randomBytes(18).toString("hex");
       state = "challenge";
       ack = ephemeral(
-        `This is a TWO-WAY shared conversation between KFC Global Pugs and WoW Forever Discord. This confirmation covers only <#${bridge.channelA}> and <#${bridge.channelB}>. Only new eligible text after you opt in is copied, with your Discord name and a source link. You must belong to and be able to speak in BOTH channels. Readers in the other community may not have access to your original channel. Copies expire after 30 days. The service stores IDs and consent, not a chat transcript. Use /bridge leave or /bridge remove in this channel to request cleanup; outages can delay it.\nTerms, privacy and removal: https://www.wowforeverdiscord.online/bot/shared-channels\nConfirm only if you accept both audiences (policy ${bridge.policyVersion}). Opt in separately in each channel you want to share from; other pairs are not included.`,
+        `This is a TWO-WAY shared conversation between KFC Global Pugs and WoW Forever Discord. This confirmation covers only <#${bridge.channelA}> and <#${bridge.channelB}>. Only new eligible text after you opt in is copied, with your Discord name and a source link. You must belong to and be able to speak in BOTH channels. Readers in the other community may not have access to your original channel. Copies expire after 30 days. The service stores IDs and consent, not a chat transcript. Use /bridge leave or /bridge remove in this channel to request cleanup; outages can delay it.\nTerms, privacy and removal: https://www.wowforeverdiscord.online/bot/shared-channels\nConfirm only if you accept both audiences (policy ${bridge.policyVersion}). This button expires in 5 minutes; run /bridge join again for a new confirmation. Opt in separately in each channel you want to share from; other pairs are not included.`,
       );
       ack.data.components = [
         {
@@ -228,25 +234,56 @@ export async function bridgeInteraction(
       );
       if (
         !challenge ||
-        challenge.state !== "challenge" ||
         challenge.actorId !== actor ||
         challenge.guildId !== value.guild_id ||
-        challenge.bridgeId !== bridge.id ||
-        challenge.generation !== bridge.generation ||
-        challenge.policyVersion !== bridge.policyVersion ||
-        challenge.expiresAt.getTime() <= Date.now()
+        challenge.bridgeId !== bridge.id
       )
         throw new BridgeError(
           403,
           "consent_confirmation_expired_or_mismatched",
         );
-      await sql.query(
-        'UPDATE "ForeverDiscordInteraction" SET "state"=\'done\' WHERE "id"=$1',
-        [challenge.id],
+      const consent = await store.consent(
+        bridge.id,
+        value.guild_id,
+        actor,
+        sql,
       );
-      ack = { type: 5, data: { flags: 64 } };
-      tokenCipher = encryptToken(value.token, secret, value.id);
-      state = "pending";
+      const currentChallenge =
+        challenge.generation === bridge.generation &&
+        challenge.policyVersion === bridge.policyVersion;
+      if (
+        currentChallenge &&
+        challenge.state === "done" &&
+        consent &&
+        !consent.withdrawnAt &&
+        !consent.blocked &&
+        consent.generation === bridge.generation &&
+        consent.policyVersion === bridge.policyVersion
+      ) {
+        ack = ephemeral(
+          "You are already opted in from this channel for this pair. Clicking this button again does not change your participation. Use /bridge status to check it or /bridge leave to stop sharing.",
+        );
+      } else if (
+        !currentChallenge ||
+        challenge.expiresAt.getTime() <= Date.now() ||
+        !["challenge", "done"].includes(challenge.state)
+      ) {
+        ack = ephemeral(
+          "This confirmation has expired or is no longer valid. Run /bridge join again in this channel and press the new confirmation button within 5 minutes. Your existing participation has not been changed.",
+        );
+      } else if (challenge.state === "done") {
+        ack = ephemeral(
+          "This confirmation was already submitted. Use /bridge status to check whether enrollment has finished. If you are not opted in, run /bridge join again in this channel for a new confirmation. Your existing participation has not been changed.",
+        );
+      } else {
+        await sql.query(
+          'UPDATE "ForeverDiscordInteraction" SET "state"=\'done\' WHERE "id"=$1',
+          [challenge.id],
+        );
+        ack = { type: 5, data: { flags: 64 } };
+        tokenCipher = encryptToken(value.token, secret, value.id);
+        state = "pending";
+      }
     }
     await sql.query(
       'INSERT INTO "ForeverDiscordInteraction" ("id","applicationId","guildId","actorId","bridgeId","operation","generation","policyVersion","ack","state","tokenCipher","challengeId","expiresAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW()+INTERVAL \'5 minutes\')',

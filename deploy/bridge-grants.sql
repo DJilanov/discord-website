@@ -5,7 +5,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
   public."ForeverDiscordBridge", public."ForeverBridgeConsent",
   public."ForeverBridgeMessage", public."ForeverBridgeProjection",
   public."ForeverDiscordOutbox", public."ForeverDiscordInteraction",
-  public."ForeverBridgeRuntime"
+  public."ForeverBridgeRuntime", public."ForeverBridgeImport",
+  public."ForeverBridgeImportConsent", public."ForeverBridgeImportItem"
 TO forever_bridge_worker;
 GRANT EXECUTE ON FUNCTION public.forever_bridge_audit(TEXT,TEXT,TEXT,JSONB),
   public.forever_bridge_prune_audit() TO forever_bridge_worker;

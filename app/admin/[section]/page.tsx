@@ -23,6 +23,11 @@ import { Markdown } from "@/components/markdown";
 import { SearchReadiness } from "@/components/search-readiness";
 import { TrafficConversions } from "@/components/traffic-conversions";
 import { GUILD_RULESETS } from "@/lib/config";
+import {
+  ListingDiscordHealth,
+  ListingDiscordReview,
+} from "@/components/listing-discord-review";
+import { researchWindowStart } from "@/lib/research";
 
 interface Props {
   params: Promise<{ section: string }>;
@@ -182,6 +187,7 @@ export default async function AdminSection({
               </p>
             )}
           </EditorHeader>
+          <ListingDiscordReview kind="guild" entityId={id} />
           <AdminEditor
             endpoint={`/api/admin/guilds/${id}`}
             fields={guildFields}
@@ -198,6 +204,7 @@ export default async function AdminSection({
     return (
       <>
         <h1>Guild directory</h1>
+        <ListingDiscordHealth />
         <p>
           Review new guilds, keep details current, and hide stale or misleading
           listings.
@@ -222,6 +229,7 @@ export default async function AdminSection({
       return (
         <>
           <EditorHeader title={group.title} backHref={base} />
+          <ListingDiscordReview kind="group" entityId={id} />
           <dl className="detail-grid">
             {[
               ["Region / ruleset", `${group.region} / ${group.gameRuleset}`],
@@ -264,7 +272,12 @@ export default async function AdminSection({
               },
             ]}
             values={{
-              status: "approved",
+              status:
+                group.status === "rejected"
+                  ? "rejected"
+                  : group.status === "hidden"
+                    ? "hidden"
+                    : "approved",
               reason: "",
               gameRuleset: group.gameRuleset,
             }}
@@ -280,6 +293,7 @@ export default async function AdminSection({
     return (
       <>
         <h1>Group posts</h1>
+        <ListingDiscordHealth />
         <p>Review the plan, contact details, and timing before publication.</p>
         <AdminList
           rows={rows.map((row) => ({
@@ -836,6 +850,158 @@ export default async function AdminSection({
       </>
     );
   }
+  if (section === "research") {
+    if (id) {
+      const feedback = await db.foreverResearchFeedback.findUnique({
+        where: { id },
+      });
+      if (!feedback) notFound();
+      return (
+        <>
+          <EditorHeader title={`${feedback.kind} feedback`} backHref={base}>
+            <p className="muted">
+              {feedback.path} · submitted {date(feedback.createdAt)}
+            </p>
+          </EditorHeader>
+          <section className="section">
+            <h2>Player note</h2>
+            <p style={{ whiteSpace: "pre-wrap" }}>
+              {feedback.message || "No additional note was supplied."}
+            </p>
+          </section>
+          <AdminEditor
+            endpoint={`/api/admin/research/${feedback.id}`}
+            fields={[
+              {
+                name: "status",
+                label: "Review status",
+                type: "select",
+                options: ["new", "reviewing", "resolved", "dismissed"],
+                required: true,
+              },
+            ]}
+            values={{ status: feedback.status }}
+            returnTo={base}
+            label="Save review status"
+          />
+        </>
+      );
+    }
+    const [feedbackRows, eventCounts] = await Promise.all([
+      db.foreverResearchFeedback.findMany({
+        orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+        take: 200,
+      }),
+      db.foreverAnalyticsEvent.groupBy({
+        by: ["event", "path"],
+        where: {
+          bot: false,
+          event: {
+            in: ["research_action", "dataset_download", "feedback_submit"],
+          },
+          createdAt: { gte: researchWindowStart(30) },
+        },
+        _count: true,
+      }),
+    ]);
+    const statusPriority: Readonly<Record<string, number>> = {
+      new: 0,
+      reviewing: 1,
+      resolved: 2,
+      dismissed: 3,
+    };
+    const rows = feedbackRows.sort(
+      (left, right) =>
+        (statusPriority[left.status] ?? 4) -
+          (statusPriority[right.status] ?? 4) ||
+        right.createdAt.getTime() - left.createdAt.getTime(),
+    );
+    const countFor = (event: string): number =>
+      eventCounts
+        .filter((entry) => entry.event === event)
+        .reduce((total, entry) => total + entry._count, 0);
+    const actionPaths = [
+      ...new Set(eventCounts.map((entry) => entry.path)),
+    ].sort();
+    return (
+      <>
+        <h1>Research feedback loop</h1>
+        <p>
+          Review corrections and compare them with measured report actions.
+          Feedback contains no email address or Discord identity.
+        </p>
+        <div className="status-grid">
+          {[
+            [
+              rows.filter((row) => row.status === "new").length,
+              "Open feedback",
+            ],
+            [countFor("research_action"), "Research actions · 30d"],
+            [countFor("dataset_download"), "Dataset downloads · 30d"],
+            [countFor("feedback_submit"), "Feedback submissions · 30d"],
+          ].map(([value, label]) => (
+            <div className="metric" key={label}>
+              <strong>{value}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+        <section className="section">
+          <h2>Report outcomes · last 30 days</h2>
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label="Research actions by report"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Report</th>
+                  <th scope="col">Tool opens</th>
+                  <th scope="col">Downloads</th>
+                  <th scope="col">Feedback</th>
+                </tr>
+              </thead>
+              <tbody>
+                {actionPaths.map((path) => {
+                  const eventCount = (event: string): number =>
+                    eventCounts.find(
+                      (entry) => entry.path === path && entry.event === event,
+                    )?._count ?? 0;
+                  return (
+                    <tr key={path}>
+                      <td>{path}</td>
+                      <td>{eventCount("research_action")}</td>
+                      <td>{eventCount("dataset_download")}</td>
+                      <td>{eventCount("feedback_submit")}</td>
+                    </tr>
+                  );
+                })}
+                {actionPaths.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>
+                      No measured research actions in this period.
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <AdminList
+          rows={rows.map((row) => ({
+            id: row.id,
+            title: `${row.kind}: ${row.path}`,
+            detail: row.message?.slice(0, 120) || "No additional note",
+            status: row.status,
+            date: row.createdAt,
+            href: `${base}?edit=${row.id}`,
+          }))}
+        />
+      </>
+    );
+  }
   if (section === "search") return <SearchReadiness />;
   if (section === "analytics") {
     const days = [7, 30, 90].includes(Number(query.days))
@@ -1026,7 +1192,12 @@ export default async function AdminSection({
           Accountable changes to settings, content, staff access, and
           moderation.
         </p>
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Audit log"
+        >
           <table>
             <thead>
               <tr>

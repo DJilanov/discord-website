@@ -14,6 +14,7 @@ import {
 import { BridgeStore, one, rows } from "../../../lib/discord-bridge/store.js";
 import { BridgeEngine } from "./engine.js";
 import { DiscordTransport } from "./transport.js";
+import { HistoryEngine } from "./history.js";
 
 async function main(): Promise<void> {
   if (process.env.BRIDGE_ENABLED !== "true") {
@@ -108,6 +109,11 @@ async function main(): Promise<void> {
     transport,
     env.BRIDGE_FINGERPRINT_KEY,
     env.BRIDGE_INTERACTION_KEY,
+  );
+  const history = new HistoryEngine(
+    store,
+    transport,
+    env.BRIDGE_FINGERPRINT_KEY,
   );
   const gateway = new WebSocketManager({
     token: env.BRIDGE_BOT_TOKEN,
@@ -270,6 +276,7 @@ async function main(): Promise<void> {
         await engine.reconcile();
         reconciliation = Date.now();
       }
+      if (!busy) await history.tick();
       if (!busy) await sleep(250);
     }
   } finally {

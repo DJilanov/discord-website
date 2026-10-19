@@ -43,10 +43,11 @@ export async function rateLimit(
   key: string,
   limit: number,
   seconds: number,
+  database: Pick<typeof db, "$queryRaw"> = db,
 ): Promise<void> {
   const now = new Date();
   const expiresAt = new Date(now.getTime() + seconds * 1000);
-  const rows = await db.$queryRaw<Array<{ count: number }>>`
+  const rows = await database.$queryRaw<Array<{ count: number }>>`
     INSERT INTO "ForeverRateLimit" ("key", "count", "expiresAt") VALUES (${key}, 1, ${expiresAt})
     ON CONFLICT ("key") DO UPDATE SET
       "count" = CASE WHEN "ForeverRateLimit"."expiresAt" <= ${now} THEN 1 ELSE "ForeverRateLimit"."count" + 1 END,

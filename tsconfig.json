@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -20,7 +24,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
@@ -28,7 +34,37 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    ".next-raids-e2e/types/**/*.ts",
+    ".next-raids-e2e/dev/types/**/*.ts",
+    ".next-release-research-20261004-r3/types/**/*.ts",
+    ".next-release-research-20261004-r3/dev/types/**/*.ts",
+    ".next-release-leveling-20261004-r1/types/**/*.ts",
+    ".next-release-leveling-20261004-r1/dev/types/**/*.ts",
+    ".next-release-leveling-20261004-r2/types/**/*.ts",
+    ".next-release-leveling-20261004-r2/dev/types/**/*.ts",
+    ".next-release-leveling-20261004-r4/types/**/*.ts",
+    ".next-release-leveling-20261004-r4/dev/types/**/*.ts",
+    ".next-release-20261007-seo-r1/types/**/*.ts",
+    ".next-release-20261007-seo-r1/dev/types/**/*.ts",
+    ".next-release-attendance-20261008-r1/types/**/*.ts",
+    ".next-release-attendance-20261008-r1/dev/types/**/*.ts",
+    ".next-release-auth-20261008-r1/types/**/*.ts",
+    ".next-release-auth-20261008-r1/dev/types/**/*.ts",
+    ".next-release-auth-20261008-r2/types/**/*.ts",
+    ".next-release-auth-20261008-r2/dev/types/**/*.ts",
+    ".next-release-signup-import-20261008-r1/types/**/*.ts",
+    ".next-release-signup-import-20261008-r1/dev/types/**/*.ts",
+    ".next-release-signup-import-20261008-r2/types/**/*.ts",
+    ".next-release-signup-import-20261008-r2/dev/types/**/*.ts",
+    ".next-release-signup-recovery-20261008-r1/types/**/*.ts",
+    ".next-release-signup-recovery-20261008-r1/dev/types/**/*.ts",
+    ".next-release-signup-counts-20261008-r1/types/**/*.ts",
+    ".next-release-signup-counts-20261008-r1/dev/types/**/*.ts",
+    ".next-release-event-sync-20261008-r1/types/**/*.ts",
+    ".next-release-event-sync-20261008-r1/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

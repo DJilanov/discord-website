@@ -14,6 +14,7 @@ import {
   saveSettings,
   saveStaff,
   reviewGroup,
+  reviewResearchFeedback,
 } from "@/lib/admin-content";
 import { reviewReport, reviewAppeal } from "@/lib/moderation";
 import { adminSections } from "@/lib/admin-nav";
@@ -62,6 +63,10 @@ export async function POST(
       case "appeals":
         if (!id) throw new HttpError(400, "Appeal identifier required.");
         await reviewAppeal(id, body, staff);
+        break;
+      case "research":
+        if (!id) throw new HttpError(400, "Feedback identifier required.");
+        await reviewResearchFeedback(id, body, staff);
         break;
       case "staff":
         await saveStaff(id, body, staff);

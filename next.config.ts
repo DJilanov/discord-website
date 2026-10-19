@@ -1,9 +1,19 @@
 import type { NextConfig } from "next";
+import { createHash } from "node:crypto";
 
 const config: NextConfig = {
   distDir: process.env.FOREVER_BUILD_DIR || ".next",
+  deploymentId: process.env.FOREVER_BUILD_DIR
+    ? createHash("sha256")
+        .update(process.env.FOREVER_BUILD_DIR)
+        .digest("hex")
+        .slice(0, 20)
+    : undefined,
   poweredByHeader: false,
   devIndicators: false,
+  logging: {
+    incomingRequests: { ignore: [/\/api\/community\/auth\/callback(?:\/|\?)/] },
+  },
   images: { formats: ["image/avif", "image/webp"], qualities: [60, 75] },
   experimental: {
     serverActions: { bodySizeLimit: "10mb" },
@@ -31,6 +41,19 @@ const config: NextConfig = {
           },
         ],
       },
+      ...[
+        "/raids/:path*",
+        "/account/:path*",
+        "/admin/raids/:path*",
+        "/api/community/auth/:path*",
+      ].map((source) => ({
+        source,
+        headers: [
+          { key: "Cache-Control", value: "private, no-store" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+        ],
+      })),
     ];
   },
 };

@@ -99,8 +99,9 @@ export async function SearchReadiness(): Promise<React.JSX.Element> {
           <CopyButton text={`${SITE_URL}/sitemap.xml`} label="Copy sitemap" />
         </div>
         <p>
-          {guides} published guides. Submit the sitemap in both search accounts
-          and inspect these pages:
+          {guides} published guides plus the live research library. Submit the
+          sitemap in both search accounts and inspect these high-value pages
+          after a meaningful release:
         </p>
         <ul>
           {[
@@ -109,6 +110,9 @@ export async function SearchReadiness(): Promise<React.JSX.Element> {
             "/discord/eu",
             "/discord/na",
             "/guides/join-wow-forever-discord",
+            "/research",
+            "/research/data",
+            "/research/build-changes",
           ].map((path) => (
             <li key={path}>
               <a
@@ -125,8 +129,9 @@ export async function SearchReadiness(): Promise<React.JSX.Element> {
         </ul>
         <p>
           Record the indexing status, Google-selected canonical, last crawl and
-          any reported exclusion. Verify the property for this website, not an
-          unrelated domain you also own.
+          any reported exclusion. Request indexing once for genuinely changed
+          pages; repeated requests do not manufacture authority. Verify the
+          property for this website, not an unrelated domain you also own.
         </p>
       </section>
       <section className="section">

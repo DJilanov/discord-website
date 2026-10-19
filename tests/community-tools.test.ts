@@ -14,6 +14,7 @@ import { GET as downloadTemplate } from "../app/templates/[slug]/route";
 import { communityTemplates } from "../content/templates";
 import { editorialGuides } from "../content/editorial";
 import { requireSameOrigin } from "../lib/security";
+import { localGroupStart } from "../lib/group-time";
 
 test("alternate dev ports remain loopback-only and are never allowed in production", () => {
   const previousMode = process.env.NODE_ENV;
@@ -69,7 +70,7 @@ const group = {
   activity: "Dungeon",
   description: "An isolated validation fixture for group posts.",
   contactDiscord: "fixture",
-  startsAt: new Date(Date.now() + 3600000).toISOString(),
+  startsAt: localGroupStart(new Date(Date.now() + 3600000), "EU"),
 };
 
 test("Forever guild and group forms require a character ruleset, not a realm", () => {

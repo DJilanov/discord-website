@@ -138,7 +138,7 @@ export const guildFields: EditorField[] = [
     name: "status",
     label: "Status",
     type: "select",
-    options: ["pending", "approved", "hidden", "rejected"],
+    options: ["approved", "hidden", "rejected"],
   },
   { name: "region", label: "Region", type: "select", options: REGIONS },
   { name: "faction", label: "Faction", type: "select", options: FACTIONS },

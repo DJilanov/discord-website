@@ -16,7 +16,8 @@ const copy = {
       "Be specific about times and time zones.",
       "Share your loot and attendance expectations.",
       "Only post a guild you are authorized to represent.",
-      "Listings are reviewed before publication.",
+      "Your submission is posted publicly in the faction's Discord forum.",
+      "It appears on the website immediately and is reviewed afterward.",
     ],
   },
   group: {
@@ -28,8 +29,9 @@ const copy = {
     points: [
       "Include roles needed and your meeting point.",
       "State loot rules and voice expectations.",
-      "Posts expire six hours after the start time.",
-      "Allow time for staff to review your post.",
+      "Upcoming groups leave the website board at their start time.",
+      "Your submission is posted publicly in the matching Discord group forum.",
+      "It appears on the website immediately and is reviewed afterward.",
     ],
   },
   report: {

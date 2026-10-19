@@ -1,0 +1,1065 @@
+{
+  "schema": "tbc-atlasloot-loot-candidates.v1",
+  "game": "tbc",
+  "raidName": "The Eye",
+  "raidSourceUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708",
+  "sourcePatch": "TBC Classic / AtlasLoot Revival 0.2.4",
+  "clientBuild": null,
+  "availability": "confirmed",
+  "coverage": "partial",
+  "capturedAt": "2026-10-03T14:47:06.856Z",
+  "authorizedSource": true,
+  "provenance": {
+    "provider": "AtlasLoot Revival",
+    "version": "0.2.4",
+    "archiveSha256": "dc7169b383572a9348727cb6818602247a3f08ad133a243778c4ccd5e43a8ea2",
+    "fileUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708"
+  },
+  "items": [
+    {
+      "itemId": 29918,
+      "name": "Mindstorm Wristbands",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29918",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29920,
+      "name": "Phoenix-Ring of Rebirth",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29920",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29921,
+      "name": "Fire Crest Breastplate",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29921",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29922,
+      "name": "Band of Al'ar",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29922",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29923,
+      "name": "Talisman of the Sun King",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29923",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29924,
+      "name": "Netherbane",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29924",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29925,
+      "name": "Phoenix-Wing Cloak",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29925",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29947,
+      "name": "Gloves of the Searing Grip",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29947",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29948,
+      "name": "Claw of the Phoenix",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29948",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29949,
+      "name": "Arcanite Steam-Pistol",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29949",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29950,
+      "name": "Greaves of the Bloodwarder",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29950",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29951,
+      "name": "Star-Strider Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29951",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29962,
+      "name": "Heartrazor",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29962",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29965,
+      "name": "Girdle of the Righteous Path",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29965",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29966,
+      "name": "Vambraces of Ending",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29966",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29972,
+      "name": "Trousers of the Astromancer",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29972",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29976,
+      "name": "Worldstorm Gauntlets",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29976",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29977,
+      "name": "Star-Soul Breeches",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29977",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29981,
+      "name": "Ethereum Life-Staff",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29981",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29982,
+      "name": "Wand of the Forgotten Star",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29982",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29983,
+      "name": "Fel-Steel Warhelm",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29983",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29984,
+      "name": "Girdle of Zaetar",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29984",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29985,
+      "name": "Void Reaver Greaves",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29985",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29986,
+      "name": "Cowl of the Grand Engineer",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29986",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29987,
+      "name": "Gauntlets of the Sun King",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29987",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29988,
+      "name": "The Nexus Key",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29988",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29989,
+      "name": "Sunshower Light Cloak",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29989",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29990,
+      "name": "Crown of the Sun",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29990",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29991,
+      "name": "Sunhawk Leggings",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29991",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29992,
+      "name": "Royal Cloak of the Sunstriders",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29992",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29993,
+      "name": "Twinblade of the Phoenix",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29993",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29994,
+      "name": "Thalassian Wildercloak",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29994",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29995,
+      "name": "Leggings of Murderous Intent",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29995",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29996,
+      "name": "Rod of the Sun King",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29996",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29997,
+      "name": "Band of the Ranger-General",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29997",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29998,
+      "name": "Royal Gauntlets of Silvermoon",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29998",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30020,
+      "name": "Fire-Cord of the Magus",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30020",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30024,
+      "name": "Mantle of the Elven Kings",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30024",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30026,
+      "name": "Bands of the Celestial Archer",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30026",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30028,
+      "name": "Seventh Ring of the Tirisfalen",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30028",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30029,
+      "name": "Bark-Gloves of Ancient Wisdom",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30029",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30030,
+      "name": "Girdle of Fallen Stars",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30030",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30236,
+      "name": "Chestguard of the Vanquished Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30236",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30237,
+      "name": "Chestguard of the Vanquished Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30237",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30238,
+      "name": "Chestguard of the Vanquished Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30238",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30248,
+      "name": "Pauldrons of the Vanquished Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30248",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30249,
+      "name": "Pauldrons of the Vanquished Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30249",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30250,
+      "name": "Pauldrons of the Vanquished Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30250",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30446,
+      "name": "Solarian's Sapphire",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30446",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30447,
+      "name": "Tome of Fiery Redemption",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30447",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Paladin"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30448,
+      "name": "Talon of Al'ar",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30448",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Hunter"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30449,
+      "name": "Void Star Talisman",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30449",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30450,
+      "name": "Warp-Spring Coil",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30450",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Rogue"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30619,
+      "name": "Fel Reaver's Piston",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30619",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32267,
+      "name": "Boots of the Resilient",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32267",
+      "lootSource": "High Astromancer Solarian",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32405,
+      "name": "Verdant Sphere",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32405",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32458,
+      "name": "Ashes of Al'ar",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32458",
+      "lootSource": "Kael'thas Sunstrider",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32515,
+      "name": "Wristguards of Determination",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32515",
+      "lootSource": "Void Reaver",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32944,
+      "name": "Talon of the Phoenix",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32944",
+      "lootSource": "Al'ar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    }
+  ]
+}

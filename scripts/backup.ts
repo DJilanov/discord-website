@@ -1,5 +1,12 @@
 import "./env";
-import { mkdir, readdir, rm, chmod, copyFile } from "node:fs/promises";
+import {
+  mkdir,
+  readdir,
+  rm,
+  chmod,
+  copyFile,
+  writeFile,
+} from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { db } from "../lib/db";
@@ -19,6 +26,22 @@ async function main(): Promise<void> {
     Array<{ tablename: string }>
   >`SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename LIKE 'Forever%'`;
   if (!tables.length) throw new Error("No Forever tables found.");
+  const functions = await db.$queryRaw<
+    Array<{ definition: string }>
+  >`SELECT DISTINCT p.oid, pg_get_functiondef(p.oid) AS definition
+    FROM pg_proc p
+    JOIN pg_trigger t ON t.tgfoid = p.oid
+    JOIN pg_class c ON c.oid = t.tgrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public' AND c.relname LIKE 'Forever%'
+      AND NOT t.tgisinternal AND p.pronamespace = 'public'::regnamespace
+    ORDER BY p.oid`;
+  // Table-filtered dumps exclude standalone functions required by restored triggers.
+  await writeFile(
+    path.join(destination, "trigger-functions.sql"),
+    functions.map((item) => `${item.definition};\n`).join("\n"),
+    { mode: 0o600 },
+  );
   const url = new URL(process.env.DATABASE_URL || "");
   const env = {
     ...process.env,
@@ -71,10 +94,10 @@ async function main(): Promise<void> {
     .map((item) => item.name)
     .sort()
     .reverse();
-  for (const old of previous.slice(7))
+  for (const old of previous.slice(1))
     await rm(path.join(root, old), { recursive: true });
   console.log(
-    "Forever database and private files backed up; latest seven local copies retained.",
+    "Forever database and private files backed up; latest local copy retained.",
   );
 }
 main()

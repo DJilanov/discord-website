@@ -149,6 +149,10 @@ We record page paths, traffic source, campaign labels, device category, and Disc
 
 A random session identifier is held in browser session storage to connect pages during a visit. It is not an advertising identifier. The application respects Do Not Track and Global Privacy Control signals. Analytics records are scheduled for deletion after 90 days. Invitation clicks indicate intent; they are not proof that someone joined Discord.
 
+Research pages accept an assessment and an optional correction note. They do not ask for an email address, Discord identity, or character name. The selected report path, assessment, note, review status, and timestamps are stored so editors can close the correction loop. Rate limiting uses the same keyed IP hash boundary described above; that hash is not attached to the feedback record. Research actions and public dataset downloads are counted as first-party analytics events when browser privacy controls allow measurement.
+
+Resolved and dismissed research feedback is scheduled for deletion after one year. Open feedback remains available to editors until it is reviewed so a reported evidence problem is not discarded silently.
+
 The web server keeps access logs for security and troubleshooting; these can include raw IP addresses. Logs rotate daily with seven rotated files retained. Private local backups keep the latest seven copies, so deleted data may persist temporarily in a restricted recovery copy. Backups are not used for analytics or public distribution.
 
 ## Security and third parties

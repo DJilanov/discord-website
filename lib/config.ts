@@ -4,6 +4,9 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 export const INDEXABLE =
   process.env.SITE_INDEXABLE === "true" && SITE_URL.startsWith("https://");
+export const HELPER_URL = (
+  process.env.HELPER_PUBLIC_URL || "https://helper.kfcguild.online"
+).replace(/\/$/, "");
 export const REGIONS = ["EU", "NA", "OCE"] as const;
 export const FACTIONS = ["Alliance", "Horde"] as const;
 export const RULESETS = ["Normal", "PvP", "Roleplaying"] as const;

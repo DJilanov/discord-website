@@ -19,6 +19,7 @@ import {
   requireSameOrigin,
 } from "../lib/security";
 import { db } from "../lib/db";
+import { localGroupStart } from "../lib/group-time";
 
 after(async () => {
   await db.$disconnect();
@@ -222,6 +223,49 @@ test("invalid report and schedule data are rejected at the boundary", () => {
     groupSchema.safeParse({ startsAt: "not-a-date" }).success,
     false,
   );
+});
+
+test("group schedules allow distant future events while rejecting invalid and stale dates", (): void => {
+  const now = Date.now();
+  const submission = {
+    title: "Future phase release raid",
+    region: "EU",
+    faction: "Alliance",
+    gameRuleset: "Normal",
+    activity: "Raid",
+    description:
+      "A planned raid for a future phase release. Confirm the schedule before joining.",
+    contactDiscord: "test-organizer",
+  };
+  for (const days of [31, 90, 365, 730]) {
+    const startsAt = localGroupStart(
+      new Date(now + days * 86400000),
+      submission.region,
+    );
+    assert.equal(
+      groupSchema.parse({ ...submission, startsAt }).startsAt,
+      startsAt,
+    );
+  }
+  assert.equal(
+    groupSchema.safeParse({
+      ...submission,
+      startsAt: localGroupStart(new Date(now - 30 * 60000), submission.region),
+    }).success,
+    true,
+  );
+  for (const startsAt of [
+    "not-a-date",
+    "2027-02-30T12:00",
+    localGroupStart(new Date(now - 2 * 3600000), submission.region),
+  ]) {
+    const result = groupSchema.safeParse({ ...submission, startsAt });
+    assert.equal(result.success, false);
+    if (!result.success)
+      assert.ok(
+        result.error.issues.some((issue) => issue.path[0] === "startsAt"),
+      );
+  }
 });
 
 test("self-hosted challenge requires real work, rejects tampering and single-use replays", async () => {

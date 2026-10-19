@@ -3,6 +3,9 @@ node_modules/
 .next-*/
 .env*
 !.env.example
+!.env.auction.example
+!.env.listings.example
+!.env.raids.example
 *.tsbuildinfo
 test-results/
 playwright-report/

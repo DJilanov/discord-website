@@ -196,24 +196,18 @@ export async function control(
       case "approve": {
         if (["active", "pilot", "retiring"].includes(bridge.state))
           throw new BridgeError(409, "pause_before_configuration");
-        const link = parseMessageLink(input.link || "");
         const sideA = input.side === "a";
-        if (
-          !input.side ||
-          !link ||
-          link.guildId !== (sideA ? bridge.guildA : bridge.guildB) ||
-          link.channelId !== (sideA ? bridge.channelA : bridge.channelB)
-        )
-          throw new BridgeError(400, "notice_must_belong_to_endpoint");
+        if (input.side !== "a" && input.side !== "b")
+          throw new BridgeError(400, "endpoint_side_required");
         if (sideA)
           await sql.query(
-            'UPDATE "ForeverDiscordBridge" SET "approvalA"=$2,"noticeA"=$3,"validatedAt"=NULL,"state"=\'draft\' WHERE "id"=$1',
-            [bridge.id, `staff:${staff.id}`, input.link],
+            'UPDATE "ForeverDiscordBridge" SET "approvalA"=$2,"validatedAt"=NULL,"state"=\'draft\' WHERE "id"=$1',
+            [bridge.id, `staff:${staff.id}`],
           );
         else
           await sql.query(
-            'UPDATE "ForeverDiscordBridge" SET "approvalB"=$2,"noticeB"=$3,"validatedAt"=NULL,"state"=\'draft\' WHERE "id"=$1',
-            [bridge.id, `staff:${staff.id}`, input.link],
+            'UPDATE "ForeverDiscordBridge" SET "approvalB"=$2,"validatedAt"=NULL,"state"=\'draft\' WHERE "id"=$1',
+            [bridge.id, `staff:${staff.id}`],
           );
         break;
       }
@@ -221,11 +215,9 @@ export async function control(
         if (
           ["active", "pilot", "retiring"].includes(bridge.state) ||
           !bridge.approvalA ||
-          !bridge.approvalB ||
-          !bridge.noticeA ||
-          !bridge.noticeB
+          !bridge.approvalB
         )
-          throw new BridgeError(409, "both_notices_and_approvals_required");
+          throw new BridgeError(409, "both_endpoint_approvals_required");
         await sql.query(
           'UPDATE "ForeverDiscordBridge" SET "state"=\'validating\',"validatedAt"=NULL,"reason"=NULL WHERE "id"=$1',
           [bridge.id],
@@ -279,6 +271,10 @@ export async function control(
       }
       case "pause":
       case "retire": {
+        await sql.query(
+          "UPDATE \"ForeverBridgeImport\" SET state='paused',reason='staff_request',version=version+1 WHERE \"bridgeId\"=$1 AND state IN ('scanning','importing')",
+          [bridge.id],
+        );
         await sql.query(
           'UPDATE "ForeverDiscordBridge" SET "state"=$2,"generation"="generation"+1,"reason"=\'staff_request\',"validatedAt"=NULL WHERE "id"=$1',
           [bridge.id, input.action === "retire" ? "retiring" : "paused"],
@@ -397,6 +393,7 @@ export async function control(
       rootId: input.rootId,
       actorId: input.actorId,
       approvals: input.approvals,
+      side: input.action === "approve" ? input.side : undefined,
       testerIds: input.action === "pilot" ? input.testerIds : undefined,
     });
   });
@@ -434,6 +431,10 @@ export async function setMode(
     );
     if (mode !== "running")
       for (const bridge of bridges) {
+        await sql.query(
+          "UPDATE \"ForeverBridgeImport\" SET state='paused',reason='global_pause',version=version+1 WHERE \"bridgeId\"=$1 AND state IN ('scanning','importing')",
+          [bridge.id],
+        );
         if (["active", "pilot"].includes(bridge.state))
           await sql.query(
             'UPDATE "ForeverDiscordBridge" SET "state"=\'paused\',"generation"="generation"+1,"version"="version"+1,"validatedAt"=NULL,"reason"=\'global_pause\' WHERE "id"=$1',

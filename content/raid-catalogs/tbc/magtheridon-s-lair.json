@@ -1,0 +1,306 @@
+{
+  "schema": "tbc-atlasloot-loot-candidates.v1",
+  "game": "tbc",
+  "raidName": "Magtheridon's Lair",
+  "raidSourceUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708",
+  "sourcePatch": "TBC Classic / AtlasLoot Revival 0.2.4",
+  "clientBuild": null,
+  "availability": "confirmed",
+  "coverage": "partial",
+  "capturedAt": "2026-10-03T14:47:06.854Z",
+  "authorizedSource": true,
+  "provenance": {
+    "provider": "AtlasLoot Revival",
+    "version": "0.2.4",
+    "archiveSha256": "dc7169b383572a9348727cb6818602247a3f08ad133a243778c4ccd5e43a8ea2",
+    "fileUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708"
+  },
+  "items": [
+    {
+      "itemId": 28774,
+      "name": "Glaive of the Pit",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28774",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28775,
+      "name": "Thundering Greathelm",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28775",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28776,
+      "name": "Liar's Tongue Gloves",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28776",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28777,
+      "name": "Cloak of the Pit Stalker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28777",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28778,
+      "name": "Terror Pit Girdle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28778",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28779,
+      "name": "Girdle of the Endless Pit",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28779",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28780,
+      "name": "Soul-Eater's Handwraps",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28780",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28781,
+      "name": "Karaborian Talisman",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28781",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28782,
+      "name": "Crystalheart Pulse-Staff",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28782",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28783,
+      "name": "Eredar Wand of Obliteration",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28783",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28789,
+      "name": "Eye of Magtheridon",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28789",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29458,
+      "name": "Aegis of the Vindicator",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29458",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29753,
+      "name": "Chestguard of the Fallen Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29753",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29754,
+      "name": "Chestguard of the Fallen Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29754",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29755,
+      "name": "Chestguard of the Fallen Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29755",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32385,
+      "name": "Magtheridon's Head",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32385",
+      "lootSource": "Magtheridon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    }
+  ]
+}

@@ -1,6 +1,46 @@
 # Search and Community Operations
 
-Updated September 29, 2026. This operating checklist complements the implemented website work, not a promise of first place.
+Updated October 4, 2026. This operating checklist complements the implemented website work, not a promise of first place.
+
+## October 4 Ranking Diagnosis
+
+The owner observed the site on Google's second page for `wow forever discord`.
+That position can vary by country, device, history and index refresh; it is a
+useful owner observation, not a universal rank. A separate discovery check on
+October 4 returned the homepage behind a Discord listing and a Blizzard forum
+thread, while also returning `/discord` and the onboarding guide.
+
+There is no demonstrated technical indexing failure:
+
+- the domain was registered on September 29 and is still only days old;
+- canonical HTTPS/www redirects, server-rendered text, titles, descriptions,
+  robots directives and the sitemap are valid;
+- production access logs show Googlebot fetching the homepage and public pages
+  successfully with HTTP 200 on October 4;
+- the homepage declares one `WebSite` identity with the preferred name
+  `WoW Forever Discord` and the domain as a fallback name.
+
+The exact-match domain is therefore not a shortcut to first place. The current
+bottleneck is recognition and authority: established Reddit, Discord and
+Blizzard pages have older links, discussion and audiences. Do not respond by
+publishing duplicate keyword pages or repeatedly changing the homepage title.
+
+Immediate owner actions, in order:
+
+1. Confirm the sitemap reports `Success` in the verified Search Console
+   property and request one fresh inspection each of `/`, `/research`, and
+   `/research/data` after the October 4 deployment.
+2. Send the prepared factual request to the maintained r/classicwow community
+   list, following its current modmail instructions.
+3. Request inclusion in Wowhead's Discord directory through its current
+   submission route and add the canonical website to every public server
+   profile field that Discord makes available.
+4. Publish real approved guild listings and dated group activity. Empty
+   directories cannot demonstrate that the hub is more useful than an
+   established discussion or server listing.
+5. Compare the same query/country/device in Search Console after seven complete
+   days. Measure impressions, page, position and clicks rather than relying on
+   one personalized result page.
 
 ## Search Account Handoff
 
@@ -8,7 +48,7 @@ The owner confirmed that `wowforeverdiscord.online` is verified in Google Search
 
 1. Select the property covering `https://www.wowforeverdiscord.online/` in Search Console. A Domain property covers subdomains; URL-prefix properties must cover the canonical www HTTPS URL.
 2. Submit `https://www.wowforeverdiscord.online/sitemap.xml`. Record the submission date, fetch status and discovered URLs. Discovery is not indexing.
-3. Inspect `/`, `/discord`, `/discord/eu`, `/discord/na`, and `/guides/join-wow-forever-discord`. Check live fetch, indexing reason and Google-selected canonical. Request indexing for these genuinely changed pages once; do not repeatedly submit every day.
+3. Inspect `/`, `/discord`, `/research`, `/research/data`, `/research/build-changes`, and `/guides/join-wow-forever-discord`. Check live fetch, indexing reason and Google-selected canonical. Request indexing for the genuinely changed research index and data page once; do not repeatedly submit every day.
 4. Verify or import the same site in Bing Webmaster Tools and submit the sitemap there. Bing verification is not yet confirmed.
 5. Use `/admin/settings` only if a public verification meta value is needed. DNS verification continues to work without Cloudflare. Keep account passwords and API secrets out of the CMS.
 
@@ -44,6 +84,12 @@ Log each request's date, destination, permission/rules checked, exact submitted 
 ## Weekly Review
 
 Use dated seven-day snapshots initially, then comparable 28-day periods once enough data exists. Keep the following measures separate:
+
+The `/research` library is the owned-content loop for questions the product can answer from primary
+evidence. Review `/admin/research` weekly: resolve correction reports, compare report entry sessions
+with `research_action` and `dataset_download` events, and record which reports lead to Trader,
+Encyclopedia, guild-directory, or Discord actions. Do not create thin BiS, class-scaling, source, or
+drop-rate pages until their evidence gates pass. See [research-feedback-loop.md](research-feedback-loop.md).
 
 | Measure                | Source                        | Record                                                                                            |
 | ---------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------- |

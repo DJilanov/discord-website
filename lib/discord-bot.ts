@@ -10,6 +10,12 @@ import {
 import { webBridgeStore } from "@/lib/discord-bridge/web-store";
 import { BridgeError } from "@/lib/discord-bridge/store";
 import { ephemeral } from "@/lib/discord-bridge/commands";
+import { isRaidInteraction, raidInteraction } from "@/lib/raids/interactions";
+import {
+  isNativeRaidInteraction,
+  nativeRaidInteraction,
+} from "@/lib/raids/native-interactions";
+import { approveRaidInteraction, isRaidApproval } from "@/lib/raids/approval";
 
 export function verifyDiscordSignature(
   raw: string,
@@ -65,6 +71,38 @@ const interactionSchema = z.object({
     .optional(),
 });
 export async function handleInteraction(raw: unknown): Promise<object> {
+  if (isNativeRaidInteraction(raw)) {
+    try {
+      return await nativeRaidInteraction(raw);
+    } catch (error) {
+      if (error instanceof HttpError) return ephemeral(error.message);
+      if (error instanceof z.ZodError)
+        return ephemeral(
+          "Invalid event control. Reopen the original event post.",
+        );
+      throw error;
+    }
+  }
+  if (isRaidApproval(raw)) {
+    try {
+      return await approveRaidInteraction(raw);
+    } catch (error) {
+      if (error instanceof HttpError) return ephemeral(error.message);
+      if (error instanceof z.ZodError)
+        return ephemeral("Invalid event approval request.");
+      throw error;
+    }
+  }
+  if (isRaidInteraction(raw)) {
+    try {
+      return await raidInteraction(raw);
+    } catch (error) {
+      if (error instanceof HttpError) return ephemeral(error.message);
+      if (error instanceof z.ZodError)
+        return ephemeral("Invalid raid command options.");
+      throw error;
+    }
+  }
   if (isBridgeInteraction(raw)) {
     try {
       return await bridgeInteraction(

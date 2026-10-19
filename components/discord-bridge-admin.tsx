@@ -218,7 +218,7 @@ export function DiscordBridgeAdmin({
       actorId: dialog.actorId,
       side: dialog.side,
     };
-    if (dialog.action === "approve" || dialog.action === "resolve")
+    if (dialog.action === "resolve")
       payload.link = String(form.get("link") || "");
     if (dialog.action === "activate")
       payload.approvals = {
@@ -443,26 +443,10 @@ export function DiscordBridgeAdmin({
                   )}
                   <dt>State reason</dt>
                   <dd>{bridge.reason ? label(bridge.reason) : "None"}</dd>
-                  <dt>KFC notice</dt>
-                  <dd>
-                    {bridge.noticeA ? (
-                      <a href={bridge.noticeA} target="_blank" rel="noreferrer">
-                        Approved notice <ExternalLink size={13} />
-                      </a>
-                    ) : (
-                      "Approval pending"
-                    )}
-                  </dd>
-                  <dt>Forever notice</dt>
-                  <dd>
-                    {bridge.noticeB ? (
-                      <a href={bridge.noticeB} target="_blank" rel="noreferrer">
-                        Approved notice <ExternalLink size={13} />
-                      </a>
-                    ) : (
-                      "Approval pending"
-                    )}
-                  </dd>
+                  <dt>KFC approval</dt>
+                  <dd>{bridge.approvalA ? "Approved" : "Pending"}</dd>
+                  <dt>Forever approval</dt>
+                  <dd>{bridge.approvalB ? "Approved" : "Pending"}</dd>
                 </dl>
                 <div className="button-row">
                   {data.canManage && (
@@ -494,7 +478,7 @@ export function DiscordBridgeAdmin({
                           command(
                             "Approve KFC endpoint",
                             "approve",
-                            "Confirm this exact channel, its other-server audience and its sharing notice are approved by KFC staff. Existing messages will not be imported.",
+                            "Confirm this exact channel and its other-server audience are approved by KFC staff. Members must accept the private /bridge join confirmation. Existing messages will not be imported.",
                             { side: "a" },
                           )
                         }
@@ -512,7 +496,7 @@ export function DiscordBridgeAdmin({
                           command(
                             "Approve Forever endpoint",
                             "approve",
-                            "Confirm this exact channel, its other-server audience and its sharing notice are approved by Forever staff. Existing messages will not be imported.",
+                            "Confirm this exact channel and its other-server audience are approved by Forever staff. Members must accept the private /bridge join confirmation. Existing messages will not be imported.",
                             { side: "b" },
                           )
                         }
@@ -533,7 +517,7 @@ export function DiscordBridgeAdmin({
                           command(
                             "Validate endpoints",
                             "validate",
-                            "The worker will check the exact channels, notices, command registration and permissions.",
+                            "The worker will check the exact channels, command registration and permissions.",
                           )
                         }
                       >
@@ -1000,7 +984,7 @@ export function DiscordBridgeAdmin({
               {error}
             </p>
           )}
-          {(dialog?.action === "approve" || dialog?.action === "resolve") && (
+          {dialog?.action === "resolve" && (
             <label className="field">
               <span>Exact Discord message link</span>
               <input type="url" name="link" required maxLength={200} />

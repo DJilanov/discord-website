@@ -185,7 +185,7 @@ export async function AddonDetail({
                 accident.
               </p>
               <h2>A few useful commands</h2>
-              <pre>
+              <pre tabIndex={0}>
                 <code>
                   {
                     "/fg check Character-Realm\n/fg note Character-Realm Helpful raid leader\n/fg forget Character-Realm\n/fg scan\n/fg report\n/fg region EU\n/fg threshold 3\n/fg alerts off"

@@ -93,6 +93,28 @@ test("bridge admin draft, offline, confirmation, responsive and accessibility st
     where: { name: "E2E shared channels" },
   });
   bridgeId = bridge.id;
+  for (const label of ["KFC approval", "Forever approval"]) {
+    await page.getByRole("button", { name: label, exact: true }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByLabel("Exact Discord message link")).toHaveCount(
+      0,
+    );
+    await expect(
+      dialog.getByText(/private \/bridge join confirmation/),
+    ).toBeVisible();
+    await dialog
+      .getByLabel("Reason for audit log")
+      .fill("Approve the selected audience without a public notice");
+    await dialog.getByRole("button", { name: "Confirm", exact: true }).click();
+    await expect(dialog).not.toBeVisible();
+  }
+  const approved = await db.foreverDiscordBridge.findUniqueOrThrow({
+    where: { id: bridgeId },
+  });
+  expect(approved.approvalA).not.toBeNull();
+  expect(approved.approvalB).not.toBeNull();
+  expect(approved.noticeA).toBeNull();
+  expect(approved.noticeB).toBeNull();
   await expect(
     page.getByRole("button", { name: "Activate", exact: true }),
   ).toBeDisabled();

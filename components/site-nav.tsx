@@ -13,6 +13,7 @@ const links = [
   ["/lfg", "Find a group"],
   ["/guides", "Guides"],
   [traderLinks.leveling, "Leveling"],
+  ["/research", "Research & data"],
   ["/addons", "Addons & tools"],
 ] as const;
 

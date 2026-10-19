@@ -18,7 +18,6 @@ import {
   applicationId,
   existingKfcChannels,
   guilds,
-  parseMessageLink,
   snowflake,
   sourceSchema,
   type Bridge,
@@ -43,6 +42,12 @@ export class DiscordFailure extends Error {
   }
 }
 export interface BridgeTransport {
+  history(
+    bridge: Bridge,
+    channelId: string,
+    before: string,
+    limit: number,
+  ): Promise<SourceMessage[]>;
   validate(bridge: Bridge): Promise<string>;
   eligible(bridge: Bridge, actorId: string): Promise<boolean>;
   source(
@@ -189,9 +194,9 @@ export class DiscordTransport implements BridgeTransport {
   }
   async validate(bridge: Bridge): Promise<string> {
     const fingerprints: unknown[] = [];
-    for (const [guild, channel, notice] of [
-      [bridge.guildA, bridge.channelA, bridge.noticeA],
-      [bridge.guildB, bridge.channelB, bridge.noticeB],
+    for (const [guild, channel] of [
+      [bridge.guildA, bridge.channelA],
+      [bridge.guildB, bridge.channelB],
     ]) {
       if (!guild || !channel) throw new DiscordFailure("invalid");
       const endpoint = await this.endpoint(guild, channel);
@@ -209,26 +214,6 @@ export class DiscordTransport implements BridgeTransport {
           !/^forever-shared-chat(?:-[a-z0-9-]+)?$/.test(endpoint.channel.name))
       )
         throw new DiscordFailure("forbidden");
-      const topic = endpoint.channel.topic || "";
-      if (
-        !topic.includes(
-          "https://www.wowforeverdiscord.online/bot/shared-channels",
-        )
-      )
-        throw new DiscordFailure("invalid");
-      const link = notice ? parseMessageLink(notice) : null;
-      if (!link || link.guildId !== guild || link.channelId !== channel)
-        throw new DiscordFailure("invalid");
-      const message = await this.source(guild, channel, link.messageId);
-      if (
-        !message ||
-        !message.content.includes(
-          "https://www.wowforeverdiscord.online/bot/shared-channels",
-        ) ||
-        !/two.way/i.test(message.content) ||
-        !/\/bridge join/i.test(message.content)
-      )
-        throw new DiscordFailure("invalid");
       const commands = await this.request(
         () =>
           this.rest.get(Routes.applicationGuildCommands(applicationId, guild)),
@@ -255,7 +240,6 @@ export class DiscordTransport implements BridgeTransport {
         roles: endpoint.roles
           .map((r) => ({ id: r.id, permissions: r.permissions }))
           .sort((a, b) => a.id.localeCompare(b.id)),
-        notice: link.messageId,
       });
     }
     return createHash("sha256")
@@ -304,6 +288,43 @@ export class DiscordTransport implements BridgeTransport {
       await this.endpoint(guildId, channelId);
       return null;
     }
+  }
+  async history(
+    bridge: Bridge,
+    channelId: string,
+    before: string,
+    limit: number,
+  ): Promise<SourceMessage[]> {
+    if (
+      ![bridge.channelA, bridge.channelB].includes(channelId) ||
+      !snowflake.safeParse(before).success ||
+      !Number.isInteger(limit) ||
+      limit < 1 ||
+      limit > 100
+    )
+      throw new DiscordFailure("invalid");
+    const guildId =
+      channelId === bridge.channelA ? bridge.guildA : bridge.guildB;
+    await this.endpoint(guildId, channelId);
+    const messages = await this.request(
+      () =>
+        this.rest.get(Routes.channelMessages(channelId), {
+          query: new URLSearchParams({ before, limit: String(limit) }),
+        }),
+      z.array(sourceSchema).max(limit),
+    );
+    const ids = new Set<string>();
+    for (const message of messages) {
+      if (
+        message.channel_id !== channelId ||
+        (message.guild_id && message.guild_id !== guildId) ||
+        BigInt(message.id) >= BigInt(before) ||
+        ids.has(message.id)
+      )
+        throw new DiscordFailure("invalid");
+      ids.add(message.id);
+    }
+    return messages.map((message) => ({ ...message, guild_id: guildId }));
   }
   async output(projection: Projection): Promise<SourceMessage | null> {
     if (!projection.messageId) return null;

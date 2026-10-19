@@ -30,6 +30,7 @@ export function Footer(): React.JSX.Element {
           <Link href="/servers/pvp">PvP community</Link>
           <Link href="/servers/rp">Roleplay community</Link>
           <Link href="/guides">Guides &amp; resources</Link>
+          <Link href="/research">Research &amp; data</Link>
           <Link href="/addons">Addons &amp; tools</Link>
           <Link href="/contribute">Community testing</Link>
         </div>

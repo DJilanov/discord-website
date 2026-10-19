@@ -1,4 +1,5 @@
 import { readdir, readFile } from "node:fs/promises";
+import { openSync, closeSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import path from "node:path";
@@ -18,24 +19,53 @@ async function main(): Promise<void> {
     stdio: ["ignore", "pipe", "pipe"],
   });
   try {
-    execFileSync(
-      "runuser",
-      [
-        "-u",
-        "postgres",
-        "--",
-        "pg_restore",
-        "--exit-on-error",
-        "--no-owner",
-        "--no-acl",
-        "-d",
-        name,
-      ],
-      {
-        input: await readFile(path.join(root, latest, "database.dump")),
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
+    const files = await readdir(path.join(root, latest));
+    for (const section of ["pre-data", "data", "post-data"]) {
+      console.log(`Verifying backup ${section}.`);
+      if (section === "post-data" && files.includes("trigger-functions.sql"))
+        execFileSync(
+          "runuser",
+          [
+            "-u",
+            "postgres",
+            "--",
+            "psql",
+            "-X",
+            "-v",
+            "ON_ERROR_STOP=1",
+            "-d",
+            name,
+          ],
+          {
+            input: await readFile(
+              path.join(root, latest, "trigger-functions.sql"),
+            ),
+            stdio: ["pipe", "pipe", "pipe"],
+          },
+        );
+      // An inherited file is seekable and avoids EPIPE when a section exits early.
+      const dump = openSync(path.join(root, latest, "database.dump"), "r");
+      try {
+        execFileSync(
+          "runuser",
+          [
+            "-u",
+            "postgres",
+            "--",
+            "pg_restore",
+            "--exit-on-error",
+            "--no-owner",
+            "--no-acl",
+            `--section=${section}`,
+            "-d",
+            name,
+          ],
+          { stdio: [dump, "pipe", "pipe"] },
+        );
+      } finally {
+        closeSync(dump);
+      }
+    }
     const count = execFileSync(
       "runuser",
       [
@@ -53,8 +83,8 @@ async function main(): Promise<void> {
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
     );
     assert.ok(Number(count.trim()) >= 4);
-    const files = await readdir(path.join(root, latest));
     if (files.includes("bridge-boundary.sql")) {
+      console.log("Verifying restored bridge boundary.");
       execFileSync(
         "runuser",
         [

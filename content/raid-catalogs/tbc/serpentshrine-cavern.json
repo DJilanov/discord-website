@@ -1,0 +1,1435 @@
+{
+  "schema": "tbc-atlasloot-loot-candidates.v1",
+  "game": "tbc",
+  "raidName": "Serpentshrine Cavern",
+  "raidSourceUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708",
+  "sourcePatch": "TBC Classic / AtlasLoot Revival 0.2.4",
+  "clientBuild": null,
+  "availability": "confirmed",
+  "coverage": "partial",
+  "capturedAt": "2026-10-03T14:47:06.854Z",
+  "authorizedSource": true,
+  "provenance": {
+    "provider": "AtlasLoot Revival",
+    "version": "0.2.4",
+    "archiveSha256": "dc7169b383572a9348727cb6818602247a3f08ad133a243778c4ccd5e43a8ea2",
+    "fileUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708"
+  },
+  "items": [
+    {
+      "itemId": 30008,
+      "name": "Pendant of the Lost Ages",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30008",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30021,
+      "name": "Wildfury Greatstaff",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30021",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30022,
+      "name": "Pendant of the Perilous",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30022",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30023,
+      "name": "Totem of the Maelstrom",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30023",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30025,
+      "name": "Serpentshrine Shuriken",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30025",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30027,
+      "name": "Boots of Courage Unending",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30027",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30047,
+      "name": "Blackfathom Warbands",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30047",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30048,
+      "name": "Brighthelm of Justice",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30048",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30049,
+      "name": "Fathomstone",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30049",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30050,
+      "name": "Boots of the Shifting Nightmare",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30050",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30051,
+      "name": "Idol of the Crescent Goddess",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30051",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30052,
+      "name": "Ring of Lethality",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30052",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30053,
+      "name": "Pauldrons of the Wardancer",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30053",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30054,
+      "name": "Ranger-General's Chestguard",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30054",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30055,
+      "name": "Shoulderpads of the Stranger",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30055",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30056,
+      "name": "Robe of Hateful Echoes",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30056",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30057,
+      "name": "Bracers of Eradication",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30057",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30058,
+      "name": "Mallet of the Tides",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30058",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30059,
+      "name": "Choker of Animalistic Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30059",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30060,
+      "name": "Boots of Effortless Striking",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30060",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30061,
+      "name": "Ancestral Ring of Conquest",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30061",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30062,
+      "name": "Grove-Bands of Remulos",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30062",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30063,
+      "name": "Libram of Absolute Truth",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30063",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30064,
+      "name": "Cord of Screaming Terrors",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30064",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30065,
+      "name": "Glowing Breastplate of Truth",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30065",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30066,
+      "name": "Tempest-Strider Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30066",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30067,
+      "name": "Velvet Boots of the Guardian",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30067",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30068,
+      "name": "Girdle of the Tidal Call",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30068",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30075,
+      "name": "Gnarled Chestpiece of the Ancients",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30075",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30079,
+      "name": "Illidari Shoulderpads",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30079",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30080,
+      "name": "Luminescent Rod of the Naaru",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30080",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30081,
+      "name": "Warboots of Obliteration",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30081",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30082,
+      "name": "Talon of Azshara",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30082",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30083,
+      "name": "Ring of Sundered Souls",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30083",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30084,
+      "name": "Pauldrons of the Argent Sentinel",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30084",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30085,
+      "name": "Mantle of the Tireless Tracker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30085",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30090,
+      "name": "World Breaker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30090",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30091,
+      "name": "True-Aim Stalker Bands",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30091",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30092,
+      "name": "Orca-Hide Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30092",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30095,
+      "name": "Fang of the Leviathan",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30095",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30096,
+      "name": "Girdle of the Invulnerable",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30096",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30097,
+      "name": "Coral-Barbed Shoulderpads",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30097",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30098,
+      "name": "Razor-Scale Battlecloak",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30098",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30099,
+      "name": "Frayed Tether of the Drowned",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30099",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30100,
+      "name": "Soul-Strider Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30100",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30101,
+      "name": "Bloodsea Brigand's Vest",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30101",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30102,
+      "name": "Krakken-Heart Breastplate",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30102",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30103,
+      "name": "Fang of Vashj",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30103",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30104,
+      "name": "Cobra-Lash Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30104",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30105,
+      "name": "Serpent Spine Longbow",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30105",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30106,
+      "name": "Belt of One-Hundred Deaths",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30106",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30107,
+      "name": "Vestments of the Sea-Witch",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30107",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30108,
+      "name": "Lightfathom Scepter",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30108",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30109,
+      "name": "Ring of Endless Coils",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30109",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30110,
+      "name": "Coral Band of the Revived",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30110",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30111,
+      "name": "Runetotem's Mantle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30111",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30112,
+      "name": "Glorious Gauntlets of Crestfall",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30112",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30239,
+      "name": "Gloves of the Vanquished Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30239",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30240,
+      "name": "Gloves of the Vanquished Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30240",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30241,
+      "name": "Gloves of the Vanquished Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30241",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30242,
+      "name": "Helm of the Vanquished Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30242",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30243,
+      "name": "Helm of the Vanquished Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30243",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30244,
+      "name": "Helm of the Vanquished Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30244",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30245,
+      "name": "Leggings of the Vanquished Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30245",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30246,
+      "name": "Leggings of the Vanquished Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30246",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30247,
+      "name": "Leggings of the Vanquished Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30247",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30620,
+      "name": "Spyglass of the Hidden Fleet",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30620",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30621,
+      "name": "Prism of Inner Calm",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30621",
+      "lootSource": "Lady Vashj",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30626,
+      "name": "Sextant of Unstable Currents",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30626",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30627,
+      "name": "Tsunami Talisman",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30627",
+      "lootSource": "Leotheras the Blind",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30629,
+      "name": "Scarab of Displacement",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30629",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30663,
+      "name": "Fathom-Brooch of the Tidewalker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30663",
+      "lootSource": "Fathom-Lord Karathress",
+      "kind": "boss",
+      "classes": [
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30664,
+      "name": "Living Root of the Wildheart",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30664",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30665,
+      "name": "Earring of Soulful Meditation",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30665",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Priest"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 30720,
+      "name": "Serpent-Coil Braid",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=30720",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Mage"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 32516,
+      "name": "Wraps of Purification",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=32516",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33054,
+      "name": "The Seal of Danzalar",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33054",
+      "lootSource": "The Lurker Below",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33055,
+      "name": "Band of Vile Aggression",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33055",
+      "lootSource": "Hydross the Unstable",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33058,
+      "name": "Band of the Vigilant",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33058",
+      "lootSource": "Morogrim Tidewalker",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    }
+  ]
+}

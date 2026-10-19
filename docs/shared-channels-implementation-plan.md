@@ -1,5 +1,9 @@
 # Shared Discord Channels: Implementation Plan
 
+Current override: the owner removed public notices and channel-topic disclosure
+requirements. Follow [the disclosure removal](shared-channels-disclosure-removal.md)
+and the private opt-in flow instead of the original public-posting steps below.
+
 September 30, 2026. Planning only. No relay, command, permission change, schema
 change, dependency install or production deployment has been activated.
 

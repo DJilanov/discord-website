@@ -3,6 +3,7 @@ import {
   messageLink,
   type Bridge,
   type Consent,
+  type HistoryWindow,
   type SourceMessage,
 } from "./contracts.ts";
 
@@ -26,28 +27,34 @@ export function eligibility(
   consent: Consent | null,
   message: SourceMessage,
   now = Date.now(),
+  history: HistoryWindow | null = null,
 ): string | null {
   if (
-    !publicationAllowed(bridge, message.author.id, now) ||
-    !bridge.activatedAt
+    !history &&
+    (!publicationAllowed(bridge, message.author.id, now) || !bridge.activatedAt)
   )
     return "not_active";
   if (
-    !consent ||
-    consent.blocked ||
-    consent.withdrawnAt ||
-    consent.actorId !== message.author.id ||
-    consent.bridgeId !== bridge.id ||
-    consent.guildId !== message.guild_id ||
-    consent.generation !== bridge.generation ||
-    consent.policyVersion !== bridge.policyVersion
+    !history &&
+    (!consent ||
+      consent.blocked ||
+      consent.withdrawnAt ||
+      consent.actorId !== message.author.id ||
+      consent.bridgeId !== bridge.id ||
+      consent.guildId !== message.guild_id ||
+      consent.generation !== bridge.generation ||
+      consent.policyVersion !== bridge.policyVersion)
   )
     return "no_consent";
   const created = Date.parse(message.timestamp);
   if (
     !Number.isFinite(created) ||
-    created <
-      Math.max(consent.optedAt.getTime(), bridge.activatedAt.getTime()) ||
+    (history
+      ? created < history.fromAt.getTime() ||
+        created >= history.untilAt.getTime() ||
+        history.expiresAt.getTime() <= now
+      : created <
+        Math.max(consent!.optedAt.getTime(), bridge.activatedAt!.getTime())) ||
     created > now + 5000
   )
     return "outside_epoch";
@@ -125,6 +132,7 @@ export function renderMessage(
   bridge: Bridge,
   reference: string,
   replyId?: string,
+  imported = false,
 ): RenderedMessage {
   const source =
     message.guild_id === bridge.guildA
@@ -133,7 +141,7 @@ export function renderMessage(
   const author = plain(message.author.username)
     .replace(/[\r\n]/g, " ")
     .slice(0, 80);
-  const header = `**Shared from ${source} | ${author}**\n`;
+  const header = `**${imported ? "Imported" : "Shared"} from ${source} | ${author}**\n${imported ? `Original: ${new Date(message.timestamp).toISOString()}\n` : ""}`;
   const footer = `\n[Source](<${messageLink(message.guild_id!, message.channel_id, message.id)}>) · Relay ${reference}`;
   const context =
     message.message_reference && !replyId
@@ -148,7 +156,7 @@ export function renderMessage(
       : text;
   return {
     content: header + context + body + footer,
-    flags: 4,
+    flags: imported ? 4 | (1 << 12) : 4,
     allowed_mentions: { parse: [], replied_user: false },
     ...(replyId
       ? {

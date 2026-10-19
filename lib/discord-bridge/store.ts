@@ -12,8 +12,10 @@ import {
   type Root,
   type Runtime,
   type SourceMessage,
+  type HistoryWindow,
 } from "./contracts.ts";
 import { eligibility, publicationAllowed } from "./policy.ts";
+import { historyWindow } from "./history.ts";
 
 export class BridgeError extends Error {
   constructor(
@@ -167,6 +169,7 @@ export class BridgeStore {
     projection: Projection;
     bridge: Bridge;
     consent: Consent | null;
+    history: HistoryWindow | null;
   } | null> {
     const root = await one<Root>(
       sql,
@@ -184,6 +187,13 @@ export class BridgeStore {
       root,
       projection,
       bridge: await this.bridge(root.bridgeId, sql),
+      history: await historyWindow(
+        sql,
+        root.historyBatchId,
+        root.bridgeId,
+        root.guildId,
+        root.authorId,
+      ),
       consent: await this.consent(
         root.bridgeId,
         root.guildId,
@@ -237,6 +247,7 @@ export class BridgeStore {
     message: SourceMessage,
     bridgeId: string,
     edited = false,
+    imported?: { batchId: string; fingerprint: string },
   ): Promise<string | null> {
     return this.transaction(async (sql) => {
       const bridge = await this.bridge(bridgeId, sql, true);
@@ -257,7 +268,18 @@ export class BridgeStore {
         message.author.id,
         sql,
       );
-      const denial = eligibility(bridge, consent, message);
+      const batchId = existing?.historyBatchId || imported?.batchId || null;
+      const history = await historyWindow(
+        sql,
+        batchId,
+        bridgeId,
+        message.guild_id || "",
+        message.author.id,
+      );
+      const denial =
+        batchId && !history
+          ? "history_not_authorized"
+          : eligibility(bridge, consent, message, Date.now(), history);
       if (denial) {
         if (existing) await removeRoots(sql, bridgeId, [existing.id], denial);
         return null;
@@ -265,6 +287,23 @@ export class BridgeStore {
       const runtime = await this.runtime(sql);
       if (runtime.mode !== "running" || runtime.gateway !== "ready")
         return null;
+      if (imported && !existing) {
+        const item = await one(
+          sql,
+          `SELECT i."messageId" FROM "ForeverBridgeImportItem" i JOIN "ForeverBridgeImport" b ON b.id=i."batchId"
+          WHERE i."batchId"=$1 AND b."bridgeId"=$2 AND b.state='importing' AND i."channelId"=$3 AND i."messageId"=$4
+          AND i."actorId"=$5 AND i.fingerprint=$6 AND i.state='pending'`,
+          [
+            imported.batchId,
+            bridgeId,
+            message.channel_id,
+            message.id,
+            message.author.id,
+            imported.fingerprint,
+          ],
+        );
+        if (!item) return null;
+      }
       if (existing) {
         const editedAt = message.edited_timestamp
           ? new Date(message.edited_timestamp)
@@ -306,7 +345,8 @@ export class BridgeStore {
         await enqueue(sql, bridgeId, existing.id, "deliver", updated!.revision);
         return existing.id;
       }
-      if (Date.now() - Date.parse(message.timestamp) > 120000) return null;
+      if (!history && Date.now() - Date.parse(message.timestamp) > 120000)
+        return null;
       // Serialize the worker-wide capacity check across independent channel pairs.
       await sql.query("SELECT pg_advisory_xact_lock(193003005)");
       if (bridge.state === "pilot") {
@@ -357,7 +397,7 @@ export class BridgeStore {
       }
       const rootId = randomUUID();
       await sql.query(
-        'INSERT INTO "ForeverBridgeMessage" ("id","bridgeId","guildId","channelId","messageId","authorId","generation","state","parentId","sourceAt","editedAt","expiresAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW()+INTERVAL \'30 days\')',
+        'INSERT INTO "ForeverBridgeMessage" ("id","bridgeId","guildId","channelId","messageId","authorId","generation","state","parentId","sourceAt","editedAt","expiresAt","historyBatchId","approvedRevision") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,LEAST(NOW()+INTERVAL \'30 days\',$13::timestamptz),$12,$14)',
         [
           rootId,
           bridgeId,
@@ -366,10 +406,13 @@ export class BridgeStore {
           message.id,
           message.author.id,
           bridge.generation,
-          bridge.reviewRequired ? "held" : "live",
+          !history && bridge.reviewRequired ? "held" : "live",
           parent?.id || null,
           message.timestamp,
           message.edited_timestamp || null,
+          batchId,
+          history?.expiresAt || null,
+          history ? 1 : 0,
         ],
       );
       await sql.query(
@@ -382,7 +425,12 @@ export class BridgeStore {
           randomBytes(12).toString("hex"),
         ],
       );
-      if (!bridge.reviewRequired)
+      if (history && imported)
+        await sql.query(
+          'UPDATE "ForeverBridgeImportItem" SET state=\'staged\',"rootId"=$4 WHERE "batchId"=$1 AND "channelId"=$2 AND "messageId"=$3',
+          [imported.batchId, message.channel_id, message.id, rootId],
+        );
+      if (history || !bridge.reviewRequired)
         await enqueue(sql, bridgeId, rootId, "deliver", 1);
       return rootId;
     });
@@ -429,6 +477,10 @@ export class BridgeStore {
     block = false,
   ): Promise<void> {
     await sql.query(
+      'UPDATE "ForeverBridgeImportConsent" c SET "withdrawnAt"=NOW() FROM "ForeverBridgeImport" b WHERE b.id=c."batchId" AND b."bridgeId"=$1 AND c."actorId"=$2',
+      [bridge.id, actorId],
+    );
+    await sql.query(
       'UPDATE "ForeverDiscordInteraction" SET "state"=\'failed\',"tokenCipher"=NULL,"error"=\'withdrawn\' WHERE "bridgeId"=$1 AND "actorId"=$2 AND "state" IN (\'challenge\',\'pending\',\'processing\')',
       [bridge.id, actorId],
     );
@@ -460,6 +512,10 @@ export class BridgeStore {
       const bridge = await this.bridge(bridgeId, sql, true);
       if (!["active", "pilot", "ready", "validating"].includes(bridge.state))
         return;
+      await sql.query(
+        "UPDATE \"ForeverBridgeImport\" SET state='paused',reason=$2,version=version+1 WHERE \"bridgeId\"=$1 AND state IN ('scanning','importing')",
+        [bridgeId, reason],
+      );
       await sql.query(
         'UPDATE "ForeverDiscordBridge" SET "state"=\'paused\',"reason"=$2,"version"="version"+1,"generation"="generation"+1,"validatedAt"=NULL WHERE "id"=$1',
         [bridgeId, reason],
@@ -501,7 +557,9 @@ export class BridgeStore {
         sql,
         `WITH next AS (SELECT j."id" FROM "ForeverDiscordOutbox" j JOIN "ForeverDiscordBridge" b ON b."id"=j."bridgeId"
         WHERE j."state"='pending' AND j."dueAt"<=NOW()
-        AND (j."operation"<>'deliver' OR ($1='running' AND (b."state"='active' OR (b."state"='pilot' AND b."pilotUntil">NOW()))))
+        AND (j.operation<>'deliver' OR NOT EXISTS (SELECT 1 FROM "ForeverBridgeMessage" m JOIN "ForeverBridgeImport" h ON h.id=m."historyBatchId" WHERE m.id=j."rootId" AND h.state NOT IN ('importing','completed')))
+        AND (j."operation"<>'deliver' OR ($1='running' AND (b."state"='active' OR (b."state"='pilot' AND b."pilotUntil">NOW())
+          OR (b.state='ready' AND EXISTS (SELECT 1 FROM "ForeverBridgeMessage" m WHERE m.id=j."rootId" AND m."historyBatchId" IS NOT NULL)))))
         AND NOT EXISTS (SELECT 1 FROM "ForeverDiscordOutbox" other WHERE other."rootId"=j."rootId" AND other."state"='leased')
         ORDER BY CASE WHEN j."operation"='remove' THEN 0 WHEN j."operation"='validate' THEN 1 ELSE 2 END,j."createdAt"
         FOR UPDATE OF j SKIP LOCKED LIMIT 1)
@@ -535,16 +593,20 @@ export class BridgeStore {
       const runtime = await this.runtime(sql);
       if (
         !bundle ||
-        !publicationAllowed(bridge, bundle.root.authorId) ||
+        !(bundle.root.historyBatchId
+          ? bundle.history
+          : publicationAllowed(bridge, bundle.root.authorId)) ||
         runtime.mode !== "running" ||
         runtime.gateway !== "ready" ||
         bundle.root.state !== "live" ||
-        bundle.root.generation !== bridge.generation ||
+        (!bundle.root.historyBatchId &&
+          bundle.root.generation !== bridge.generation) ||
         bundle.root.revision !== job.revision ||
-        !bundle.consent ||
-        bundle.consent.withdrawnAt ||
-        bundle.consent.blocked ||
-        bundle.consent.generation !== bridge.generation ||
+        (!bundle.root.historyBatchId &&
+          (!bundle.consent ||
+            bundle.consent.withdrawnAt ||
+            bundle.consent.blocked ||
+            bundle.consent.generation !== bridge.generation)) ||
         ["removed", "suppressed", "uncertain", "sending"].includes(
           bundle.projection.state,
         )
@@ -593,12 +655,16 @@ export class BridgeStore {
       if (
         wasRemoved ||
         current.root.state !== "live" ||
-        current.root.generation !== bridge.generation ||
-        !publicationAllowed(bridge, current.root.authorId) ||
+        (!current.root.historyBatchId &&
+          current.root.generation !== bridge.generation) ||
+        !(current.root.historyBatchId
+          ? current.history
+          : publicationAllowed(bridge, current.root.authorId)) ||
         runtime.mode !== "running" ||
-        !current.consent ||
-        current.consent.withdrawnAt ||
-        current.consent.blocked
+        (!current.root.historyBatchId &&
+          (!current.consent ||
+            current.consent.withdrawnAt ||
+            current.consent.blocked))
       ) {
         await removeRoots(sql, bridge.id, [rootId], "late_send_revoked");
         // A previous removal may have completed before this late acknowledgement supplied the output ID.
@@ -637,6 +703,10 @@ export class BridgeStore {
       );
       for (const bridge of bridges) {
         await sql.query(
+          "UPDATE \"ForeverBridgeImport\" SET state='paused',reason='restart_review_required',version=version+1 WHERE \"bridgeId\"=$1 AND state IN ('scanning','importing')",
+          [bridge.id],
+        );
+        await sql.query(
           'UPDATE "ForeverDiscordBridge" SET "state"=CASE WHEN "state"=\'retiring\' THEN "state" ELSE \'paused\' END,"generation"="generation"+1,"version"="version"+1,"validatedAt"=NULL,"reason"=\'restart_revalidation_required\' WHERE "id"=$1',
           [bridge.id],
         );
@@ -646,7 +716,8 @@ export class BridgeStore {
         );
         const roots = await rows<Root>(
           sql,
-          'SELECT * FROM "ForeverBridgeMessage" WHERE "bridgeId"=$1 AND "state"<>\'removed\'',
+          `SELECT m.* FROM "ForeverBridgeMessage" m JOIN "ForeverBridgeProjection" p ON p."rootId"=m.id
+          WHERE m."bridgeId"=$1 AND m.state<>'removed' AND (m."historyBatchId" IS NULL OR p.state<>'live' OR p."messageId" IS NULL)`,
           [bridge.id],
         );
         await removeRoots(

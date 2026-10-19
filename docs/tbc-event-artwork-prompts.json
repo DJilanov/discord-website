@@ -1,0 +1,52 @@
+{
+  "schema": "tbc-event-artwork-prompts.v1",
+  "generatedOn": "2026-10-03",
+  "generator": "Built-in image_gen tool",
+  "prompts": [
+    {
+      "id": "karazhan",
+      "file": "public/images/raids/tbc/karazhan.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. The haunted ivory stone tower of Karazhan in Deadwind Pass, twisting Gothic spires above a foreboding rocky valley, violet arcane light in high windows, twisted leafless trees and ravens, pale moonlight. The iconic tall multi-tier mage tower is the clear primary subject, small armored adventurers on the path show scale. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "gruuls-lair",
+      "file": "public/images/raids/tbc/gruuls-lair.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. An enormous ochre ogre cavern in the Blade's Edge Mountains, stone tusks and giant rough timber palisades surrounding a huge shadowed opening. A gigantic hulking gronn silhouette rises inside, tiny armed adventurers approaching a dusty rocky ledge. Copper canyon daylight, neutral stone, clear readable cavern detail. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "magtheridons-lair",
+      "file": "public/images/raids/tbc/magtheridons-lair.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. A vast circular demonic prison beneath Hellfire Citadel, a gigantic chained red pit lord restrained at the center, five violet magical cubes spaced around the chamber, iron chains and rune-carved cracked stone. Crimson firelight and violet highlights, high overhead three-quarter camera, clear geometry and scale. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "serpentshrine-cavern",
+      "file": "public/images/raids/tbc/serpentshrine-cavern.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. Coilfang Reservoir's immense subterranean naga sanctuary, blue-green water around sweeping sculpted stone platforms, turquoise luminous mushrooms, naga fin-shaped architecture, tall waterfalls and an immense intricate serpentine dais with a six-armed naga silhouette. Clear cool underwater-cavern atmosphere, bright teal focal light. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "the-eye",
+      "file": "public/images/raids/tbc/the-eye.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. The Eye of Tempest Keep, a huge floating crimson and golden elven citadel against Netherstorm's violet sky. Sweeping crystal spires and blood-elven architecture, a brilliant energy conduit and floating stone causeway, tiny adventurers in foreground. Sharp magenta, ivory and gold, citadel clearly recognizable and not obscured. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "hyjal-summit",
+      "file": "public/images/raids/tbc/hyjal-summit.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. The Burning Crusade Battle for Mount Hyjal raid, defending the ancient enormous World Tree Nordrassil in bright green forest and night-elven ruins. A towering blue-skinned horned demon, Archimonde, approaches in the middle distance, Alliance and Horde defenders with unlabeled banners together below. Emerald forest, clear sky, ivory ancient stone. Depict the TBC defense, not an underground Forever raid. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "black-temple",
+      "file": "public/images/raids/tbc/black-temple.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. Black Temple's monumental dark stone stepped fortress in Shadowmoon Valley, its huge menacing entrance and sharp crenellated towers are the main subject. Fel-green cracks in the sky, distant purple ridges, faint green braziers, small adventurers on broad steps. Clearly readable fortress facade with controlled light, not a dark indistinct silhouette. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "zulaman",
+      "file": "public/images/raids/tbc/zulaman.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. The forest troll fortress of Zul'Aman, tall carved wooden gates with eagle and bear spirit motifs, heavy red tribal cloth, mossy stone walls and ancient Amani trees. A broad bright jungle approach with a small adventurer party and drums beside the gates. Verdant green, red cloth and cool daylight, visibly Warcraft Amani architecture. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    },
+    {
+      "id": "sunwell-plateau",
+      "file": "public/images/raids/tbc/sunwell-plateau.webp",
+      "prompt": "Create an original interpretive Warcraft-inspired painted fantasy raid cover for a TBC Classic community event planner and Discord raid signup embed. Single wide landscape 16:9 composition, consistent sophisticated hand-painted game key-art style, rich environment detail, crisp readable main landmark, dramatic but natural lighting, no blur, no panels. Sunwell Plateau on the Isle of Quel'Danas, elegant ivory blood-elven terraces, soaring golden spires and crimson banners around a radiant arcane well. Clear pale blue sea beyond, violet arcane power swirling at the well, a distant demonic presence on the far terrace. Polished ivory and gold, azure sky, crimson details, bright readable grand finale. No words, lettering, typography, logos, watermarks, UI, faction emblems or branded symbols. This is interpretive fan artwork, not an official screenshot, exact instance map, or promise of encounter mechanics. Render a full 1672x941 landscape image."
+    }
+  ]
+}

@@ -21,6 +21,7 @@ interface Receipt {
   message: string;
   reference?: string;
   token?: string;
+  discordUrl?: string;
 }
 
 export function Field({
@@ -148,8 +149,6 @@ export function SubmissionForm({
       payload.consent = form.get("consent") === "on";
     if (typeof payload.incidentAt === "string")
       payload.incidentAt = new Date(payload.incidentAt).toISOString();
-    if (typeof payload.startsAt === "string")
-      payload.startsAt = new Date(payload.startsAt).toISOString();
     let body: string | FormData;
     const headers: Record<string, string> = {};
     if (kind === "report" || kind === "appeal") {
@@ -164,6 +163,7 @@ export function SubmissionForm({
         payload,
         challenge,
         website: form.get("website"),
+        publicDiscordConsent: form.get("publicDiscordConsent") === "on",
       });
       headers["Content-Type"] = "application/json";
     }
@@ -207,6 +207,18 @@ export function SubmissionForm({
         <CheckCircle2 size={28} />
         <h2 style={{ marginTop: 15 }}>Submission received</h2>
         <p>{receipt.message}</p>
+        {receipt.discordUrl && (
+          <p className="button-row">
+            <a
+              className="button primary"
+              href={receipt.discordUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open Discord forum
+            </a>
+          </p>
+        )}
         {receipt.reference && (
           <>
             <p>
@@ -386,7 +398,7 @@ export function SubmissionForm({
                   label="Start time"
                   name="startsAt"
                   type="datetime-local"
-                  hint="Your device's local time, stored and displayed in UTC."
+                  hint="Time in the selected region: EU uses Europe/Berlin, NA uses America/New_York, and OCE uses UTC."
                 />
                 <Field label="Discord contact" name="contactDiscord" />
               </div>
@@ -524,6 +536,14 @@ export function SubmissionForm({
             </label>
           </section>
         )}
+        {(kind === "guild" || kind === "group") && (
+          <label className="checkbox-label">
+            <input name="publicDiscordConsent" type="checkbox" required />I
+            agree to publish this listing and my Discord contact in the
+            community&apos;s public Discord forum and website immediately. A
+            moderator will review it afterward and may hide it if needed.
+          </label>
+        )}
         <p className="inline-note">
           By submitting, you agree to the{" "}
           <Link href="/rules">community rules</Link> and acknowledge the{" "}
@@ -545,7 +565,11 @@ export function SubmissionForm({
           {busy ? <LoaderCircle size={16} /> : <Send size={16} />}
           {busy ? "Submitting..." : `Submit ${kind}`}
         </button>
-        <span className="fine-print">Reviewed before any public action.</span>
+        <span className="fine-print">
+          {kind === "guild" || kind === "group"
+            ? "Published immediately. A moderator is notified to review it."
+            : "Reviewed before any public action."}
+        </span>
       </div>
     </form>
   );

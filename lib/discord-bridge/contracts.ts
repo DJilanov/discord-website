@@ -84,6 +84,51 @@ export interface Root {
   editedAt: Date | null;
   expiresAt: Date;
   createdAt: Date;
+  historyBatchId: string | null;
+}
+
+export interface HistoryWindow {
+  fromAt: Date;
+  untilAt: Date;
+  expiresAt: Date;
+}
+export interface HistoryBatch {
+  id: string;
+  bridgeId: string;
+  direction: "both" | "a_to_b" | "b_to_a";
+  fromAt: Date;
+  untilAt: Date;
+  state:
+    | "scanning"
+    | "preview"
+    | "importing"
+    | "paused"
+    | "completed"
+    | "rolling_back"
+    | "rolled_back";
+  phase: "scan" | "import";
+  version: number;
+  cursorA: string | null;
+  cursorB: string | null;
+  doneA: boolean;
+  doneB: boolean;
+  limit: number;
+  reason: string | null;
+  dueAt: Date;
+  createdAt: Date;
+  fingerprint: string;
+}
+export interface HistoryItem {
+  batchId: string;
+  guildId: string;
+  channelId: string;
+  messageId: string;
+  actorId: string;
+  sourceAt: Date;
+  fingerprint: string;
+  state: "pending" | "skipped" | "staged";
+  reason: string | null;
+  rootId: string | null;
 }
 export interface Projection {
   id: string;

@@ -28,6 +28,7 @@ async function main(): Promise<void> {
       "policy.ts",
       "crypto.ts",
       "commands.ts",
+      "history.ts",
     ]) {
       await cp(
         path.join("lib/discord-bridge", file),

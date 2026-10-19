@@ -7,6 +7,8 @@ export default function robots(): MetadataRoute.Robots {
     "/admin",
     "/api/",
     "/login",
+    "/raids",
+    "/account",
     "/join",
     "/reports/status",
     "/guild-recruitment/new",

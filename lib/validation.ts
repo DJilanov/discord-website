@@ -10,6 +10,7 @@ import {
   REPORT_CATEGORIES,
   RULESETS,
 } from "@/lib/config";
+import { resolveGroupStart } from "@/lib/group-time";
 
 export function isDiscordInvite(value: string): boolean {
   try {
@@ -99,14 +100,31 @@ export const groupSchema = z
     ]),
     description: z.string().trim().min(20).max(2000),
     contactDiscord: shortText,
-    startsAt: z.iso.datetime(),
+    startsAt: z
+      .string()
+      .regex(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/,
+        "Choose a valid local date and time",
+      ),
   })
-  .refine(
-    (data) =>
-      new Date(data.startsAt).getTime() > Date.now() - 3600000 &&
-      new Date(data.startsAt).getTime() < Date.now() + 30 * 86400000,
-    { message: "Choose a time within the next 30 days", path: ["startsAt"] },
-  );
+  .superRefine((data, context) => {
+    try {
+      const startsAt = resolveGroupStart(data.startsAt, data.region);
+      if (startsAt.getTime() <= Date.now() - 3600000)
+        context.addIssue({
+          code: "custom",
+          message: "Choose a start time no more than one hour in the past",
+          path: ["startsAt"],
+        });
+    } catch {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Choose a valid, unambiguous local time outside daylight-saving changes",
+        path: ["startsAt"],
+      });
+    }
+  });
 export const reportSchema = z
   .object({
     reporterDiscord: shortText,

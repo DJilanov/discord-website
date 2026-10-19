@@ -103,9 +103,12 @@ presence of commands and an online bot does not mean member messages are relayed
 One pair only. Endpoint IDs are immutable: retire an incorrect draft, then create
 another. Each channel must be a public, non-NSFW text channel named
 `forever-shared-chat` or `forever-shared-chat-<suffix>`, not an existing general,
-support or reporting channel. A bridge policy URL is required in its topic, and
-each side needs its own approved notice link. Validation reads only those exact
-notice IDs, never channel history.
+support or reporting channel. This initial channel restriction was superseded by
+the [existing-channel rollout](shared-channels-existing-chats.md). Public notice
+messages and channel-topic disclosures are no longer required, per the owner's
+September 30 request. Each side still needs staff approval; validation checks
+channel permissions and command registration without reading notice messages.
+Members must accept the private `/bridge join` audience disclosure themselves.
 
 Every process restart invalidates participation, cancels publication and begins
 cleanup of known copies. This is intentionally conservative during the pilot,
@@ -197,7 +200,7 @@ Do not run the old eight-command `bot:register` script for this release.
    and Read Message History there, not Administrator or Manage Webhooks. The worker
    cannot undo broad role permissions inherited from earlier installation; an
    owner must review both servers' effective permission matrices first.
-9. Create the two new channels, publish the reviewed notices below, assign real
+9. Select the approved channel pair, assign real
    moderators and approve the both-server participation rule. No old history is
    selected. Test bot-sent messages against local moderation rules; Discord AutoMod
    does not screen server-installed app posts for you.
@@ -210,28 +213,20 @@ Do not run the old eight-command `bot:register` script for this release.
     an explicit interpreter. Verify other applications' PIDs/restart counts remain
     unchanged. The worker starts cleanup-only, never active by itself.
 12. Enable HTTP bridge interactions, create the draft in `/admin/discord`, record
-    both approvals and exact notice links, and request validation. Enable runtime
+    both endpoint approvals without message links, and request validation. Enable runtime
     publication separately, complete isolated-channel lifecycle tests and then
     activate the pair with the four governance attestations. Activation blocks on
     unresolved previous cleanup. Begin with 5-10 explicit opt-ins and manual review.
 
-## Notice For Each New Channel
+## Private Sharing Confirmation
 
-An owner must review and personally publish this, substituting the exact channel
-names if a suffix is chosen:
-
-> This is a two-way shared conversation between KFC Global Pugs and WoW Forever
-> Discord. WoWForeverBot copies only eligible new text from people who explicitly
-> opt in. Copies show your Discord username and original community. Join and be
-> able to speak in both servers, then use /bridge join in each server you want to
-> share from. Use /bridge leave to stop and request cleanup, /bridge remove for a
-> particular copy, or /bridge status to check. Bot copies expire after 30 days;
-> outages can delay cleanup. Human originals are not deleted. Policies and private
-> support: https://www.wowforeverdiscord.online/bot/shared-channels
-
-Also place `https://www.wowforeverdiscord.online/bot/shared-channels` in each
-channel topic. The validator requires the notice to include that URL, `two-way`
-and `/bridge join`. It does not publish or edit a notice on the owner's behalf.
+Do not post informational messages or append disclosure text to channel topics.
+The owner removed both requirements. The private `/bridge join` confirmation
+identifies the two communities, exact channel pair, audience, attribution,
+retention and withdrawal controls. Member confirmation, both endpoint approvals,
+speaking permissions and all other activation checks remain required. Removing a
+former notice cannot invalidate endpoint validation; old notice URLs are retained
+only as historical database fields, not operational requirements.
 
 ## Monitoring, Recovery And Rollback
 

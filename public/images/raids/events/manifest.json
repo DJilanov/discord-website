@@ -1,0 +1,732 @@
+{
+  "schema": "forever-event-artwork.v1",
+  "generatedOn": "2026-10-03",
+  "edition": "forever",
+  "provenance": "AI-generated interpretive fan art; not official screenshots, verified instance layouts, bosses or loot.",
+  "source": "https://worldofwarcraft.blizzard.com/en-us/news/24303862/world-of-warcraft-forever-whats-next",
+  "fallbacks": {
+    "raid": "raid",
+    "dungeon": "dungeon",
+    "battleground": "battleground",
+    "world_pvp": "world-pvp",
+    "questing": "questing",
+    "social": "social",
+    "other": "community-expedition"
+  },
+  "items": [
+    {
+      "id": "hall-of-thanes",
+      "label": "The Hall of Thanes",
+      "eventType": "dungeon",
+      "aliases": ["The Hall of Thanes", "Hall of Thanes"],
+      "alt": "Generated fan art of a monumental underground dwarven hall with stone statues and torchlit stairs.",
+      "file": "hall-of-thanes.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 233726
+    },
+    {
+      "id": "ruins-of-lordaeron",
+      "label": "Ruins of Lordaeron",
+      "eventType": "dungeon",
+      "aliases": ["Ruins of Lordaeron"],
+      "alt": "Generated fan art of a ruined gothic courtyard and an ivy-covered gateway with a faint green glow.",
+      "file": "ruins-of-lordaeron.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 322914
+    },
+    {
+      "id": "excavation-site-wetlands",
+      "label": "Excavation Site: Wetlands",
+      "eventType": "dungeon",
+      "aliases": [
+        "Excavation Site: Wetlands",
+        "Wetlands Excavation Site",
+        "Excavation Site"
+      ],
+      "alt": "Generated fan-art interpretation of Excavation Site: Wetlands: A sweeping archaeological dig above the marshlands: stepped excavated earth around an immense exposed ancient stone vault, dwarven timber scaffolds and cranes, carved titan relics partly uncovered, pools and green wetlands beyond.",
+      "file": "excavation-site-wetlands.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 372038
+    },
+    {
+      "id": "city-of-dalaran",
+      "label": "City of Dalaran",
+      "eventType": "dungeon",
+      "aliases": ["City of Dalaran"],
+      "alt": "Generated fan art of an arcane city with violet-roofed towers and luminous magical disturbances.",
+      "file": "city-of-dalaran.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 280282
+    },
+    {
+      "id": "drowned-city",
+      "label": "The Drowned City",
+      "eventType": "dungeon",
+      "aliases": ["The Drowned City", "Drowned City"],
+      "alt": "Generated fan art of sea-worn coastal architecture and partly submerged columns in clear turquoise water.",
+      "file": "drowned-city.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 402604
+    },
+    {
+      "id": "kroldok-stronghold",
+      "label": "Krol'dok Stronghold",
+      "eventType": "dungeon",
+      "aliases": [
+        "Krol'dok Stronghold",
+        "Kroldok Stronghold",
+        "Krol\u2019dok Stronghold"
+      ],
+      "alt": "Generated fan-art interpretation of Krol'dok Stronghold: A massive outdoor ogre stronghold in lush Riverglades: oversized rugged stone towers, thick wooden spikes and iron gates, a winding river beside the fortress and green upland hills.",
+      "file": "kroldok-stronghold.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 320048
+    },
+    {
+      "id": "alcaz-prison",
+      "label": "Alcaz Prison",
+      "eventType": "dungeon",
+      "aliases": ["Alcaz Prison"],
+      "alt": "Generated fan-art interpretation of Alcaz Prison: A formidable island prison northeast of a coastal swamp: iron-barred stone gate, watchtowers, thick fortress walls, a wooden landing pier and a rocky path beside open turquoise sea.",
+      "file": "alcaz-prison.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 251840
+    },
+    {
+      "id": "blackmaw-hold",
+      "label": "Blackmaw Hold",
+      "eventType": "dungeon",
+      "aliases": ["Blackmaw Hold"],
+      "alt": "Generated fan-art interpretation of Blackmaw Hold: An interpretive vast furbolg settlement behind ancient gates in northern Azshara: colossal carved timber gate integrated into forest-cloaked rock, bear-inspired wooden totems, elevated log walkways, rooted longhouses and deep green woodland.",
+      "file": "blackmaw-hold.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 332304
+    },
+    {
+      "id": "shapers-terrace",
+      "label": "Shaper's Terrace",
+      "eventType": "dungeon",
+      "aliases": [
+        "Shaper's Terrace",
+        "The Shaper's Terrace",
+        "Shapers Terrace",
+        "The Shapers Terrace",
+        "Shaper\u2019s Terrace",
+        "The Shaper\u2019s Terrace"
+      ],
+      "alt": "Generated fan-art interpretation of Shaper's Terrace: An ancient titan terrace rising above the lush jungle crater of Un'Goro: monumental squared stone platforms, geometric carved pillars, a central stepped gateway with restrained blue energy, tropical ferns and immense distant crater cliffs.",
+      "file": "shapers-terrace.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 316444
+    },
+    {
+      "id": "ragefire-chasm",
+      "label": "Ragefire Chasm",
+      "eventType": "dungeon",
+      "aliases": ["Ragefire Chasm", "RFC"],
+      "alt": "Generated fan-art interpretation of Ragefire Chasm: A fiery volcanic cavern beneath Orgrimmar: rugged black basalt arches framing an underground river of molten lava, a rough stone bridge, wooden supports and distant trogg silhouettes.",
+      "file": "ragefire-chasm.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 202384
+    },
+    {
+      "id": "wailing-caverns",
+      "label": "Wailing Caverns",
+      "eventType": "dungeon",
+      "aliases": ["Wailing Caverns", "WC"],
+      "alt": "Generated fan-art interpretation of Wailing Caverns: A winding living cavern inspired by the Barrens dungeon: colossal stone columns intertwined with roots, a clear green underground stream, lush ferns and a serpentine stone formation curling over a central path, tiny druids distant only.",
+      "file": "wailing-caverns.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 303370
+    },
+    {
+      "id": "deadmines",
+      "label": "The Deadmines",
+      "eventType": "dungeon",
+      "aliases": ["The Deadmines", "Deadmines", "VC"],
+      "alt": "Generated fan-art interpretation of The Deadmines: The unforgettable subterranean pirate harbour deep in a mine: a large wooden pirate ship moored inside a gigantic cavern, towering timber scaffold platforms, rope bridges, an abandoned minecart track approaching the harbour.",
+      "file": "deadmines.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 263966
+    },
+    {
+      "id": "shadowfang-keep",
+      "label": "Shadowfang Keep",
+      "eventType": "dungeon",
+      "aliases": ["Shadowfang Keep", "SFK"],
+      "alt": "Generated fan-art interpretation of Shadowfang Keep: A grand haunted gothic castle above the misty Silverpine forest, steep roofs, battlements, a central bridge to the castle gate, moonlit pine trees, subtle distant wolf-like silhouettes on the ramparts.",
+      "file": "shadowfang-keep.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 252270
+    },
+    {
+      "id": "stockade",
+      "label": "The Stockade",
+      "eventType": "dungeon",
+      "aliases": ["The Stockade", "The Stockades", "Stockade", "Stockades"],
+      "alt": "Generated fan-art interpretation of The Stockade: An imposing medieval stone prison corridor under Stormwind: iron-barred cells along both sides, a broad central stairway and iron gate, blue cloth without faction emblems, scattered wooden crates, a single distant guard silhouette.",
+      "file": "stockade.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 250018
+    },
+    {
+      "id": "blackfathom-deeps",
+      "label": "Blackfathom Deeps",
+      "eventType": "dungeon",
+      "aliases": ["Blackfathom Deeps", "BFD"],
+      "alt": "Generated fan-art interpretation of Blackfathom Deeps: An ancient half-flooded temple inside a rocky coastal cavern: tall weathered night-elven pillars, broken stone causeways over clear sea water, a central submerged sanctum, barnacles and sea plants.",
+      "file": "blackfathom-deeps.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 270940
+    },
+    {
+      "id": "gnomeregan",
+      "label": "Gnomeregan",
+      "eventType": "dungeon",
+      "aliases": ["Gnomeregan", "Gnomer"],
+      "alt": "Generated fan-art interpretation of Gnomeregan: A sprawling underground gnomish mechanical city: enormous bronze gears, riveted walkways, pipes and sturdy steam machinery around a central reactor chamber, a few tiny retro-fantasy robot silhouettes, clean strong engineering shapes.",
+      "file": "gnomeregan.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 244090
+    },
+    {
+      "id": "razorfen-kraul",
+      "label": "Razorfen Kraul",
+      "eventType": "dungeon",
+      "aliases": ["Razorfen Kraul", "RFK"],
+      "alt": "Generated fan-art interpretation of Razorfen Kraul: A gigantic maze of thorny roots on the dusty Barrens frontier: enormous interlocking brambles form natural archways, rough quilboar huts and leather awnings tucked among roots, raised earth paths and primitive unmarked totems.",
+      "file": "razorfen-kraul.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 288596
+    },
+    {
+      "id": "scarlet-monastery-graveyard",
+      "label": "Scarlet Monastery: Graveyard",
+      "eventType": "dungeon",
+      "aliases": [
+        "Scarlet Monastery: Graveyard",
+        "Scarlet Monastery Graveyard",
+        "SM Graveyard",
+        "SM GY"
+      ],
+      "alt": "Generated fan-art interpretation of Scarlet Monastery: Graveyard: The graveyard wing of a secluded gothic monastery: rows of old carved headstones around a cloister courtyard, mossy stone mausoleum, tall cypress trees, red unmarked hanging cloth at a small chapel gate.",
+      "file": "scarlet-monastery-graveyard.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 258692
+    },
+    {
+      "id": "scarlet-monastery-library",
+      "label": "Scarlet Monastery: Library",
+      "eventType": "dungeon",
+      "aliases": [
+        "Scarlet Monastery: Library",
+        "Scarlet Monastery Library",
+        "SM Library",
+        "SM Lib"
+      ],
+      "alt": "Generated fan-art interpretation of Scarlet Monastery: Library: An immense medieval monastery library: vaulted stone reading hall, towering wooden bookshelves, stairs and mezzanines, a central oak reading table with closed unmarked books, crimson unmarked cloth between archways.",
+      "file": "scarlet-monastery-library.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 209500
+    },
+    {
+      "id": "scarlet-monastery-armory",
+      "label": "Scarlet Monastery: Armory",
+      "eventType": "dungeon",
+      "aliases": [
+        "Scarlet Monastery: Armory",
+        "Scarlet Monastery Armory",
+        "SM Armory",
+        "SM Arms"
+      ],
+      "alt": "Generated fan-art interpretation of Scarlet Monastery: Armory: A grand monastery armory: vaulted stone training chamber with neatly arrayed medieval weapon racks, red unmarked banners, heavy plate armour on stands and a raised iron doorway at the far end.",
+      "file": "scarlet-monastery-armory.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 238258
+    },
+    {
+      "id": "scarlet-monastery-cathedral",
+      "label": "Scarlet Monastery: Cathedral",
+      "eventType": "dungeon",
+      "aliases": [
+        "Scarlet Monastery: Cathedral",
+        "Scarlet Monastery Cathedral",
+        "Scarlet Monastery",
+        "SM Cathedral",
+        "SM Cath",
+        "SM"
+      ],
+      "alt": "Generated fan-art interpretation of Scarlet Monastery: Cathedral: The great Scarlet Monastery cathedral: soaring gothic vaults, a long nave leading to a central altar, crimson unmarked banners, stained glass using only abstract colour, sunlit cloister garden visible through the entrance.",
+      "file": "scarlet-monastery-cathedral.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 207958
+    },
+    {
+      "id": "razorfen-downs",
+      "label": "Razorfen Downs",
+      "eventType": "dungeon",
+      "aliases": ["Razorfen Downs", "RFD"],
+      "alt": "Generated fan-art interpretation of Razorfen Downs: A haunted thorn citadel rising from the Barrens: gigantic dry brambles coil around tiered rough stone burial towers and a central spiral path, sparse dead trees, bone-like architectural ornament but no gore.",
+      "file": "razorfen-downs.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 223926
+    },
+    {
+      "id": "uldaman",
+      "label": "Uldaman",
+      "eventType": "dungeon",
+      "aliases": ["Uldaman"],
+      "alt": "Generated fan-art interpretation of Uldaman: A dwarven excavation opening into an ancient titan vault: towering stone guardian statues flanking a geometric doorway, carved stone disks and angular columns, mining equipment left beside a central stair, dusty tunnels around the monumental hall.",
+      "file": "uldaman.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 235774
+    },
+    {
+      "id": "zulfarrak",
+      "label": "Zul'Farrak",
+      "eventType": "dungeon",
+      "aliases": ["Zul'Farrak", "ZulFarrak", "ZF", "Zul\u2019Farrak"],
+      "alt": "Generated fan-art interpretation of Zul'Farrak: An ancient sand-troll city in the Tanaris desert: a monumental stepped sandstone pyramid, broad plazas, carved troll stone faces, worn obelisks and a distant dry desert horizon.",
+      "file": "zulfarrak.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 288384
+    },
+    {
+      "id": "maraudon-wicked-grotto",
+      "label": "Maraudon: Wicked Grotto",
+      "eventType": "dungeon",
+      "aliases": [
+        "Maraudon: Wicked Grotto",
+        "Maraudon Wicked Grotto",
+        "Maraudon Purple",
+        "Mara Purple",
+        "Wicked Grotto"
+      ],
+      "alt": "Generated fan-art interpretation of Maraudon: Wicked Grotto: The purple crystalline grotto wing of Maraudon: an immense twisting cave with violet crystals, striated lavender rock, roots around a winding central passage and a thin clear stream.",
+      "file": "maraudon-wicked-grotto.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 311474
+    },
+    {
+      "id": "maraudon-foulspore-cavern",
+      "label": "Maraudon: Foulspore Cavern",
+      "eventType": "dungeon",
+      "aliases": [
+        "Maraudon: Foulspore Cavern",
+        "Maraudon Foulspore Cavern",
+        "Maraudon Orange",
+        "Mara Orange",
+        "Foulspore Cavern"
+      ],
+      "alt": "Generated fan-art interpretation of Maraudon: Foulspore Cavern: The orange fungal cavern wing of Maraudon: huge warm terracotta cave chambers, enormous orange and red-capped mushrooms, exposed roots, a worn stone path winding above a small emerald stream.",
+      "file": "maraudon-foulspore-cavern.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 264436
+    },
+    {
+      "id": "maraudon-earth-song-falls",
+      "label": "Maraudon: Earth Song Falls",
+      "eventType": "dungeon",
+      "aliases": [
+        "Maraudon: Earth Song Falls",
+        "Maraudon Earth Song Falls",
+        "Earth Song Falls",
+        "Maraudon",
+        "Mara"
+      ],
+      "alt": "Generated fan-art interpretation of Maraudon: Earth Song Falls: The luminous waterfall sanctuary deep in Maraudon: multiple immense waterfalls cascade into a clear turquoise pool inside a vast cavern, green hanging vines, ancient weathered centaur-inspired stone arches, a central path across pale rock.",
+      "file": "maraudon-earth-song-falls.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 341602
+    },
+    {
+      "id": "sunken-temple",
+      "label": "Sunken Temple",
+      "eventType": "dungeon",
+      "aliases": [
+        "Sunken Temple",
+        "The Sunken Temple",
+        "Temple of Atal'Hakkar",
+        "The Temple of Atal'Hakkar",
+        "ST",
+        "Temple of Atal\u2019Hakkar",
+        "The Temple of Atal\u2019Hakkar"
+      ],
+      "alt": "Generated fan-art interpretation of Sunken Temple: An ancient sunken jungle troll temple: monumental carved green-stone stairways descending into a flooded circular sanctuary, serpent-inspired stone columns and reliefs, ivy, clear shallow water and a distant shrine.",
+      "file": "sunken-temple.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 318048
+    },
+    {
+      "id": "blackrock-depths",
+      "label": "Blackrock Depths",
+      "eventType": "dungeon",
+      "aliases": ["Blackrock Depths", "BRD"],
+      "alt": "Generated fan-art interpretation of Blackrock Depths: An immense Dark Iron dwarven city under Blackrock Mountain: massive black-stone halls, bronze doors, tiered forge balconies, molten channels below bridges and a monumental central anvil chamber.",
+      "file": "blackrock-depths.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 253068
+    },
+    {
+      "id": "lower-blackrock-spire",
+      "label": "Lower Blackrock Spire",
+      "eventType": "dungeon",
+      "aliases": [
+        "Lower Blackrock Spire",
+        "Blackrock Spire: Lower",
+        "Blackrock Spire Lower",
+        "LBRS"
+      ],
+      "alt": "Generated fan-art interpretation of Lower Blackrock Spire: The lower fortress passages inside Blackrock Mountain: rugged basalt stairways, stacked narrow bridges, ruined fortified gates, orcish wooden spikes and red unmarked cloth, a faint lava chasm below.",
+      "file": "lower-blackrock-spire.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 265334
+    },
+    {
+      "id": "upper-blackrock-spire",
+      "label": "Upper Blackrock Spire",
+      "eventType": "dungeon",
+      "aliases": [
+        "Upper Blackrock Spire",
+        "Blackrock Spire: Upper",
+        "Blackrock Spire Upper",
+        "BRS Upper",
+        "UBRS",
+        "Blackrock Spire"
+      ],
+      "alt": "Generated fan-art interpretation of Upper Blackrock Spire: The upper military fortress inside Blackrock Mountain: a grand high-vaulted black-stone arena, broad staircase, dragon-shaped carved stone guardians beside a huge central iron gate, red unmarked hanging cloth and distant defensive battlements.",
+      "file": "upper-blackrock-spire.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 256906
+    },
+    {
+      "id": "scholomance",
+      "label": "Scholomance",
+      "eventType": "dungeon",
+      "aliases": ["Scholomance", "Scholo"],
+      "alt": "Generated fan-art interpretation of Scholomance: An eerie necromantic academy inside an ancient stone manor: gothic lecture hall, rows of wooden benches, aged books and stone arches, a central ritual study chamber with subtle spectral jade light, a staircase into dim vaults.",
+      "file": "scholomance.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 219694
+    },
+    {
+      "id": "stratholme",
+      "label": "Stratholme",
+      "eventType": "dungeon",
+      "aliases": [
+        "Stratholme",
+        "Strath",
+        "Strat",
+        "Stratholme Living",
+        "Stratholme Undead",
+        "Stratholme Live",
+        "Stratholme UD"
+      ],
+      "alt": "Generated fan-art interpretation of Stratholme: The ruined city of Stratholme: a sweeping cobbled street of tall damaged medieval townhouses and gothic stone gates, roofs burning in the middle distance, broken carts, a central road toward a distant cathedral.",
+      "file": "stratholme.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 305174
+    },
+    {
+      "id": "dire-maul-east",
+      "label": "Dire Maul: East",
+      "eventType": "dungeon",
+      "aliases": [
+        "Dire Maul: East",
+        "Dire Maul East",
+        "DME",
+        "Warpwood Quarter"
+      ],
+      "alt": "Generated fan-art interpretation of Dire Maul: East: The overgrown eastern quarter of Dire Maul: ancient highborne white-stone halls open to the sky, immense living roots and lush ferns reclaiming columns, green pools and a sunlit central archway, tiny plant-elemental silhouettes only.",
+      "file": "dire-maul-east.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 390134
+    },
+    {
+      "id": "dire-maul-north",
+      "label": "Dire Maul: North",
+      "eventType": "dungeon",
+      "aliases": [
+        "Dire Maul: North",
+        "Dire Maul North",
+        "DMN",
+        "Gordok Commons",
+        "Dire Maul Tribute",
+        "DM Tribute"
+      ],
+      "alt": "Generated fan-art interpretation of Dire Maul: North: The northern ogre-occupied halls of Dire Maul: enormous weathered highborne courtyard, broad stone staircase to an oversized throne, rough wooden barricades, crude cooking fires, red unmarked cloth over classical columns, tiny distant ogre silhouettes.",
+      "file": "dire-maul-north.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 300696
+    },
+    {
+      "id": "dire-maul-west",
+      "label": "Dire Maul: West",
+      "eventType": "dungeon",
+      "aliases": [
+        "Dire Maul: West",
+        "Dire Maul West",
+        "DMW",
+        "Capital Gardens",
+        "Dire Maul"
+      ],
+      "alt": "Generated fan-art interpretation of Dire Maul: West: The western arcane quarter of Dire Maul: grand ruined highborne stone courtyard, tall elegant columns, an ancient central arcane containment structure with restrained sapphire-blue energy, deserted walkways and ivy around pale stone.",
+      "file": "dire-maul-west.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 340808
+    },
+    {
+      "id": "hyjal-summit",
+      "label": "Hyjal Summit",
+      "eventType": "raid",
+      "aliases": ["Hyjal Summit"],
+      "alt": "Generated fan art of a vast ancient world tree above green mountain forests and waterfalls.",
+      "file": "hyjal-summit.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 385130
+    },
+    {
+      "id": "barrow-deeps",
+      "label": "Barrow Deeps",
+      "eventType": "raid",
+      "aliases": ["Barrow Deeps", "The Barrow Deeps"],
+      "alt": "Generated fan art of a subterranean forest sanctuary with ancient roots, carved arches and jade-lit pools.",
+      "file": "barrow-deeps.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 271376
+    },
+    {
+      "id": "onyxias-lair",
+      "label": "Onyxia's Lair",
+      "eventType": "raid",
+      "aliases": [
+        "Onyxia's Lair",
+        "Onyxias Lair",
+        "Onyxia",
+        "Ony",
+        "Onyxia\u2019s Lair"
+      ],
+      "alt": "Generated fan-art interpretation of Onyxia's Lair: The legendary black dragon Onyxia within a vast volcanic lair in Dustwallow Marsh: a formidable black dragon with folded leathery wings stands on a broad rocky ledge beyond a cavern approach, massive horns, molten cracks illuminate obsidian rock, subtle distant eggs in sheltered side niches.",
+      "file": "onyxias-lair.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 299502
+    },
+    {
+      "id": "darkspear-islands",
+      "label": "Darkspear Islands",
+      "eventType": "battleground",
+      "aliases": ["Darkspear Islands", "The Darkspear Islands"],
+      "alt": "Generated fan art of tropical islands with timber bridges, troll-inspired towers and coloured control-point pennants.",
+      "file": "darkspear-islands.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 311448
+    },
+    {
+      "id": "warsong-gulch",
+      "label": "Warsong Gulch",
+      "eventType": "battleground",
+      "aliases": ["Warsong Gulch", "WSG"],
+      "alt": "Generated fan-art interpretation of Warsong Gulch: A recognizable capture-the-flag valley at the border of Ashenvale: lush forest transitions toward a rugged red-earth logging outpost, a graceful timber elven base on one side and a spiked lumber-mill stronghold on the other, plain blue and red flags at equal visual prominence, a winding open middle field.",
+      "file": "warsong-gulch.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 432304
+    },
+    {
+      "id": "arathi-basin",
+      "label": "Arathi Basin",
+      "eventType": "battleground",
+      "aliases": ["Arathi Basin", "AB"],
+      "alt": "Generated fan-art interpretation of Arathi Basin: A pastoral Arathi Highlands battlefield: sweeping grassy basin with an old stone bridge, a lakeside blacksmith, a distant lumber mill on a ridge, farm buildings, stables and a small mine entrance woven into a beautiful panoramic landscape.",
+      "file": "arathi-basin.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 410202
+    },
+    {
+      "id": "alterac-valley",
+      "label": "Alterac Valley",
+      "eventType": "battleground",
+      "aliases": ["Alterac Valley", "AV"],
+      "alt": "Generated fan-art interpretation of Alterac Valley: An epic snow-covered mountain battlefield of Alterac: a wide alpine valley, snow-dusted fir trees, fortified timber watchtowers and stone bunkers, a central snowy trail between blue-banner and red-banner outposts, both sides equal.",
+      "file": "alterac-valley.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 406758
+    },
+    {
+      "id": "raid",
+      "label": "Raid",
+      "eventType": "raid",
+      "aliases": [],
+      "alt": "Generated generic raid artwork of an adventuring party approaching a monumental mountain sanctuary.",
+      "file": "raid.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 341768
+    },
+    {
+      "id": "dungeon",
+      "label": "Dungeon",
+      "eventType": "dungeon",
+      "aliases": [],
+      "alt": "Generated generic dungeon artwork of a cavern passage, timber bridge, stone doorway and jade crystals.",
+      "file": "dungeon.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 280160
+    },
+    {
+      "id": "battleground",
+      "label": "Battleground",
+      "eventType": "battleground",
+      "aliases": [],
+      "alt": "Generated generic battleground artwork of a green valley and outposts with red and blue pennants.",
+      "file": "battleground.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 355730
+    },
+    {
+      "id": "world-pvp",
+      "label": "World PvP",
+      "eventType": "world_pvp",
+      "aliases": [],
+      "alt": "Generated world PvP artwork of opposing adventuring groups approaching a frontier watchtower.",
+      "file": "world-pvp.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 306112
+    },
+    {
+      "id": "questing",
+      "label": "Questing & Group Leveling",
+      "eventType": "questing",
+      "aliases": [],
+      "alt": "Generated questing artwork of three adventurers walking toward a village along a sunlit woodland road.",
+      "file": "questing.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 361482
+    },
+    {
+      "id": "social",
+      "label": "Social Gathering",
+      "eventType": "social",
+      "aliases": [],
+      "alt": "Generated social artwork of a mixed fantasy party sharing a riverside tavern terrace at sunset.",
+      "file": "social.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 276596
+    },
+    {
+      "id": "community-expedition",
+      "label": "Community Expedition",
+      "eventType": "other",
+      "aliases": [],
+      "alt": "Generated neutral community artwork of a lantern-lit campsite overlooking a mountain lake.",
+      "file": "community-expedition.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 244512
+    }
+  ],
+  "sources": [
+    "https://worldofwarcraft.blizzard.com/en-us/news/24303862/world-of-warcraft-forever-whats-next",
+    "https://www.wowhead.com/forever/guide/dungeons-overview-locations-details",
+    "https://www.wowhead.com/forever/guide/dungeons/every-dungeon-quest-location",
+    "https://www.wowhead.com/forever/guide/raids-overview-hub-dates-locations",
+    "https://www.wowhead.com/forever/guide/pvp-overview-ranking-rewards"
+  ],
+  "coverage": {
+    "reviewedOn": "2026-10-03",
+    "newDungeons": [
+      "hall-of-thanes",
+      "ruins-of-lordaeron",
+      "excavation-site-wetlands",
+      "city-of-dalaran",
+      "drowned-city",
+      "kroldok-stronghold",
+      "alcaz-prison",
+      "blackmaw-hold",
+      "shapers-terrace"
+    ],
+    "returningDungeonsAndWings": [
+      "ragefire-chasm",
+      "wailing-caverns",
+      "deadmines",
+      "shadowfang-keep",
+      "stockade",
+      "blackfathom-deeps",
+      "gnomeregan",
+      "razorfen-kraul",
+      "scarlet-monastery-graveyard",
+      "scarlet-monastery-library",
+      "scarlet-monastery-armory",
+      "scarlet-monastery-cathedral",
+      "razorfen-downs",
+      "uldaman",
+      "zulfarrak",
+      "maraudon-wicked-grotto",
+      "maraudon-foulspore-cavern",
+      "maraudon-earth-song-falls",
+      "sunken-temple",
+      "blackrock-depths",
+      "lower-blackrock-spire",
+      "upper-blackrock-spire",
+      "scholomance",
+      "stratholme",
+      "dire-maul-east",
+      "dire-maul-north",
+      "dire-maul-west"
+    ],
+    "raids": ["hyjal-summit", "barrow-deeps", "onyxias-lair"],
+    "battlegrounds": [
+      "darkspear-islands",
+      "warsong-gulch",
+      "arathi-basin",
+      "alterac-valley"
+    ]
+  }
+}

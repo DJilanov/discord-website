@@ -3,6 +3,12 @@
 Research and decision date: September 30, 2026.
 Status: researched proposal, not an executed Discord change or public announcement.
 
+October 1 follow-up: [the channel experience plan](discord-channel-ux-plan.md)
+uses a fresh 62-channel configuration audit to define exact channel changes,
+LFG templates, native forum settings, onboarding routes and bot delivery batches.
+Use that document for current channel implementation decisions; the operating
+principles and historical research below remain supporting context.
+
 This is the operating plan for the community, complementing the
 [website/Discord engineering blueprint](web-discord-integration-blueprint.md)
 and [pre-migration growth plan](pre-migration-growth-plan.md). It supersedes

@@ -4,7 +4,13 @@ import { recordEvent } from "@/lib/analytics";
 import { ipHash, rateLimit, readJson, requireSameOrigin } from "@/lib/security";
 
 const schema = z.object({
-  event: z.enum(["page_view", "discord_click"]),
+  event: z.enum([
+    "page_view",
+    "discord_click",
+    "research_action",
+    "dataset_download",
+    "feedback_submit",
+  ]),
   path: z.string().max(300),
   referrer: z.string().max(2000).default(""),
   sessionId: z.union([z.uuid(), z.literal("")]).optional(),

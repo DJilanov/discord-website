@@ -1,0 +1,146 @@
+{
+  "warrior": {
+    "id": "1555930797935034429",
+    "name": "wr_warrior_b87d4a"
+  },
+  "warrior_arms": {
+    "id": "1555930799323226269",
+    "name": "wr_warrior_arms_acd126"
+  },
+  "warrior_fury": {
+    "id": "1555930800862662686",
+    "name": "wr_warrior_fury_e6a8b2"
+  },
+  "warrior_protection": {
+    "id": "1555930802121080932",
+    "name": "wr_warrior_protection_4f68d5"
+  },
+  "paladin": {
+    "id": "1555930803383570532",
+    "name": "wr_paladin_afad8d"
+  },
+  "paladin_holy": {
+    "id": "1555930804683804782",
+    "name": "wr_paladin_holy_17ed0c"
+  },
+  "paladin_protection": {
+    "id": "1555930805941964810",
+    "name": "wr_paladin_protection_d439c6"
+  },
+  "paladin_retribution": {
+    "id": "1555930807225552896",
+    "name": "wr_paladin_retribution_f28e7f"
+  },
+  "hunter": {
+    "id": "1555930808181719051",
+    "name": "wr_hunter_679c08"
+  },
+  "hunter_beast_mastery": {
+    "id": "1555930809796534374",
+    "name": "wr_hunter_beast_mastery_c87f26"
+  },
+  "hunter_marksmanship": {
+    "id": "1555930811289833523",
+    "name": "wr_hunter_marksmanship_6efcca"
+  },
+  "hunter_survival": {
+    "id": "1555930812481015863",
+    "name": "wr_hunter_survival_4ab7e4"
+  },
+  "rogue": {
+    "id": "1555930813785444383",
+    "name": "wr_rogue_00f1e7"
+  },
+  "rogue_assassination": {
+    "id": "1555930814959714344",
+    "name": "wr_rogue_assassination_5685b3"
+  },
+  "rogue_combat": {
+    "id": "1555930816276725871",
+    "name": "wr_rogue_combat_9aee67"
+  },
+  "rogue_subtlety": {
+    "id": "1555930817543540856",
+    "name": "wr_rogue_subtlety_011391"
+  },
+  "priest": {
+    "id": "1555930818633793586",
+    "name": "wr_priest_b19bbe"
+  },
+  "priest_discipline": {
+    "id": "1555930820659912764",
+    "name": "wr_priest_discipline_b34fd7"
+  },
+  "priest_holy": {
+    "id": "1555930821892771891",
+    "name": "wr_priest_holy_17ed0c"
+  },
+  "priest_shadow": {
+    "id": "1555930823062982769",
+    "name": "wr_priest_shadow_dcaf27"
+  },
+  "shaman": {
+    "id": "1555930825139163289",
+    "name": "wr_shaman_2b4560"
+  },
+  "shaman_elemental": {
+    "id": "1555930826636796005",
+    "name": "wr_shaman_elemental_32b035"
+  },
+  "shaman_enhancement": {
+    "id": "1555930827429511319",
+    "name": "wr_shaman_enhancement_f26119"
+  },
+  "shaman_restoration": {
+    "id": "1555930828930818048",
+    "name": "wr_shaman_restoration_792681"
+  },
+  "mage": {
+    "id": "1555930830168260659",
+    "name": "wr_mage_30aedc"
+  },
+  "mage_arcane": {
+    "id": "1555930831745196052",
+    "name": "wr_mage_arcane_797c3c"
+  },
+  "mage_fire": {
+    "id": "1555930833569710130",
+    "name": "wr_mage_fire_c307fe"
+  },
+  "mage_frost": {
+    "id": "1555930834735992837",
+    "name": "wr_mage_frost_b38691"
+  },
+  "warlock": {
+    "id": "1555930836270841936",
+    "name": "wr_warlock_038715"
+  },
+  "warlock_affliction": {
+    "id": "1555930836988207146",
+    "name": "wr_warlock_affliction_5eec75"
+  },
+  "warlock_demonology": {
+    "id": "1555930838523187280",
+    "name": "wr_warlock_demonology_2fc85b"
+  },
+  "warlock_destruction": {
+    "id": "1555930839551057971",
+    "name": "wr_warlock_destruction_cd35d8"
+  },
+  "druid": {
+    "id": "1555930840628727808",
+    "name": "wr_druid_a7bebd"
+  },
+  "druid_balance": {
+    "id": "1555930842038276207",
+    "name": "wr_druid_balance_82d184"
+  },
+  "druid_feral": {
+    "id": "1555930843212677190",
+    "name": "wr_druid_feral_1021a8"
+  },
+  "druid_restoration": {
+    "id": "1555930844772966411",
+    "name": "wr_druid_restoration_18769d"
+  }
+}

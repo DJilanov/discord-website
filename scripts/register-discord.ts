@@ -1,13 +1,73 @@
 import "./env";
+import { bridgeCommand } from "../lib/discord-bridge/commands";
+import { raidCommand } from "../lib/raids/commands";
+import { raidsEnabled } from "../lib/raids/config";
+import { approveCommand, approveMessageCommand } from "../lib/raids/approval";
+import { raidDiscordGuildIds } from "../lib/raids/discord-settings";
 
 async function main(): Promise<void> {
   const { DISCORD_BOT_TOKEN, DISCORD_APPLICATION_ID, DISCORD_GUILD_ID } =
     process.env;
-  if (!DISCORD_BOT_TOKEN || !DISCORD_APPLICATION_ID || !DISCORD_GUILD_ID)
+  if (
+    !process.argv.includes("--dry-run") &&
+    (!DISCORD_BOT_TOKEN || !DISCORD_APPLICATION_ID || !DISCORD_GUILD_ID)
+  )
     throw new Error(
       "Configure DISCORD_BOT_TOKEN, DISCORD_APPLICATION_ID and DISCORD_GUILD_ID first.",
     );
+  if (process.argv.includes("--feedback-approvals")) {
+    if (!raidsEnabled())
+      throw new Error("The private event pilot is disabled.");
+    const guildIds = raidDiscordGuildIds().filter(
+      (guildId) => guildId !== DISCORD_GUILD_ID,
+    );
+    const feedbackCommands = [
+      approveCommand,
+      approveMessageCommand,
+      {
+        ...raidCommand,
+        options: raidCommand.options.filter(
+          (option) => option.name === "repost",
+        ),
+      },
+    ];
+    if (process.argv.includes("--dry-run")) {
+      console.log(
+        JSON.stringify({ guildIds, commands: feedbackCommands }, null, 2),
+      );
+      return;
+    }
+    for (const guildId of guildIds) {
+      for (const command of feedbackCommands) {
+        const response = await fetch(
+          `https://discord.com/api/v10/applications/${DISCORD_APPLICATION_ID}/guilds/${guildId}/commands`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bot ${DISCORD_BOT_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(command),
+            signal: AbortSignal.timeout(10000),
+          },
+        );
+        if (!response.ok)
+          throw new Error(
+            `Feedback approval registration failed with HTTP ${response.status}. Other commands were not overwritten.`,
+          );
+        await response.body?.cancel();
+      }
+    }
+    console.log(
+      `Upserted event approval and creator/admin repost commands in ${guildIds.length} feedback servers; unrelated commands preserved.`,
+    );
+    return;
+  }
   const commands = [
+    bridgeCommand,
+    ...(raidsEnabled()
+      ? [raidCommand, approveCommand, approveMessageCommand]
+      : []),
     ...[
       { name: "report", description: "Open the private community report form" },
       { name: "appeal", description: "Appeal a community moderation decision" },
@@ -53,6 +113,51 @@ async function main(): Promise<void> {
       ],
     },
   ];
+  if (process.argv.includes("--dry-run")) {
+    console.log(JSON.stringify(commands, null, 2));
+    return;
+  }
+  const endpoint = `https://discord.com/api/v10/applications/${DISCORD_APPLICATION_ID}/guilds/${DISCORD_GUILD_ID}/commands`;
+  const existing = await fetch(endpoint, {
+    headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}` },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!existing.ok)
+    throw new Error(
+      `Cannot inspect existing Discord commands (HTTP ${existing.status}). Nothing was overwritten.`,
+    );
+  const remote: unknown = await existing.json();
+  if (
+    !Array.isArray(remote) ||
+    remote.some(
+      (command: unknown) =>
+        typeof command !== "object" ||
+        command === null ||
+        !("name" in command) ||
+        typeof command.name !== "string",
+    )
+  )
+    throw new Error(
+      "Unexpected Discord command list. Nothing was overwritten.",
+    );
+  const owned = new Set([
+    "report",
+    "appeal",
+    "guild",
+    "lfg",
+    "events",
+    "help",
+    "check",
+    "role",
+    "bridge",
+    "raid",
+    "approve",
+    "Approve event",
+  ]);
+  if (remote.some((command: { name: string }) => !owned.has(command.name)))
+    throw new Error(
+      "An unrecognized remote command is missing from this manifest. Review it before bulk registration; nothing was overwritten.",
+    );
   const response = await fetch(
     `https://discord.com/api/v10/applications/${DISCORD_APPLICATION_ID}/guilds/${DISCORD_GUILD_ID}/commands`,
     {
@@ -62,6 +167,7 @@ async function main(): Promise<void> {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(commands),
+      signal: AbortSignal.timeout(10000),
     },
   );
   if (!response.ok)
@@ -69,7 +175,7 @@ async function main(): Promise<void> {
       `Discord command registration failed with HTTP ${response.status}.`,
     );
   console.log(
-    "Registered eight community commands. Set the interaction URL to /api/discord/interactions on the website domain.",
+    `Registered ${commands.length} community commands, including bridge controls${raidsEnabled() ? " and the private raid pilot" : ""}. Set the interaction URL to /api/discord/interactions on the website domain.`,
   );
 }
 main().catch((error: Error) => {

@@ -90,7 +90,7 @@ export function Breadcrumbs({
     <>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         {all.map((item, index) => (
-          <span key={item.href}>
+          <span key={`${index}:${item.href}`}>
             {index > 0 && <ChevronRight size={12} />}
             {index === all.length - 1 ? (
               <span aria-current="page">{item.label}</span>

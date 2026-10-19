@@ -33,6 +33,12 @@ export default async function SiteLayout({
               "@id": `${SITE_URL}/#organization`,
               name: SITE_NAME,
               url: SITE_URL,
+              logo: {
+                "@type": "ImageObject",
+                url: `${SITE_URL}/icon.png`,
+                width: 512,
+                height: 512,
+              },
               description:
                 "Independent WoW Forever community for PvE, PvP and roleplay, Alliance and Horde.",
               ...(settings.discordInvite
@@ -44,6 +50,10 @@ export default async function SiteLayout({
               "@id": `${SITE_URL}/#website`,
               url: SITE_URL,
               name: SITE_NAME,
+              alternateName: [
+                "WoW Forever Community",
+                "wowforeverdiscord.online",
+              ],
               publisher: { "@id": `${SITE_URL}/#organization` },
             },
           ],

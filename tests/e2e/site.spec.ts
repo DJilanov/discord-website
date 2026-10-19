@@ -6,6 +6,16 @@ import { mkdir } from "node:fs/promises";
 import { hash } from "bcryptjs";
 import { db } from "../../lib/db";
 import { deleteStored } from "../../lib/storage";
+import { reviewListingFixture, removeListingFixture } from "./listing-fixture";
+import {
+  listingForums,
+  listingDiscordUrl,
+} from "../../lib/discord-listings/contracts";
+import {
+  formatGroupStart,
+  localGroupStart,
+  resolveGroupStart,
+} from "../../lib/group-time";
 
 const password = randomBytes(24).toString("hex");
 const ownerEmail = "e2e-owner@example.invalid",
@@ -36,6 +46,10 @@ test.beforeAll(async () => {
       ],
     },
   });
+  for (const guild of await db.foreverGuild.findMany({
+    where: { name: guildName },
+  }))
+    await removeListingFixture("guild", guild.id);
   await db.foreverGuild.deleteMany({ where: { name: guildName } });
   await mkdir("artifacts", { recursive: true });
 });
@@ -60,6 +74,10 @@ test.afterAll(async () => {
   await db.foreverUser.deleteMany({
     where: { email: { in: [ownerEmail, editorEmail] } },
   });
+  for (const guild of await db.foreverGuild.findMany({
+    where: { name: guildName },
+  }))
+    await removeListingFixture("guild", guild.id);
   await db.foreverGuild.deleteMany({ where: { name: guildName } });
   await db.$disconnect();
 });
@@ -151,13 +169,12 @@ test("secondary pages fit mobile and desktop without missing assets", async ({
         `${path} at ${width}`,
       ).toBe(true);
       await page.locator("img").evaluateAll(async (images) => {
-        await Promise.all(
-          images.map(async (element) => {
-            if (!(element instanceof HTMLImageElement)) return;
-            element.loading = "eager";
-            await element.decode();
-          }),
-        );
+        for (const element of images) {
+          if (!(element instanceof HTMLImageElement)) continue;
+          element.scrollIntoView({ block: "center", behavior: "instant" });
+          await element.decode();
+        }
+        window.scrollTo({ top: 0, behavior: "instant" });
       });
       expect(
         await page
@@ -281,7 +298,7 @@ test("public pages, accessible landmarks, SEO metadata and share image", async (
   expect(redirect.headers().location).toBe("https://discord.gg/ejn4UnDdcX");
 });
 
-test("guild submission stays private until admin approval", async ({
+test("guild submission publishes immediately and remains staff-moderated", async ({
   page,
 }) => {
   await page.goto("/guild-recruitment/new");
@@ -299,6 +316,7 @@ test("guild submission stays private until admin approval", async ({
       "A local automated test of the guild directory submission and approval flow. This fixture is removed at the end of the test.",
     );
   await page.getByLabel("Recruiter's Discord handle").fill("test-recruiter");
+  await page.locator('[name="publicDiscordConsent"]').check();
   await expect(page.getByText("Submission check complete")).toBeVisible({
     timeout: 45000,
   });
@@ -309,84 +327,155 @@ test("guild submission stays private until admin approval", async ({
   const guild = await db.foreverGuild.findFirstOrThrow({
     where: { name: guildName },
   });
-  expect(guild.status).toBe("pending");
+  expect(guild.status).toBe("approved");
   expect(guild.gameRuleset).toBe("Normal");
   expect(guild.realm).toBe("");
-  expect((await page.request.get(`/guilds/${guild.slug}`)).status()).toBe(404);
+  expect((await page.request.get(`/guilds/${guild.slug}`)).status()).toBe(200);
+  const job = await db.foreverListingDiscordJob.findUniqueOrThrow({
+    where: { kind_entityId: { kind: "guild", entityId: guild.id } },
+  });
+  expect(job.reviewNotificationStatus).toBe("queued");
+  await reviewListingFixture("guild", guild.id);
   await login(page, ownerEmail);
   await page.goto(`/admin/guilds?edit=${guild.id}`);
-  await page.getByLabel("Status", { exact: true }).selectOption("approved");
-  await page.getByRole("button", { name: "Save changes" }).click();
-  await expect(page).toHaveURL(/\/admin\/guilds$/);
-  await page.goto(`/guilds/${guild.slug}`);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(guildName);
+  await expect(
+    page
+      .getByLabel("Status", { exact: true })
+      .locator('option[value="approved"]'),
+  ).toHaveCount(1);
+  const hidden = await page.request.post(`/api/admin/guilds/${guild.id}`, {
+    headers: { origin },
+    data: { ...guild, status: "hidden", inviteUrl: "", websiteUrl: "" },
+  });
+  expect(hidden.status()).toBe(200);
+  expect((await page.request.get(`/guilds/${guild.slug}`)).status()).toBe(404);
 });
 
-test("group submission and review retain explicit ruleset without a realm", async ({
-  page,
-}) => {
-  const title = `E2E ruleset group ${Date.now()}`;
-  try {
-    await page.goto("/lfg/new");
-    await page.getByLabel("Group title").fill(title);
-    await page.getByLabel("Activity", { exact: true }).selectOption("Dungeon");
-    await page.getByLabel("Region", { exact: true }).selectOption("EU");
-    await page.getByLabel("Faction", { exact: true }).selectOption("Horde");
-    await page.getByLabel("Character ruleset").selectOption("Normal");
-    await page
-      .getByLabel("Start time")
-      .fill(new Date(Date.now() + 86400000).toISOString().slice(0, 16));
-    await page
-      .getByLabel("Discord contact", { exact: true })
-      .fill("local-fixture");
-    await page
-      .getByLabel("Group details")
-      .fill(
-        "Isolated local browser fixture for explicit ruleset submission and review.",
+for (const scenario of [
+  {
+    faction: "Horde",
+    gameRuleset: "Normal",
+    activity: "Dungeon",
+    region: "EU",
+    forum: "pve",
+  },
+  {
+    faction: "Alliance",
+    gameRuleset: "PvP",
+    activity: "Questing",
+    region: "EU",
+    forum: "pvp",
+  },
+  {
+    faction: "Horde",
+    gameRuleset: "PvP",
+    activity: "Dungeon",
+    region: "NA",
+    forum: "pvp",
+  },
+] as const) {
+  test(`group submission and Discord delivery: ${scenario.region} ${scenario.faction} ${scenario.gameRuleset} ${scenario.activity} future event`, async ({
+    page,
+  }) => {
+    const title = `E2E ruleset group ${Date.now()}`;
+    const localStart = localGroupStart(
+      new Date(Date.now() + 90 * 86400000),
+      scenario.region,
+    );
+    try {
+      await page.goto("/lfg/new");
+      await page.getByLabel("Group title").fill(title);
+      await page
+        .getByLabel("Activity", { exact: true })
+        .selectOption(scenario.activity);
+      await page
+        .getByLabel("Region", { exact: true })
+        .selectOption(scenario.region);
+      await page
+        .getByLabel("Faction", { exact: true })
+        .selectOption(scenario.faction);
+      await page
+        .getByLabel("Character ruleset")
+        .selectOption(scenario.gameRuleset);
+      await page.getByLabel("Start time").fill(localStart);
+      await page
+        .getByLabel("Discord contact", { exact: true })
+        .fill("local-fixture");
+      await page
+        .getByLabel("Group details")
+        .fill(
+          "Isolated local browser fixture for explicit ruleset submission and review.",
+        );
+      await expect(page.getByText("Submission check complete")).toBeVisible({
+        timeout: 45000,
+      });
+      await page.locator('[name="publicDiscordConsent"]').check();
+      await page.getByRole("button", { name: "Submit group" }).click();
+      await expect(
+        page.getByRole("heading", { name: "Submission received" }),
+      ).toBeVisible();
+      const group = await db.foreverGroup.findFirstOrThrow({
+        where: { title },
+      });
+      expect(group.gameRuleset).toBe(scenario.gameRuleset);
+      const job = await db.foreverListingDiscordJob.findUniqueOrThrow({
+        where: { kind_entityId: { kind: "group", entityId: group.id } },
+      });
+      expect(job.forumId).toBe(listingForums[scenario.faction][scenario.forum]);
+      await expect(
+        page.getByRole("link", { name: "Open Discord forum" }),
+      ).toHaveAttribute("href", listingDiscordUrl(job.forumId));
+      expect(group.realm).toBe("");
+      expect(group.status).toBe("approved");
+      expect(group.startsAt.toISOString()).toBe(
+        resolveGroupStart(localStart, scenario.region).toISOString(),
       );
-    await expect(page.getByText("Submission check complete")).toBeVisible({
-      timeout: 45000,
-    });
-    await page.getByRole("button", { name: "Submit group" }).click();
-    await expect(
-      page.getByRole("heading", { name: "Submission received" }),
-    ).toBeVisible();
-    const group = await db.foreverGroup.findFirstOrThrow({ where: { title } });
-    expect(group.gameRuleset).toBe("Normal");
-    expect(group.realm).toBe("");
-    expect(group.status).toBe("pending");
-    await page.goto("/lfg");
-    await expect(
-      page.getByRole("heading", { name: title, exact: true }),
-    ).toHaveCount(0);
-    await login(page, ownerEmail);
-    await page.goto(`/admin/groups?edit=${group.id}`);
-    await page.getByLabel("Character ruleset").selectOption("Unconfirmed");
-    await page
-      .getByLabel("Reason", { exact: true })
-      .fill("Local test approval");
-    await page.getByRole("button", { name: "Save changes" }).click();
-    await expect(
-      page.getByText(
-        "Confirm an available character ruleset before approving this session.",
-        { exact: true },
-      ),
-    ).toBeVisible();
-    await page.getByLabel("Character ruleset").selectOption("Normal");
-    await page.getByRole("button", { name: "Save changes" }).click();
-    await expect(page).toHaveURL(/\/admin\/groups$/);
-    await page.goto("/lfg?ruleset=Normal");
-    await expect(
-      page.getByRole("heading", { name: title, exact: true }),
-    ).toBeVisible();
-    await page.goto("/lfg?ruleset=Roleplaying");
-    await expect(
-      page.getByRole("heading", { name: title, exact: true }),
-    ).toHaveCount(0);
-  } finally {
-    await db.foreverGroup.deleteMany({ where: { title } });
-  }
-});
+      expect(group.startsAt.getTime()).toBeGreaterThan(
+        Date.now() + 30 * 86400000,
+      );
+      await page.goto("/lfg");
+      await expect(
+        page.getByRole("heading", { name: title, exact: true }),
+      ).toBeVisible();
+      await reviewListingFixture("group", group.id);
+      await login(page, ownerEmail);
+      await page.goto(`/admin/groups?edit=${group.id}`);
+      await expect(
+        page.getByLabel("Decision").locator('option[value="approved"]'),
+      ).toHaveCount(1);
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/lfg?ruleset=${scenario.gameRuleset}`);
+      await expect(
+        page.getByRole("heading", { name: title, exact: true }),
+      ).toBeVisible();
+      await expect(page.locator(`#group-${group.id} time`)).toHaveText(
+        formatGroupStart(group.startsAt, scenario.region),
+      );
+      const postedJob = await db.foreverListingDiscordJob.findUniqueOrThrow({
+        where: { kind_entityId: { kind: "group", entityId: group.id } },
+      });
+      expect(postedJob.threadId).not.toBeNull();
+      await expect(
+        page.locator(`#group-${group.id}`).getByRole("link", {
+          name: "Discord post",
+        }),
+      ).toHaveAttribute("href", listingDiscordUrl(postedJob.threadId!));
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      await page.goto("/lfg?ruleset=Roleplaying");
+      await expect(
+        page.getByRole("heading", { name: title, exact: true }),
+      ).toHaveCount(0);
+    } finally {
+      for (const group of await db.foreverGroup.findMany({ where: { title } }))
+        await removeListingFixture("group", group.id);
+      await db.foreverGroup.deleteMany({ where: { title } });
+    }
+  });
+}
 
 test("staff permissions and admin responsive layout", async ({
   page,
@@ -533,7 +622,7 @@ test("guide editor preserves current covers, restricts images and publishes only
   }
 });
 
-test("group submission is reviewed before Discord and regional pages show it", async ({
+test("group submission is immediately visible and staff can hide or restore it", async ({
   page,
 }) => {
   const title = `Local group workflow ${Date.now()}`;
@@ -547,13 +636,16 @@ test("group submission is reviewed before Discord and regional pages show it", a
     await page
       .getByLabel("Start time")
       .fill(new Date(Date.now() + 86400000).toISOString().slice(0, 16));
-    await page.getByLabel("Discord contact").fill("local-fixture");
+    await page
+      .getByLabel("Discord contact", { exact: true })
+      .fill("local-fixture");
     await page
       .getByLabel("Group details")
       .fill(
         "Local automated fixture for the group submission and staff review workflow, removed after this test.",
       );
     await expect(page.getByText("Submission check complete")).toBeVisible();
+    await page.locator('[name="publicDiscordConsent"]').check();
     await page
       .getByRole("button", { name: "Submit group", exact: true })
       .click();
@@ -561,19 +653,30 @@ test("group submission is reviewed before Discord and regional pages show it", a
       page.getByRole("heading", { name: "Submission received" }),
     ).toBeVisible();
     const group = await db.foreverGroup.findFirstOrThrow({ where: { title } });
-    expect(group.status).toBe("pending");
+    expect(group.status).toBe("approved");
     await page.goto("/discord");
-    await expect(page.getByText(title, { exact: true })).toHaveCount(0);
+    await expect(page.getByText(title, { exact: true })).toBeVisible();
     await login(page, ownerEmail);
-    const approved = await page.request.post(`/api/admin/groups/${group.id}`, {
+    const hidden = await page.request.post(`/api/admin/groups/${group.id}`, {
       headers: { origin },
       data: {
-        status: "approved",
-        reason: "Isolated local workflow verification.",
+        status: "hidden",
+        reason: "Isolated local moderation workflow check.",
         gameRuleset: "Normal",
       },
     });
-    expect(approved.status()).toBe(200);
+    expect(hidden.status()).toBe(200);
+    await page.goto("/discord");
+    await expect(page.getByText(title, { exact: true })).toHaveCount(0);
+    const restored = await page.request.post(`/api/admin/groups/${group.id}`, {
+      headers: { origin },
+      data: {
+        status: "approved",
+        reason: "Restore after isolated local moderation workflow check.",
+        gameRuleset: "Normal",
+      },
+    });
+    expect(restored.status()).toBe(200);
     for (const path of ["/discord", "/discord/eu", "/servers/pve"]) {
       await page.goto(path);
       await expect(
@@ -597,6 +700,8 @@ test("group submission is reviewed before Discord and regional pages show it", a
     await page.goto("/servers/pve");
     await expect(page.getByText(title, { exact: true })).toHaveCount(0);
   } finally {
+    for (const group of await db.foreverGroup.findMany({ where: { title } }))
+      await removeListingFixture("group", group.id);
     await db.foreverGroup.deleteMany({ where: { title } });
   }
 });

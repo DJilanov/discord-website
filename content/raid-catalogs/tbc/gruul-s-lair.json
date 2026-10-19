@@ -1,0 +1,459 @@
+{
+  "schema": "tbc-atlasloot-loot-candidates.v1",
+  "game": "tbc",
+  "raidName": "Gruul's Lair",
+  "raidSourceUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708",
+  "sourcePatch": "TBC Classic / AtlasLoot Revival 0.2.4",
+  "clientBuild": null,
+  "availability": "confirmed",
+  "coverage": "partial",
+  "capturedAt": "2026-10-03T14:47:06.852Z",
+  "authorizedSource": true,
+  "provenance": {
+    "provider": "AtlasLoot Revival",
+    "version": "0.2.4",
+    "archiveSha256": "dc7169b383572a9348727cb6818602247a3f08ad133a243778c4ccd5e43a8ea2",
+    "fileUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708"
+  },
+  "items": [
+    {
+      "itemId": 28794,
+      "name": "Axe of the Gronn Lords",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28794",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28795,
+      "name": "Bladespire Warbands",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28795",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28796,
+      "name": "Malefic Mask of the Shadows",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28796",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28797,
+      "name": "Brute Cloak of the Ogre-Magi",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28797",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28799,
+      "name": "Belt of Divine Inspiration",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28799",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28800,
+      "name": "Hammer of the Naaru",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28800",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28801,
+      "name": "Maulgar's Warhelm",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28801",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28802,
+      "name": "Bloodmaw Magus-Blade",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28802",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28803,
+      "name": "Cowl of Nature's Breath",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28803",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28804,
+      "name": "Collar of Cho'gall",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28804",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28810,
+      "name": "Windshear Boots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28810",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28822,
+      "name": "Teeth of Gruul",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28822",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28823,
+      "name": "Eye of Gruul",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28823",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28824,
+      "name": "Gauntlets of Martial Perfection",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28824",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28825,
+      "name": "Aldori Legacy Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28825",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28826,
+      "name": "Shuriken of Negation",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28826",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28827,
+      "name": "Gauntlets of the Dragonslayer",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28827",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28828,
+      "name": "Gronn-Stitched Girdle",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28828",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 28830,
+      "name": "Dragonspine Trophy",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=28830",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29762,
+      "name": "Pauldrons of the Fallen Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29762",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29763,
+      "name": "Pauldrons of the Fallen Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29763",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29764,
+      "name": "Pauldrons of the Fallen Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29764",
+      "lootSource": "High King Maulgar",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29765,
+      "name": "Leggings of the Fallen Hero",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29765",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Hunter",
+        "Mage",
+        "Warlock"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29766,
+      "name": "Leggings of the Fallen Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29766",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Paladin",
+        "Rogue",
+        "Shaman"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 29767,
+      "name": "Leggings of the Fallen Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=29767",
+      "lootSource": "Gruul the Dragonkiller",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Priest",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    }
+  ]
+}

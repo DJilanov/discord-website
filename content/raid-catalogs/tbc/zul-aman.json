@@ -1,0 +1,1483 @@
+{
+  "schema": "tbc-atlasloot-loot-candidates.v1",
+  "game": "tbc",
+  "raidName": "Zul'Aman",
+  "raidSourceUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708",
+  "sourcePatch": "TBC Classic / AtlasLoot Revival 0.2.4",
+  "clientBuild": null,
+  "availability": "confirmed",
+  "coverage": "partial",
+  "capturedAt": "2026-10-03T14:47:06.863Z",
+  "authorizedSource": true,
+  "provenance": {
+    "provider": "AtlasLoot Revival",
+    "version": "0.2.4",
+    "archiveSha256": "dc7169b383572a9348727cb6818602247a3f08ad133a243778c4ccd5e43a8ea2",
+    "fileUrl": "https://www.curseforge.com/wow/addons/atlas-loot-revival/files/8963708"
+  },
+  "items": [
+    {
+      "itemId": 33102,
+      "name": "Blood of Zul'jin",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33102",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33191,
+      "name": "Jungle Stompers",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33191",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33203,
+      "name": "Robes of Heavenly Purpose",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33203",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33206,
+      "name": "Pauldrons of Primal Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33206",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33211,
+      "name": "Bladeangel's Money Belt",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33211",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33214,
+      "name": "Akil'zon's Talonblade",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33214",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33215,
+      "name": "Bloodstained Elven Battlevest",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33215",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33216,
+      "name": "Chestguard of Hidden Purpose",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33216",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33281,
+      "name": "Brooch of Nature's Mercy",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33281",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33283,
+      "name": "Amani Punisher",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33283",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33285,
+      "name": "Fury of the Ursine",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33285",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33286,
+      "name": "Mojo-mender's Mask",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33286",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33293,
+      "name": "Signet of Ancient Magics",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33293",
+      "lootSource": "Akil'zon",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33297,
+      "name": "The Savage's Choker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33297",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33298,
+      "name": "Prowler's Strikeblade",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33298",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33299,
+      "name": "Spaulders of the Advocate",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33299",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33300,
+      "name": "Shoulderpads of Dancing Blades",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33300",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33303,
+      "name": "Skullshatter Warboots",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33303",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33307,
+      "name": "Formula: Enchant Weapon - Executioner",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33307",
+      "lootSource": "Akil'zon / Nalorakk / Jan'alai / Halazzi / Hex Lord Malacrass / Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33317,
+      "name": "Robe of Departed Spirits",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33317",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33322,
+      "name": "Shimmer-pelt Vest",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33322",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33326,
+      "name": "Bulwark of the Amani Empire",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33326",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33327,
+      "name": "Mask of Introspection",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33327",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33328,
+      "name": "Arrow-fall Chestguard",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33328",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33329,
+      "name": "Shadowtooth Trollskin Cuirass",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33329",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33332,
+      "name": "Enamelled Disc of Mojo",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33332",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33354,
+      "name": "Wub's Cursed Hexblade",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33354",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33356,
+      "name": "Helm of Natural Regeneration",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33356",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33357,
+      "name": "Footpads of Madness",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33357",
+      "lootSource": "Jan'alai",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33388,
+      "name": "Heartless",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33388",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33389,
+      "name": "Dagger of Bad Mojo",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33389",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33421,
+      "name": "Battleworn Tuskguard",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33421",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33432,
+      "name": "Coif of the Jungle Stalker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33432",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33446,
+      "name": "Girdle of Stromgarde's Hope",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33446",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33453,
+      "name": "Hood of Hexing",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33453",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33463,
+      "name": "Hood of the Third Eye",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33463",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33464,
+      "name": "Hex Lord's Voodoo Pauldrons",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33464",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33465,
+      "name": "Staff of Primal Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33465",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33466,
+      "name": "Loop of Cursed Bones",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33466",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33467,
+      "name": "Blade of Twisted Visions",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33467",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33468,
+      "name": "Dark Blessing",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33468",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33469,
+      "name": "Hauberk of the Empire's Champion",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33469",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33471,
+      "name": "Two-toed Sandals",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33471",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33473,
+      "name": "Chestguard of the Warlord",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33473",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33474,
+      "name": "Ancient Amani Longbow",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33474",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33476,
+      "name": "Cleaver of the Unforgiving",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33476",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33478,
+      "name": "Jin'rohk, The Great Apocalypse",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33478",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33479,
+      "name": "Grimgrin Faceguard",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33479",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33480,
+      "name": "Cord of Braided Troll Hair",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33480",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33481,
+      "name": "Pauldrons of Stone Resolve",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33481",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33483,
+      "name": "Life-step Belt",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33483",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33489,
+      "name": "Mantle of Ill Intent",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33489",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33490,
+      "name": "Staff of Dark Mending",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33490",
+      "lootSource": "Tanzar's Trunk",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33491,
+      "name": "Tuskbreaker",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33491",
+      "lootSource": "Tanzar's Trunk",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33492,
+      "name": "Trollbane",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33492",
+      "lootSource": "Tanzar's Trunk",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33493,
+      "name": "Umbral Shiv",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33493",
+      "lootSource": "Tanzar's Trunk",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33494,
+      "name": "Amani Divining Staff",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33494",
+      "lootSource": "Tanzar's Trunk",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33495,
+      "name": "Rage",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33495",
+      "lootSource": "Tanzar's Trunk",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33496,
+      "name": "Signet of Primal Wrath",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33496",
+      "lootSource": "Kraz's Package",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33497,
+      "name": "Mana Attuned Band",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33497",
+      "lootSource": "Kraz's Package",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33498,
+      "name": "Signet of the Quiet Forest",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33498",
+      "lootSource": "Kraz's Package",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33499,
+      "name": "Signet of the Last Defender",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33499",
+      "lootSource": "Kraz's Package",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33500,
+      "name": "Signet of Eternal Life",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33500",
+      "lootSource": "Kraz's Package",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33533,
+      "name": "Avalanche Leggings",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33533",
+      "lootSource": "Halazzi",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33590,
+      "name": "Cloak of Fiends",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33590",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33591,
+      "name": "Shadowcaster's Drape",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33591",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33592,
+      "name": "Cloak of Ancient Rituals",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33592",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33640,
+      "name": "Fury",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33640",
+      "lootSource": "Nalorakk",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33805,
+      "name": "Shadowhunter's Treads",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33805",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33809,
+      "name": "Amani War Bear",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33809",
+      "lootSource": "Ashli's Bag",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33828,
+      "name": "Tome of Diabolic Remedy",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33828",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33829,
+      "name": "Hex Shrunken Head",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33829",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33830,
+      "name": "Ancient Aqir Artifact",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33830",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33831,
+      "name": "Berserker's Call",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33831",
+      "lootSource": "Zul'jin",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33971,
+      "name": "Elunite Imbued Leggings",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33971",
+      "lootSource": "Harkor's Satchel",
+      "kind": "event",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 33993,
+      "name": "Mojo",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=33993",
+      "lootSource": "Trash Drops",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    },
+    {
+      "itemId": 34029,
+      "name": "Tiny Voodoo Mask",
+      "sourceUrl": "https://www.wowhead.com/tbc/item=34029",
+      "lootSource": "Hex Lord Malacrass",
+      "kind": "boss",
+      "classes": [
+        "Druid",
+        "Hunter",
+        "Mage",
+        "Paladin",
+        "Priest",
+        "Rogue",
+        "Shaman",
+        "Warlock",
+        "Warrior"
+      ],
+      "evidence": "source_reported"
+    }
+  ]
+}

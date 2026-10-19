@@ -6,5 +6,6 @@ declare module "next-auth" {
   }
   interface Session {
     user: DefaultSession["user"] & { id: string; version?: string };
+    memberAccess?: "not_member" | "unavailable";
   }
 }
