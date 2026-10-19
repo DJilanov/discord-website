@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 cd /home/wow-forever-discord
+./node_modules/.bin/tsx scripts/verify-production-build.ts "${FOREVER_BUILD_DIR:-.next}"
 if ! id wowforever >/dev/null 2>&1; then
     useradd --system --home-dir /home/wow-forever-discord --shell /usr/sbin/nologin wowforever
 fi
