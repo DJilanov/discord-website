@@ -1,10 +1,15 @@
 import { CANONICAL_TOOLS_URL } from "./tool-links";
 
+export const toolsBase = CANONICAL_TOOLS_URL;
+
 export const traderLinks = {
-  workspace: `${CANONICAL_TOOLS_URL}/forever/trader`,
-  encyclopedia: `${CANONICAL_TOOLS_URL}/forever/encyclopedia`,
-  collector: `${CANONICAL_TOOLS_URL}/forever/addon`,
-  leveling: `${CANONICAL_TOOLS_URL}/forever/leveling`,
+  workspace: `${toolsBase}/forever/trader`,
+  encyclopedia: `${toolsBase}/forever/encyclopedia`,
+  collector: `${toolsBase}/forever/addon`,
+  leveling: `${toolsBase}/forever/leveling`,
+  simulator: `${toolsBase}/forever/simulator`,
+  quests: `${toolsBase}/forever/encyclopedia/quests`,
+  talents: `${toolsBase}/forever/encyclopedia/talents/warrior`,
 } as const;
 
 export const traderScreenshot = {

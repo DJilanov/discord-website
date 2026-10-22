@@ -50,6 +50,42 @@ export const contributorTasks: ContributorTask[] = [
       "One specific correction with a source, or a dated confirmation of the section you checked. Do not claim a whole guide was tested in game after only reading it.",
   },
   {
+    id: "class-review",
+    title: "Review one class starter kit",
+    status: "Open browser check",
+    time: "20-30 minutes",
+    target: "/guides",
+    targetLabel: "Browse published resources",
+    purpose:
+      "Check a precise class claim before a starter draft becomes public advice.",
+    steps: [
+      "Ask a maintainer for the Feral tank, Protection Paladin or Mage starter draft. Do not treat an unpublished draft as approved gameplay advice.",
+      "Choose one section. Record the official source date, client build, level and specialization relevant to it.",
+      "Separate source verification from gameplay testing. If access is unavailable, mark gameplay not tested instead of filling in a result.",
+      "Return the exact claim, suggested wording and evidence in tool-support. Maintainers review the draft in admin before publishing; public credit requires your approval.",
+    ],
+    completion:
+      "One accepted correction or dated source check. A whole-kit gameplay review requires coverage of all stated scenarios, not one pull.",
+  },
+  {
+    id: "dungeon-review",
+    title: "Check a dungeon preparation route",
+    status: "Open browser check",
+    time: "20-30 minutes",
+    target: "/guides/wow-forever-launch-group-checklist",
+    targetLabel: "Open the planning example",
+    purpose:
+      "Make Hall of Thanes, Ruins of Lordaeron or Excavation Site preparation more useful without inventing encounter tactics.",
+    steps: [
+      "Ask a maintainer for the relevant preparation draft and identify the travel, quest or event-setup section you will check.",
+      "Record region, faction, ruleset, level and source/client build. Compare quest requirements with the character's own log only when testing is actually available.",
+      "Follow the planning link through LFG or native event creation. Review the draft, but do not submit a fake public session.",
+      "Return one reproducible correction and what remains untested. Do not publish a player's name or screenshot without their approval.",
+    ],
+    completion:
+      "A specific planning or quest-preparation finding. Boss tactics, item drop rates and clear-time claims require separate observed evidence.",
+  },
+  {
     id: "compatibility",
     title: "Verify one addon feature",
     status: "Maintainer approval required",
@@ -90,8 +126,8 @@ export const contributorTasks: ContributorTask[] = [
     title: "Rehearse a group post",
     status: "Open browser check",
     time: "15 minutes",
-    target: "/guides/find-or-organize-wow-forever-group",
-    targetLabel: "Open the group worksheet",
+    target: "/guides/host-first-wow-forever-group",
+    targetLabel: "Open the host workflow",
     purpose:
       "Check whether another player can understand the plan without a second round of questions.",
     steps: [

@@ -12,7 +12,7 @@
     "start": "next start --hostname 127.0.0.1 -p 19300",
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "tsx --test tests/*.test.ts tests/*.test.tsx",
     "test:addon": "fengari tests/addon.lua",
     "test:e2e": "playwright test",
     "db:generate": "prisma generate",

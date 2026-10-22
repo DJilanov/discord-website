@@ -97,11 +97,7 @@ test("Discord event panels cover every event type with bounded fields, no pings 
     const embed = panel.embeds[0];
     assert.ok(!("footer" in embed));
     assert.ok(!("timestamp" in embed));
-    assert.ok(
-      embed.fields.some((field) =>
-        field.value.includes(eventTypeDefinitions[type].label),
-      ),
-    );
+    assert.ok(embed.description.includes(eventTypeDefinitions[type].label));
     assert.equal(
       embed.fields.some((field) => field.name === "Loot"),
       type === "raid",

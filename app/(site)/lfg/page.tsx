@@ -16,6 +16,11 @@ import { CopyButton } from "@/components/copy-button";
 import { formatGroupStart } from "@/lib/group-time";
 import { approvedRaidEvents } from "@/lib/raids/directory";
 import { listingDiscordUrl } from "@/lib/discord-listings/contracts";
+import {
+  decodeToolGroupDraft,
+  encodeToolGroupDraft,
+  toolGroupCreatePath,
+} from "@/lib/tool-group-draft";
 
 interface Props {
   searchParams: Promise<QueryParams>;
@@ -36,6 +41,7 @@ export default async function LfgPage({
   const query = await searchParams,
     page = pageNumber(query);
   const where = groupFilter(query);
+  const toolDraft = decodeToolGroupDraft(query.draft);
   const [groups, total, scheduled] = await Promise.all([
     db.foreverGroup.findMany({
       where,
@@ -73,12 +79,61 @@ export default async function LfgPage({
           title="WoW Forever looking for group"
           description="A dungeon after work. A raid with new friends. A story worth sharing. Find a group for your next session."
         />
-        <Link href="/lfg/new" className="button primary">
+        <Link
+          href={toolDraft ? toolGroupCreatePath(toolDraft) : "/lfg/new"}
+          className="button primary"
+          data-analytics-event="event_start"
+        >
           <Plus size={16} />
-          Post a group
+          {toolDraft ? "Host this plan" : "Post a group"}
         </Link>
       </div>
+      {toolDraft && (
+        <section
+          className="tool-group-context"
+          aria-label="Shared planning reference"
+        >
+          <div>
+            <span>Planning reference</span>
+            <h2>{toolDraft.label}</h2>
+            <p>
+              Check character levels, prerequisites and pace with the organizer.
+              The filters below describe the groups shown, not a guaranteed
+              match.
+            </p>
+          </div>
+          <a
+            className="text-link"
+            href={toolDraft.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open source plan <ExternalLink size={14} />
+          </a>
+        </section>
+      )}
+      {query.draft !== undefined && !toolDraft && (
+        <p role="alert">
+          The shared plan is invalid or unsupported. No group has been posted.
+        </p>
+      )}
       <form className="filters" action="/lfg">
+        {toolDraft && (
+          <input
+            type="hidden"
+            name="draft"
+            value={encodeToolGroupDraft(toolDraft)}
+          />
+        )}
+        <label>
+          Search groups
+          <input
+            type="search"
+            name="q"
+            maxLength={100}
+            defaultValue={queryValue(query, "q")}
+          />
+        </label>
         <FilterSelect
           name="ruleset"
           label="Rulesets"
@@ -142,7 +197,7 @@ export default async function LfgPage({
                     </span>
                   </div>
                   <h3>
-                    <Link href={`/raids/${event.id}`}>{event.title}</Link>
+                    <Link href={`/events/${event.id}`}>{event.title}</Link>
                   </h3>
                   <div className="guild-meta">
                     <time dateTime={event.startsAt.toISOString()}>
@@ -258,15 +313,27 @@ export default async function LfgPage({
         <p className="section-lead">
           Include your region, character ruleset, faction, start time, needed
           roles, and loot rules. Group listings publish immediately and are
-          queued for the matching Discord forum. Moderators review them afterward
-          and can hide rule-breaking posts. Listings expire after the session.
-          Scheduled events have their own signup and approval flow. For a regular roster, explore{" "}
+          queued for the matching Discord forum. Moderators review them
+          afterward and can hide rule-breaking posts. Listings expire after the
+          session. Scheduled events have their own signup and approval flow. For
+          a regular roster, explore{" "}
           <Link className="text-link" href="/guild-recruitment">
             guild recruitment
           </Link>
           .
         </p>
-        <p className="fine-print">This is a community group board, not Blizzard&apos;s in-game group finder. EU times use Central Europe, NA times use New York, and OCE times use UTC; the displayed offset accounts for the date. <Link href="/guides/find-or-organize-wow-forever-group" className="text-link">Read the posting and signup guide</Link>.</p>
+        <p className="fine-print">
+          This is a community group board, not Blizzard&apos;s in-game group
+          finder. EU times use Central Europe, NA times use New York, and OCE
+          times use UTC; the displayed offset accounts for the date.{" "}
+          <Link
+            href="/guides/find-or-organize-wow-forever-group"
+            className="text-link"
+          >
+            Read the posting and signup guide
+          </Link>
+          .
+        </p>
       </section>
     </div>
   );

@@ -1043,6 +1043,40 @@ export default async function AdminSection({
             </div>
           ))}
         </div>
+        <section className="section">
+          <h2>From browsing to a group</h2>
+          <dl className="detail-grid">
+            {[
+              ["Tool link opens", report.outcomes.toolOpens],
+              ["Group creation starts", report.outcomes.eventStarts],
+              ["Guild contact actions", report.outcomes.guildContacts],
+              ["Calendar download clicks", report.outcomes.calendarDownloads],
+              [
+                "Approved public events created",
+                report.outcomes.approvedEventsCreated,
+              ],
+              ["Current native signups created", report.outcomes.nativeSignups],
+              ["Members with a native signup", report.outcomes.signupMembers],
+              [
+                "Members signed to 2+ events",
+                report.outcomes.repeatSignupMembers,
+              ],
+            ].map(([label, count]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{count}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="fine-print">
+            All counts use this report's time window. Signup counts cover
+            currently participating native signups in currently approved public
+            Forever events; imported, absent, tentative and withdrawn records
+            are excluded. Repeat signup is not verified attendance. Link clicks
+            show intent, not completed tool use, enquiries or joins. No browser
+            session or visitor fingerprint is matched to a Discord account.
+          </p>
+        </section>
         <div className="admin-split">
           <section>
             <h2>Top pages</h2>

@@ -49,7 +49,7 @@ Ask another participant to read the plan back before inviting more people. If th
 
 ## Keep access and grouping separate
 
-Being in the right community does not grant beta access. Each player should verify their own access through official services before accepting a test-session commitment. Our [beta checklist](/guides/wow-forever-beta-starter-checklist) covers that preparation without asking people to share account details.
+Being in the right community does not grant game access. **Status checked October 22, 2026:** the beta's announced last full testing day was October 21. Our [archived beta checklist](/guides/wow-forever-beta-starter-checklist) is historical preparation, not an invitation to a current test. Use the [launch plan](/guides/wow-forever-launch-group-checklist) and each player's official access checks for the next real session.
 
 A market label in WoW Trader is also not a character-creation instruction. It identifies the dataset you are viewing. Use official game choices for your group plan, not a label copied from an auction-data selector.
 
@@ -70,7 +70,15 @@ Found a changed official rule or an unclear step? Take the [guide-check assignme
     coverImage: "/images/wow-trader-workspace.webp",
     content: `WoW Trader helps compare material costs and auction listings. It cannot guarantee that an item will sell, how soon a buyer will arrive or what price will remain when you reach the auction house. Start with the [WoW Trader introduction](/addons/wow-trader) if you have not used the Forever workspace before.
 
-**Workspace checked September 30, 2026.** The interface and data can change. This article explains how to read the evidence shown by the tool, not which item to buy today.
+**Workspace review updated October 22, 2026.** The interface and data can change. This article explains how to read the evidence shown by the tool, not which item to buy today. Prices remain contributor-uploaded, and a newly published catalog is not a new auction scan.
+
+## A repeatable five-minute browser check
+
+Open the [canonical Forever workspace](https://kfcguild.online/tools/forever/trader) without installing a collector. Select the intended market and faction dataset, then record the displayed scan time and catalog/build. If Horde data is missing, do not use an Alliance quote as a verified Horde price. The scope label describes collected evidence, not an assumption that every auction pool is interchangeable.
+
+Choose one recipe you understand. Record its exact identity, required quantities, available input prices and visible output quote. Increase the planned quantity, then check whether supply depth or the quoted input cost changes. Do not buy anything to complete the check. If an input has no usable quote, record it as missing rather than substituting zero.
+
+Read the displayed exit and uncertainty labels. List what the calculation excludes: a completed sale, your travel time, the chance of reposting and any cost not explicitly modeled. Use the arithmetic example below to explain the difference between a potential spread and realized profit. Return the page, dataset, item, scan age, quantity and exact confusing step through [the market-quote assignment](/contribute#trader-web).
 
 ## Check the upload before the number
 

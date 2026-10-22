@@ -3,6 +3,10 @@ import Discord from "@auth/core/providers/discord";
 import type { CookiesOptions } from "@auth/core/types";
 import { guilds } from "@/lib/discord-bridge/contracts";
 import { memberAuthErrorDetails } from "@/lib/member-auth-errors";
+import {
+  decodeToolGroupDraft,
+  toolGroupCreatePath,
+} from "@/lib/tool-group-draft";
 
 export type ServerMembership = "member" | "not_member" | "unavailable";
 
@@ -100,6 +104,16 @@ export function memberAuthIssues(settings: MemberAuthSettings): string[] {
 }
 
 export function memberRedirectPath(value: string | undefined): string {
+  if (value?.startsWith("/raids/new?") && value.length <= 2500) {
+    const url = new URL(value, "https://member.invalid");
+    const entries = [...url.searchParams];
+    const draft =
+      entries.length === 1 && entries[0][0] === "draft"
+        ? decodeToolGroupDraft(entries[0][1])
+        : null;
+    if (url.pathname === "/raids/new" && !url.hash && draft)
+      return toolGroupCreatePath(draft);
+  }
   return value &&
     /^(?:\/raids(?:\/new|\/[a-z0-9]{20,40}(?:\/reserves)?)?|\/account\/characters)$/.test(
       value,
@@ -254,7 +268,7 @@ export function createMemberAuthOptions(
           )
         )
           return `${baseUrl}/raids?error=${destination.searchParams.get("error")}`;
-        return `${baseUrl}${memberRedirectPath(destination.pathname)}`;
+        return `${baseUrl}${memberRedirectPath(destination.pathname + destination.search)}`;
       },
     },
   };

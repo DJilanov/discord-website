@@ -59,9 +59,10 @@ export default function TraderPage(): React.JSX.Element {
             system.
           </p>
           <p>
-            WoW Trader is developed by our team and hosted on KFC Guild Helper.
-            It is a separate service with its own data and release status, not
-            an official Blizzard product. KFC membership is not required.
+            WoW Trader is maintained by open source contributors and hosted at
+            KFC Guild&apos;s public tools site. It is a separate service with
+            its own data and release status, not an official Blizzard product.
+            KFC membership is not required.
           </p>
           <ol>
             <li>Open the Forever workspace, not the separate TBC tools.</li>

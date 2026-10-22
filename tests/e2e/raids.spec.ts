@@ -28,6 +28,193 @@ import {
 } from "../../lib/raids/specializations";
 import { eventTypes, eventTypeDefinitions } from "../../lib/raids/event-types";
 import { raidHelperFixture } from "../fixtures/raid-helper";
+import { raidService } from "../../lib/raids/service";
+import { toolGroupCreatePath } from "../../lib/tool-group-draft";
+
+test("tool plan prefill keeps native event creation and administrator-only channel choices", async ({
+  page,
+  context,
+}) => {
+  await signIn(context, 1);
+  await page.goto(
+    toolGroupCreatePath({
+      version: 1,
+      kind: "leveling",
+      label: "Orc leveling",
+      sourceUrl:
+        "https://kfcguild.online/tools/forever/leveling/routes/horde-orc?plan=premade",
+      faction: "Horde",
+      capacity: 5,
+    }),
+  );
+  await expect(
+    page.getByRole("heading", { name: "Create event", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("combobox", { name: "Event type", exact: true }),
+  ).toHaveValue("questing");
+  await expect(
+    page.getByRole("textbox", { name: "Title", exact: true }),
+  ).toHaveValue("Orc leveling group");
+  await expect(
+    page.getByRole("combobox", { name: "Faction", exact: true }),
+  ).toHaveValue("Horde");
+  await expect(page.getByRole("combobox", { name: "Admission", exact: true })).toHaveValue("open");
+  await expect(
+    page.getByRole("textbox", { name: "Details", exact: true }),
+  ).toHaveValue(/Our planning reference:/);
+  await expect(
+    page.getByRole("combobox", { name: "Discord channel", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Open source plan", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    "https://kfcguild.online/tools/forever/leveling/routes/horde-orc?plan=premade",
+  );
+  await expect(
+    page.getByRole("combobox", { name: "Game edition", exact: true }),
+  ).toBeDisabled();
+  await page.getByRole("link", { name: "Start blank", exact: true }).click();
+  await expect(
+    page.getByRole("combobox", { name: "Game edition", exact: true }),
+  ).toBeEnabled();
+  await page.goto(
+    toolGroupCreatePath({
+      version: 1,
+      kind: "leveling",
+      label: "Hall of Thanes",
+      sourceUrl:
+        "https://kfcguild.online/tools/forever/leveling/routes/alliance-human/dungeons/thanes?chapter=chapter-126-14-16-darkshore&plan=alternative",
+      faction: "Alliance",
+      capacity: 3,
+    }),
+  );
+  await expect(
+    page.getByRole("combobox", { name: "Event type", exact: true }),
+  ).toHaveValue("dungeon");
+  await expect(
+    page.getByRole("combobox", { name: "Faction", exact: true }),
+  ).toHaveValue("Alliance");
+  await expect(
+    page.getByRole("link", { name: "Open source plan", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    /chapter=chapter-126-14-16-darkshore&plan=alternative$/,
+  );
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 960 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > innerWidth + 1,
+      ),
+    ).toBe(false);
+  }
+});
+
+test("public event previews and calendar downloads exclude private and unapproved sessions", async ({
+  page,
+  request,
+}) => {
+  test.skip(
+    process.env.FOREVER_RAIDS_E2E_DISCORD !== "true",
+    "Uses only the synthetic Discord destination configuration",
+  );
+  const startsAt = new Date(Date.now() + 86400000);
+  const event = await db.foreverRaidEvent.create({
+    data: {
+      requestKey: randomUUID(),
+      requestHash: "a".repeat(64),
+      organizerId: memberIds[0],
+      audience: discordIds,
+      title: "Public group planning browser fixture",
+      eventType: "questing",
+      game: "forever",
+      raidName: "Northshire",
+      region: "EU",
+      faction: "Alliance",
+      ruleset: "PvP",
+      description: "A synthetic local group plan for preview verification.",
+      startsAt,
+      endsAt: new Date(startsAt.getTime() + 7200000),
+      signupClosesAt: startsAt,
+      reservesCloseAt: startsAt,
+      capacity: 5,
+      roleCaps: { tank: 1, healer: 1, damage: 3 },
+      admission: "open",
+      reserveLimit: 0,
+      allowDuplicates: false,
+      hardReserves: [],
+      discordPost: {
+        create: {
+          guildId: "1554316932948172940",
+          channelId: "1556000000000000071",
+          origin,
+          visibility: "community",
+          confirmedAt: new Date(),
+          approvedAt: new Date(),
+          approvedBy: discordIds[0],
+          messageId: "1556000000000000098",
+          status: "sent",
+          desiredVersion: 1,
+          deliveredVersion: 1,
+        },
+      },
+    },
+  });
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 960 });
+    expect((await page.goto(`/events/${event.id}`))?.status()).toBe(200);
+    await expect(
+      page.getByRole("heading", { name: event.title, exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Sign up with Discord", exact: true }),
+    ).toHaveAttribute("href", `/raids/${event.id}`);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      `https://www.wowforeverdiscord.online/events/${event.id}`,
+    );
+    await expect(
+      page.locator('meta[property="og:image"]').first(),
+    ).toHaveAttribute("content", /\/images\/raids\/events\/questing.webp$/);
+    await expect(page.locator(".public-event-artwork")).toBeVisible();
+    await page.waitForLoadState("networkidle");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await mkdir("artifacts/ecosystem-growth-20261022", { recursive: true });
+    await page.screenshot({
+      path: `artifacts/ecosystem-growth-20261022/event-${width}.png`,
+      fullPage: true,
+    });
+  }
+  const calendar = await request.get(`/events/${event.id}/calendar`);
+  expect(calendar.status()).toBe(200);
+  expect(calendar.headers()["content-type"]).toContain("text/calendar");
+  expect(calendar.headers()["cache-control"]).toBe("private, no-store");
+  expect(await calendar.text()).not.toContain("ATTENDEE:");
+  await db.foreverRaidDiscordPost.update({
+    where: { eventId: event.id },
+    data: { visibility: "private" },
+  });
+  const privatePage = await request.get(`/events/${event.id}`);
+  expect(privatePage.status()).toBe(404);
+  expect(await privatePage.text()).not.toContain(event.title);
+  expect((await request.get(`/events/${event.id}/calendar`)).status()).toBe(
+    404,
+  );
+  await db.foreverRaidDiscordPost.update({
+    where: { eventId: event.id },
+    data: { visibility: "community", approvedAt: null, approvedBy: null },
+  });
+  expect((await request.get(`/events/${event.id}`)).status()).toBe(404);
+  expect(errors).toEqual([]);
+});
 
 const origin = "http://127.0.0.1:19306",
   discordIds = [

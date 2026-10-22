@@ -80,11 +80,16 @@ export default async function GuildPage({
           <p>
             Discord contact: <strong>{guild.contactDiscord}</strong>
           </p>
-          <CopyButton text={guild.contactDiscord} label="Copy contact" />
+          <CopyButton
+            text={guild.contactDiscord}
+            label="Copy contact"
+            analyticsEvent="guild_contact"
+          />
           {guild.inviteUrl && (
             <p className="button-row">
               <a
                 className="button primary"
+                data-analytics-event="guild_contact"
                 href={guild.inviteUrl}
                 target="_blank"
                 rel="noopener noreferrer ugc nofollow"
@@ -98,6 +103,7 @@ export default async function GuildPage({
             <p>
               <a
                 className="text-link"
+                data-analytics-event="guild_contact"
                 href={guild.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer ugc nofollow"

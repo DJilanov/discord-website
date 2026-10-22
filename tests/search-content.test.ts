@@ -68,7 +68,7 @@ test("join and group pages keep distinct canonicals and explain current channel 
   assert.ok(discord.includes('"WoW Forever Discord | Join the Community"'));
   assert.ok(discord.includes('"/discord",'));
   assert.ok(lfg.includes('"/lfg",'));
-  assert.ok(lfg.includes("not Blizzard&apos;s in-game group finder"));
+  assert.match(lfg, /not Blizzard&apos;s in-game\s+group\s+finder/);
   assert.doesNotMatch(
     discord,
     /<strong>verification<|<strong>newcomers<|<code>help-support<|<code>pugs-adverts</,

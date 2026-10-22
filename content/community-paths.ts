@@ -1,4 +1,4 @@
-import { traderLinks } from "./community-tools";
+import { toolsBase } from "./community-tools";
 
 export const channelReviewDate = "7 October 2026";
 
@@ -15,7 +15,7 @@ export const classDiscussions = [
 ].map((name) => ({
   name,
   channel: name.toLowerCase(),
-  calculator: `${traderLinks.encyclopedia}/talents/${name.toLowerCase()}`,
+  calculator: `${toolsBase}/forever/encyclopedia/talents/${name.toLowerCase()}`,
 }));
 
 export const classDiscussionTable = [

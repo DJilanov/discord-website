@@ -4,10 +4,35 @@ import { RaidAccess } from "@/components/raids/access";
 import { CreateRaid } from "@/components/raids/workspace";
 import { raidDiscordDestinationViews } from "@/lib/raids/discord-settings";
 import { canManageRaidChannels } from "@/lib/raids/discord-channels";
+import {
+  decodeToolGroupDraft,
+  toolGroupCreatePath,
+} from "@/lib/tool-group-draft";
+import type { QueryParams } from "@/lib/directory";
 
-export default async function NewRaidPage(): Promise<React.JSX.Element> {
+export default async function NewRaidPage({
+  searchParams,
+}: {
+  searchParams: Promise<QueryParams>;
+}): Promise<React.JSX.Element> {
+  const query = await searchParams;
+  const draft = decodeToolGroupDraft(query.draft);
+  const invalidDraft = query.draft !== undefined && !draft;
   const member = await getMember();
-  if (!member) return <RaidAccess returnTo="/raids/new" />;
+  const error = invalidDraft ? (
+    <p role="alert">
+      The shared plan is invalid or unsupported. No event has been created.
+    </p>
+  ) : null;
+  if (!member)
+    return (
+      <>
+        {error}
+        <RaidAccess
+          returnTo={draft ? toolGroupCreatePath(draft) : "/raids/new"}
+        />
+      </>
+    );
   let canSelectChannels = false;
   let channelAccessError = "";
   try {
@@ -18,11 +43,18 @@ export default async function NewRaidPage(): Promise<React.JSX.Element> {
   }
   const destinations = raidDiscordDestinationViews();
   return (
-    <CreateRaid
-      catalogs={await publishedCatalogs()}
-      destinations={canSelectChannels ? destinations : destinations.slice(0, 1)}
-      canSelectChannels={canSelectChannels}
-      channelAccessError={channelAccessError}
-    />
+    <>
+      {error}
+      <CreateRaid
+        key={draft ? toolGroupCreatePath(draft) : "new-event"}
+        toolDraft={draft ?? undefined}
+        catalogs={await publishedCatalogs()}
+        destinations={
+          canSelectChannels ? destinations : destinations.slice(0, 1)
+        }
+        canSelectChannels={canSelectChannels}
+        channelAccessError={channelAccessError}
+      />
+    </>
   );
 }

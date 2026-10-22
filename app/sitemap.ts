@@ -4,10 +4,11 @@ import { pages } from "@/content/pages";
 import { SITE_URL } from "@/lib/config";
 import { researchTopics } from "@/content/research";
 import { getForeverObservatory, getRecruitmentCensus } from "@/lib/research";
+import { publicEventSitemap } from "@/lib/raids/public-events";
 
 export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [guides, guilds, observatory, census] = await Promise.all([
+  const [guides, guilds, observatory, census, events] = await Promise.all([
     db.foreverGuide.findMany({
       where: { published: true },
       select: { slug: true, updatedAt: true },
@@ -20,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
     getForeverObservatory(),
     getRecruitmentCensus(),
+    publicEventSitemap(),
   ]);
   const catalogModified =
     observatory?.catalog.current?.publishedAt ??
@@ -41,6 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "addons",
     "addons/wow-trader",
     "contribute",
+    "updates",
     "addons/foreverguard",
     "addons/foreverguard/changelog",
     "reports",
@@ -72,6 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}/guilds/${guild.slug}`,
       lastModified: guild.updatedAt,
     })),
+    ...events.map((event) => ({ url: `${SITE_URL}/events/${event.id}` })),
   ];
 }
 

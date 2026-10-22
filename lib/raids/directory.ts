@@ -3,10 +3,7 @@ import type { PrismaClient } from "@prisma/client";
 import { db } from "@/lib/db";
 import { queryValue, type QueryParams } from "@/lib/directory";
 import { eventTypeDefinitions, eventTypes } from "./event-types";
-import {
-  raidDiscordDestinations,
-  raidDiscordGuildIds,
-} from "./discord-settings";
+import { publicEventWhere } from "./publication";
 
 export async function approvedRaidEvents(
   query: QueryParams,
@@ -26,8 +23,8 @@ export async function approvedRaidEvents(
     discordUrl: string;
   }[]
 > {
-  const destinations = raidDiscordDestinations();
-  if (!destinations.length) return [];
+  const publication = publicEventWhere();
+  if (!publication) return [];
   const activity = queryValue(query, "activity");
   const matchingTypes = eventTypes.filter(
     (type) =>
@@ -40,36 +37,26 @@ export async function approvedRaidEvents(
   const region = queryValue(query, "region"),
     faction = queryValue(query, "faction"),
     ruleset = queryValue(query, "ruleset");
+  const search = queryValue(query, "q").trim();
   const events = await database.foreverRaidEvent.findMany({
     where: {
-      game: "forever",
+      ...publication,
+      ...(search
+        ? {
+            OR: [
+              { title: { contains: search, mode: "insensitive" as const } },
+              { raidName: { contains: search, mode: "insensitive" as const } },
+              {
+                description: { contains: search, mode: "insensitive" as const },
+              },
+            ],
+          }
+        : {}),
       eventType: { in: matchingTypes },
-      status: { not: "cancelled" },
       endsAt: { gt: new Date() },
       ...(region ? { region } : {}),
       ...(faction ? { faction } : {}),
       ...(ruleset ? { ruleset } : {}),
-      organizer: { active: true },
-      discordPost: {
-        is: {
-          approvedAt: { not: null },
-          messageId: { not: null },
-          OR: [
-            ...destinations.map(({ guildId, channelId, origin }) => ({
-              guildId,
-              channelId,
-              origin,
-            })),
-            {
-              guildId: { in: raidDiscordGuildIds() },
-              origin: destinations[0].origin,
-              visibility: "community",
-              confirmedAt: { not: null },
-            },
-          ],
-          status: { in: ["sent", "pending", "delivering"] },
-        },
-      },
     },
     select: {
       id: true,

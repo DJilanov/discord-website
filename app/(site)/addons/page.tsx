@@ -6,6 +6,7 @@ import {
   BookOpen,
   FlaskConical,
   ShieldCheck,
+  Swords,
 } from "lucide-react";
 import { Breadcrumbs, PageHeader } from "@/components/ui";
 import { traderLinks, traderScreenshot } from "@/content/community-tools";
@@ -13,7 +14,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata(
   "WoW Forever Addons & Tools: WoW Trader and Community Testing",
-  "Explore WoW Trader's Forever market tools, read compatibility limits and pick a community test. Public web tools and controlled-test addons clearly separated.",
+  "Plan your Forever leveling route, compare talents and gear, browse quests or inspect Auction House prices. Public browser tools and controlled-test addons clearly separated.",
   "/addons",
 );
 
@@ -22,11 +23,14 @@ export default function AddonsPage(): React.JSX.Element {
     <div className="container tools-page">
       <Breadcrumbs items={[{ label: "Addons & tools", href: "/addons" }]} />
       <PageHeader
-        eyebrow="BUILT BY PLAYERS. CHECKED IN THE GAME."
+        eyebrow="BUILT BY PLAYERS. OPEN TO EVERY GUILD."
         title="WoW Forever addons & tools"
-        description="Make a better crafting decision, check a reference, or help test the next release."
+        description="Plan your character, choose your next quest, compare gear or explore the market. Browse the tools without an account or guild membership."
       />
       <nav className="resource-nav" aria-label="Tools on this page">
+        <a href="#leveling">Leveling</a>
+        <a href="#simulator">Simulator</a>
+        <a href="#reference">Database</a>
         <a href="#wow-trader">WoW Trader</a>
         <a href="#other-tools">Addons & compatibility</a>
         <Link href="/contribute">
@@ -105,31 +109,52 @@ export default function AddonsPage(): React.JSX.Element {
           <h2 id="other-tools-title">Know what is ready</h2>
         </div>
         <div className="tool-list">
-          <article>
+          <article id="leveling">
             <BookOpen size={24} />
             <div>
-              <span className="tool-status caution">Free browser preview</span>
-              <h3>Forever leveling guide & XP planner</h3>
+              <span className="tool-status available">Free browser tool</span>
+              <h3>Forever leveling routes</h3>
               <p>
-                Start with Alliance Westfall 13–15. Compare a Hall of Thanes
-                visit around level 14 against crowded outdoor quests, including
-                preparation, lost XP and the return trip. Enter your current
-                rewards; the route still needs a beta playthrough. Later zones,
-                Horde routes and supporter downloads are not available yet.
+                Choose Alliance or Horde, your race and a solo, relaxed or group
+                route through level 60. Follow quest chapters, inspect optional
+                dungeon branches and keep progress in your browser. Route
+                coverage is not a completed in-game playthrough; check each
+                route&apos;s evidence and limitations. Addon exports have a
+                separate review and release process.
               </p>
             </div>
             <a className="text-link" href={traderLinks.leveling}>
-              Plan a dungeon detour <ArrowUpRight size={16} />
+              Choose your route <ArrowUpRight size={16} />
             </a>
           </article>
-          <article>
+          <article id="simulator">
+            <Swords size={24} />
+            <div>
+              <span className="tool-status available">
+                Public beta simulator
+              </span>
+              <h3>Talents, gear & combat simulator</h3>
+              <p>
+                Compare supported class profiles, talent builds, equipment and
+                rotations. Share a build or explore a raid composition. Model
+                coverage varies: tank assumptions remain provisional and
+                healing-only engines are not available.
+              </p>
+            </div>
+            <a className="text-link" href={traderLinks.simulator}>
+              Compare your build <ArrowUpRight size={16} />
+            </a>
+          </article>
+          <article id="reference">
             <BookOpen size={24} />
             <div>
               <span className="tool-status available">Public reference</span>
               <h3>Forever Encyclopedia</h3>
               <p>
-                Class, talent and spell references. Check the catalog build and
-                preview labels; reference data is not a tested character build.
+                Look up quests, items, recipes, maps, instances, talents and
+                spellbooks. Check the build and source labels: an external
+                reference is not an exact-build observation, and a database
+                entry does not establish current availability.
               </p>
             </div>
             <a className="text-link" href={traderLinks.encyclopedia}>

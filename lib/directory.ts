@@ -71,10 +71,19 @@ export function groupFilter(
   const faction = queryValue(query, "faction");
   const activity = queryValue(query, "activity");
   const ruleset = queryValue(query, "ruleset");
+  const search = queryValue(query, "q").trim();
   return {
     status: "approved",
     expiresAt: { gt: now },
     startsAt: { gte: now },
+    ...(search
+      ? {
+          OR: [
+            { title: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }
+      : {}),
     ...(region ? { region } : {}),
     ...(faction ? { faction } : {}),
     ...(activity ? { activity } : {}),

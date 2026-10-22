@@ -4,6 +4,8 @@ import history from "./editorial-history.json";
 import { toolGuides } from "./tool-guides";
 import october7History from "./editorial-october7-history.json";
 import { classDiscussionTable } from "./community-paths";
+import { starterResources } from "./starter-resources";
+import { organizerGuide } from "./organizer-guide";
 
 // Retain exact published revisions so later updates cannot overwrite admin edits.
 export const september29Guides: EditorialGuide[] = history.september29Guides;
@@ -401,6 +403,8 @@ export const editorialGuides: EditorialGuide[] = [
   })),
   ...preparationGuides,
   ...toolGuides,
+  ...starterResources,
+  organizerGuide,
 ];
 
 export const startingGuideSlugs = [

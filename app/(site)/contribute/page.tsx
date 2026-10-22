@@ -64,7 +64,7 @@ export default function ContributePage(): React.JSX.Element {
       >
         <div className="section-heading">
           <div>
-            <p className="eyebrow">FIVE WAYS TO CONTRIBUTE</p>
+            <p className="eyebrow">OPEN CONTRIBUTIONS</p>
             <h2 id="assignments-title">Pick one assignment</h2>
           </div>
           <a href="#report" className="text-link">

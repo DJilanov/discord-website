@@ -16,7 +16,11 @@ import { artwork, coverChoices, getArtwork } from "../content/artwork";
 import {
   canRefreshStarterGuide,
   canRefreshEditorialGuide,
+  editorialPublicationData,
+  editorialFingerprint,
 } from "../lib/editorial-publication";
+import { preOctober22Fingerprints } from "../content/editorial-october22-history";
+import { starterResources } from "../content/starter-resources";
 import {
   communityTemplates,
   getCommunityTemplate,
@@ -59,9 +63,9 @@ test("image processing has bounded workers without raising the production memory
 });
 
 test("all editorial guides, covers and reading paths are valid and distinct", async () => {
-  assert.equal(editorialGuides.length, 10);
+  assert.equal(editorialGuides.length, 17);
   const slugs = new Set(editorialGuides.map((guide) => guide.slug));
-  assert.equal(slugs.size, 10);
+  assert.equal(slugs.size, 17);
   for (const guide of editorialGuides) {
     assert.ok(
       guideSchema.safeParse({
@@ -98,6 +102,64 @@ test("all editorial guides, covers and reading paths are valid and distinct", as
       false,
     );
   assert.equal(getArtwork("__proto__"), undefined);
+});
+
+test("unreviewed starter resources remain drafts and cannot silently publish through the release script", () => {
+  assert.equal(starterResources.length, 6);
+  for (const source of starterResources) {
+    const data = editorialPublicationData(source);
+    assert.equal(data.published, false);
+    assert.equal(data.author, "Open source contributors");
+    assert.match(data.content, /Gameplay review pending/);
+    assert.equal(
+      canRefreshEditorialGuide({
+        ...data,
+        content: data.content + " editor review",
+        published: false,
+      }),
+      false,
+    );
+  }
+  for (const source of editorialGuides.filter(
+    (guide) => guide.release !== "draft",
+  ))
+    assert.equal(editorialPublicationData(source).published, true);
+});
+
+test("October refresh fingerprints preserve every editor change and cannot cross slugs", () => {
+  const source = editorialGuides.find(
+    (guide) => guide.slug === "wow-forever-launch-group-checklist",
+  )!;
+  const historical = {
+    ...source,
+    content: source.content
+      .replace(
+        /## Worked example: one evening, one shared route\n\n[\s\S]+?(?=## Rehearse the practical details)/,
+        "",
+      )
+      .replace(
+        /\*\*Official information checked October 22, 2026\.\*\*[\s\S]+?(?=\n\n## Agree on region)/,
+        "**Official information checked September 30, 2026.** Blizzard's [Forever announcement](https://news.blizzard.com/en-us/article/24302093/carve-a-new-path-with-world-of-warcraft-forever) gives November 4, 2026 as the launch date. Confirm the latest regional timing with Blizzard before committing to a calendar invitation. A community plan does not establish a local launch hour.",
+      ),
+    published: true,
+  };
+  assert.equal(
+    editorialFingerprint(historical),
+    preOctober22Fingerprints[historical.slug],
+  );
+  assert.equal(canRefreshEditorialGuide(historical), true);
+  for (const field of ["title", "excerpt", "content", "slug"] as const)
+    assert.equal(
+      canRefreshEditorialGuide({
+        ...historical,
+        [field]: historical[field] + " ",
+      }),
+      false,
+    );
+  assert.equal(
+    canRefreshEditorialGuide({ ...historical, published: false }),
+    false,
+  );
 });
 
 test("publisher preserves custom content, titles, excerpts and drafts", () => {
@@ -143,7 +205,11 @@ test("publisher preserves custom content, titles, excerpts and drafts", () => {
 });
 
 test("growth publication recognizes exact published history but never customizations or drafts", () => {
-  for (const source of [...september29Guides, ...september30Guides, ...preOctober7Guides]) {
+  for (const source of [
+    ...september29Guides,
+    ...september30Guides,
+    ...preOctober7Guides,
+  ]) {
     const historical = { ...source, published: true };
     assert.equal(canRefreshEditorialGuide(historical), true);
     for (const field of ["title", "excerpt", "content"] as const) {
@@ -162,7 +228,11 @@ test("growth publication recognizes exact published history but never customizat
     );
   }
   for (const source of editorialGuides) {
-    const recognized = [...september29Guides, ...september30Guides, ...preOctober7Guides].some(
+    const recognized = [
+      ...september29Guides,
+      ...september30Guides,
+      ...preOctober7Guides,
+    ].some(
       (guide) =>
         guide.slug === source.slug &&
         guide.title === source.title &&

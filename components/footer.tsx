@@ -33,6 +33,7 @@ export function Footer(): React.JSX.Element {
           <Link href="/research">Research &amp; data</Link>
           <Link href="/addons">Addons &amp; tools</Link>
           <Link href="/contribute">Community testing</Link>
+          <Link href="/updates">Resource updates</Link>
         </div>
         <div>
           <h3>Community first</h3>

@@ -23,12 +23,28 @@ import {
   privateMemberAuthResponse,
 } from "../lib/member-auth-http";
 import { kfcDiscordInviteUrl } from "../lib/raids/config";
+import { toolGroupCreatePath } from "../lib/tool-group-draft";
 
 const origin = "http://localhost:19300";
 const base = `${origin}/api/community/auth`;
 const discordId = "1556000000000000061";
 const guildId = "1554316932948172940";
 const kfcGuildId = "1411533815356194968";
+
+test("Discord OAuth returns members to a validated tool-plan draft", async () => {
+  const auth = fixture();
+  const path = toolGroupCreatePath({
+    version: 1,
+    kind: "quest",
+    label: "A shared quest",
+    sourceUrl: "https://kfcguild.online/tools/forever/encyclopedia/quests/10",
+    faction: "Alliance",
+  });
+  const authorization = await auth.begin(`${origin}${path}`);
+  const response = await auth.complete(authorization);
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), `${origin}${path}`);
+});
 
 function fixture(): {
   settings: MemberAuthSettings;

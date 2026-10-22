@@ -27,6 +27,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { z } from "zod";
+import { toolGroupPrefill, type ToolGroupDraft } from "@/lib/tool-group-draft";
 import {
   characterSchema,
   factions,
@@ -636,6 +637,7 @@ export function CreateRaid({
   canSelectChannels,
   channelAccessError,
   initialEvent,
+  toolDraft,
   onSaved,
   onCancel,
 }: {
@@ -644,10 +646,13 @@ export function CreateRaid({
   canSelectChannels: boolean;
   channelAccessError: string;
   initialEvent?: EventView;
+  toolDraft?: ToolGroupDraft;
   onSaved?: () => void;
   onCancel?: () => void;
 }): React.JSX.Element {
   const router = useRouter();
+  const prefill =
+    !initialEvent && toolDraft ? toolGroupPrefill(toolDraft) : null;
   const [catalogId, setCatalogId] = useState(initialEvent?.catalog?.id ?? "");
   const [game, setGame] = useState<RaidGame>(initialEvent?.game ?? "forever");
   const [presetName, setPresetName] = useState(
@@ -658,7 +663,9 @@ export function CreateRaid({
       ? initialEvent.raidName
       : "",
   );
-  const [targetName, setTargetName] = useState(initialEvent?.raidName ?? "");
+  const [targetName, setTargetName] = useState(
+    initialEvent?.raidName ?? prefill?.target ?? "",
+  );
   const [discordChannelId, setDiscordChannelId] = useState("");
   const [channels, setChannels] = useState(destinations);
   const [channelWarnings, setChannelWarnings] = useState<string[]>([]);
@@ -669,10 +676,14 @@ export function CreateRaid({
   const [channelRefresh, setChannelRefresh] = useState(0);
   const [channelFilter, setChannelFilter] = useState("");
   const [eventType, setEventType] = useState<EventType>(
-    initialEvent?.eventType ?? "raid",
+    initialEvent?.eventType ?? prefill?.eventType ?? "raid",
   );
   const [capacity, setCapacity] = useState(
-    String(initialEvent?.capacity ?? eventTypeDefinitions.raid.capacity),
+    String(
+      initialEvent?.capacity ??
+        prefill?.capacity ??
+        eventTypeDefinitions.raid.capacity,
+    ),
   );
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -836,6 +847,35 @@ export function CreateRaid({
           </Link>
         )}
       </div>
+      {prefill && toolDraft && (
+        <section
+          className="raid-source-plan"
+          aria-label="Shared planning reference"
+        >
+          <div>
+            <span>Draft only</span>
+            <strong>{toolDraft.label}</strong>
+          </div>
+          <div className="button-row">
+            <a
+              className="text-link"
+              href={toolDraft.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open source plan
+            </a>
+            <Link
+              className="text-link"
+              href="/raids/new"
+              title="Discard this shared plan and start a blank event"
+            >
+              <X size={14} />
+              Start blank
+            </Link>
+          </div>
+        </section>
+      )}
       <form
         onSubmit={submit}
         className="raid-form"
@@ -856,7 +896,12 @@ export function CreateRaid({
                 <select
                   aria-label="Game edition"
                   value={game}
-                  disabled={busy}
+                  disabled={busy || Boolean(prefill)}
+                  title={
+                    prefill
+                      ? "The shared plan is for Forever. Start a blank event to choose another edition."
+                      : undefined
+                  }
                   onChange={(event) => {
                     const value = gameSchema.parse(event.target.value);
                     setGame(value);
@@ -1006,7 +1051,7 @@ export function CreateRaid({
                   required
                   minLength={3}
                   maxLength={120}
-                  defaultValue={initialEvent?.title}
+                  defaultValue={initialEvent?.title ?? prefill?.title}
                 />
               </label>
               {eventType === "raid" && (
@@ -1151,7 +1196,7 @@ export function CreateRaid({
                   <select
                     name="faction"
                     aria-label="Faction"
-                    defaultValue={initialEvent?.faction}
+                    defaultValue={initialEvent?.faction ?? prefill?.faction}
                   >
                     {factions.map((value) => (
                       <option key={value}>{value}</option>
@@ -1217,7 +1262,9 @@ export function CreateRaid({
                   aria-label="Details"
                   maxLength={3000}
                   rows={4}
-                  defaultValue={initialEvent?.description}
+                  defaultValue={
+                    initialEvent?.description ?? prefill?.description
+                  }
                 />
               </label>
             </section>
@@ -1259,6 +1306,9 @@ export function CreateRaid({
                         max={100}
                         defaultValue={
                           (initialRoles ??
+                            (prefill?.eventType === eventType
+                              ? prefill.roleCaps
+                              : null) ??
                             preset?.roleCaps ??
                             (game === "tbc" && eventType === "raid"
                               ? raidPresets.tbc[1].roleCaps
@@ -1275,7 +1325,7 @@ export function CreateRaid({
                 <select
                   name="admission"
                   aria-label="Admission"
-                  defaultValue={initialEvent?.admission}
+                  defaultValue={initialEvent?.admission ?? prefill?.admission}
                 >
                   <option value="automatic">Automatic / bench when full</option>
                   <option value="open">
@@ -1741,6 +1791,13 @@ export function RaidDetail({
               Open Discord post
             </a>
           )}
+          {event.game === "forever" &&
+            event.discord?.visibility === "community" &&
+            event.discord.approved && (
+              <Link className="text-link" href={`/events/${event.id}`}>
+                Public event preview
+              </Link>
+            )}
           {event.discordAvailable &&
             (!event.discord || event.discord.status === "failed") && (
               <button

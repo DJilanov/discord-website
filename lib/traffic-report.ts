@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { sessionConversions } from "@/lib/traffic-conversion";
+import { communityOutcomes } from "@/lib/community-outcomes";
 
 export async function trafficReport(days: number) {
   const since = new Date(Date.now() - days * 86400000);
@@ -13,6 +14,7 @@ export async function trafficReport(days: number) {
     clickSessions,
     recent,
     conversion,
+    outcomes,
   ] = await Promise.all([
     db.foreverAnalyticsEvent.count({
       where: { ...where, event: "page_view" },
@@ -62,6 +64,7 @@ export async function trafficReport(days: number) {
       },
     }),
     sessionConversions(since),
+    communityOutcomes(since),
   ]);
   const sessionSet = new Set(sessions.map((item) => item.sessionId));
   const conversions = clickSessions.filter((item) =>
@@ -76,5 +79,6 @@ export async function trafficReport(days: number) {
     conversionRate: sessions.length ? (100 * conversions) / sessions.length : 0,
     recent,
     conversion,
+    outcomes,
   };
 }

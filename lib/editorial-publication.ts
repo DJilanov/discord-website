@@ -1,6 +1,42 @@
 import type { ForeverGuide } from "@prisma/client";
+import { createHash } from "node:crypto";
 import { initialGuides } from "@/content/guides";
-import { september29Guides, september30Guides, preOctober7Guides } from "@/content/editorial";
+import {
+  september29Guides,
+  september30Guides,
+  preOctober7Guides,
+} from "@/content/editorial";
+import { preOctober22Fingerprints } from "@/content/editorial-october22-history";
+import type { EditorialGuide } from "@/content/guides";
+import { guideSchema } from "@/lib/validation";
+import type { z } from "zod";
+
+export function editorialPublicationData(
+  source: EditorialGuide,
+): z.infer<typeof guideSchema> {
+  return guideSchema.parse({
+    ...source,
+    author: "Open source contributors",
+    published: source.release !== "draft",
+    metaTitle: source.title,
+    metaDescription: source.excerpt,
+  });
+}
+
+export function editorialFingerprint(
+  guide: Pick<ForeverGuide, "slug" | "title" | "excerpt" | "content">,
+): string {
+  return createHash("sha256")
+    .update(
+      JSON.stringify({
+        slug: guide.slug,
+        title: guide.title,
+        excerpt: guide.excerpt,
+        content: guide.content,
+      }),
+    )
+    .digest("hex");
+}
 
 export function canRefreshStarterGuide(
   guide: Pick<
@@ -46,12 +82,13 @@ export function canRefreshEditorialGuide(
   if (canRefreshStarterGuide(guide)) return true;
   return (
     guide.published &&
-    [...september29Guides, ...september30Guides, ...preOctober7Guides].some(
-      (previous): boolean =>
-        previous.slug === guide.slug &&
-        previous.title === guide.title &&
-        previous.excerpt === guide.excerpt &&
-        previous.content === guide.content,
-    )
+    (preOctober22Fingerprints[guide.slug] === editorialFingerprint(guide) ||
+      [...september29Guides, ...september30Guides, ...preOctober7Guides].some(
+        (previous): boolean =>
+          previous.slug === guide.slug &&
+          previous.title === guide.title &&
+          previous.excerpt === guide.excerpt &&
+          previous.content === guide.content,
+      ))
   );
 }

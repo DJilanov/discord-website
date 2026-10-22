@@ -1,24 +1,18 @@
 import "./env";
 import { db } from "../lib/db";
-import { canRefreshEditorialGuide } from "../lib/editorial-publication";
+import {
+  canRefreshEditorialGuide,
+  editorialPublicationData,
+} from "../lib/editorial-publication";
 import { editorialGuides } from "../content/editorial";
-import { guideSchema } from "../lib/validation";
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
   if (args.some((arg) => arg !== "--dry-run"))
     throw new Error("Usage: npm run content:publish-editorial -- [--dry-run]");
   const dryRun = args.includes("--dry-run");
-  const result = { created: 0, updated: 0, preserved: 0 };
-  const sources = editorialGuides.map((source) =>
-    guideSchema.parse({
-      ...source,
-      author: "WoW Forever Discord Team",
-      published: true,
-      metaTitle: source.title,
-      metaDescription: source.excerpt,
-    }),
-  );
+  const result = { created: 0, drafts: 0, updated: 0, preserved: 0 };
+  const sources = editorialGuides.map(editorialPublicationData);
   for (const data of sources) {
     const outcome = await db.$transaction(
       async (tx): Promise<keyof typeof result> => {
@@ -26,11 +20,11 @@ async function main(): Promise<void> {
           where: { slug: data.slug },
         });
         if (!existing) {
-          if (dryRun) return "created";
+          if (dryRun) return data.published ? "created" : "drafts";
           await tx.foreverGuide.create({
-            data: { ...data, publishedAt: new Date() },
+            data: { ...data, publishedAt: data.published ? new Date() : null },
           });
-          return "created";
+          return data.published ? "created" : "drafts";
         }
         if (
           !canRefreshEditorialGuide(existing) ||

@@ -191,10 +191,9 @@ test("Fifteen-player public rosters list each confirmed name once, with class/sp
     embed.fields.find((field) => field.name === "Roster")!.value,
     /15\/25 confirmed/,
   );
-  assert.match(
-    embed.fields.find((field) => field.name.startsWith("Damage"))!.value,
-    /15 unclassified/,
-  );
+  const damage = embed.fields.find((field) => field.name.startsWith("DPS"))!;
+  assert.match(damage.name, /\(15\/16\)/);
+  assert.doesNotMatch(damage.value, /unclassified|melee|ranged/);
 });
 test("Large hostile-text rosters stay within every Discord embed budget and retain overflow counts", () => {
   const signups = Array.from({ length: 100 }, (_, index) => ({
@@ -301,8 +300,8 @@ test("Open signups use compact roster groups without pretending they are confirm
   };
   const embed = discordEventPanel(raid, "https://example.test").embeds[0];
   assert.match(
-    embed.fields.find((field) => field.name === "Admission")!.value,
-    /Open signup.*roster selection pending/,
+    embed.fields.find((field) => field.name === "Roster")!.value,
+    /Open signup.*2 awaiting roster selection/,
   );
   assert.match(
     embed.fields.find((field) => field.name === "Roster")!.value,

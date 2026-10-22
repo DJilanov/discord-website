@@ -151,11 +151,11 @@ test("legacy guild fields survive and are not interpreted as confirmed rulesets"
 });
 
 test("tester tasks have explicit boundaries and a safe downloadable report", async () => {
-  assert.equal(new Set(contributorTasks.map((task) => task.id)).size, 5);
+  assert.equal(new Set(contributorTasks.map((task) => task.id)).size, 7);
   assert.equal(
     contributorTasks.filter((task) => task.status === "Open browser check")
       .length,
-    3,
+    5,
   );
   const response = await downloadTemplate(
     new Request("https://example.test/templates/tester-report"),

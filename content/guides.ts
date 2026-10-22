@@ -1,4 +1,5 @@
 export interface EditorialGuide {
+  release?: "draft";
   slug: string;
   title: string;
   excerpt: string;

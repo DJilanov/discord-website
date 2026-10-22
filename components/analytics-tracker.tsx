@@ -46,7 +46,11 @@ export function AnalyticsTracker(): null {
         | "discord_click"
         | "research_action"
         | "dataset_download"
-        | "feedback_submit",
+        | "feedback_submit"
+        | "tool_open"
+        | "event_start"
+        | "guild_contact"
+        | "calendar_download",
       path: string,
     ): void => {
       void fetch("/api/analytics/event", {
@@ -68,12 +72,23 @@ export function AnalyticsTracker(): null {
       const trackedEvent = target.getAttribute("data-analytics-event");
       if (
         trackedEvent === "research_action" ||
-        trackedEvent === "dataset_download"
+        trackedEvent === "dataset_download" ||
+        trackedEvent === "tool_open" ||
+        trackedEvent === "event_start" ||
+        trackedEvent === "guild_contact" ||
+        trackedEvent === "calendar_download"
       ) {
         send(trackedEvent, pathname);
       }
       if (target.getAttribute("href") === "/join")
         send("discord_click", pathname);
+      if (
+        target instanceof HTMLAnchorElement &&
+        target.origin === "https://kfcguild.online" &&
+        target.pathname.startsWith("/tools") &&
+        !trackedEvent
+      )
+        send("tool_open", pathname);
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);

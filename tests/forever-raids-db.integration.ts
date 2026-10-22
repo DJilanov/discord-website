@@ -4,7 +4,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash, randomUUID } from "node:crypto";
 import { Pool } from "pg";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { communityOutcomes } from "../lib/community-outcomes";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { raidService } from "../lib/raids/service";
 import { stageCatalog, reviewCatalog } from "../lib/raids/catalog-store";
@@ -34,6 +35,10 @@ import {
   type RaidDiscordSettings,
 } from "../lib/raids/discord-settings";
 import { approvedRaidEvents } from "../lib/raids/directory";
+import {
+  findPublicEvent,
+  publicEventSitemap,
+} from "../lib/raids/public-events";
 import { requestRaidRepost } from "../lib/raids/repost";
 import { z } from "zod";
 
@@ -770,6 +775,97 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
             1,
           );
           assert.equal(
+            await findPublicEvent(eventId, database),
+            null,
+            "An administrator approval must not publish a private test event",
+          );
+          assert.equal((await approvedRaidEvents({}, database)).length, 0);
+          assert.deepEqual(await publicEventSitemap(database), []);
+          await database.foreverRaidDiscordPost.update({
+            where: { eventId },
+            data: { visibility: "community", confirmedAt: new Date() },
+          });
+          const publicSummary = await findPublicEvent(eventId, database);
+          assert.ok(publicSummary);
+          assert.deepEqual(await communityOutcomes(new Date(0), database), {
+            approvedEventsCreated: 1,
+            nativeSignups: 1,
+            signupMembers: 1,
+            repeatSignupMembers: 0,
+            toolOpens: 0,
+            eventStarts: 0,
+            guildContacts: 0,
+            calendarDownloads: 0,
+          });
+          await database.foreverRaidSignup.updateMany({
+            where: { eventId },
+            data: { importSource: { kind: "raid_helper" } },
+          });
+          assert.equal(
+            (await communityOutcomes(new Date(0), database)).nativeSignups,
+            0,
+            "Historical imports are not new product activation",
+          );
+          await database.foreverRaidSignup.updateMany({
+            where: { eventId },
+            data: { importSource: Prisma.DbNull },
+          });
+          for (const field of [
+            "signups",
+            "organizer",
+            "audience",
+            "discordPost",
+            "reserves",
+            "_count",
+            "requestKey",
+            "requestHash",
+          ])
+            assert.equal(field in publicSummary, false, field);
+          for (const data of [
+            { visibility: "private" },
+            { approvedAt: null, approvedBy: null },
+            { origin: "https://other.invalid" },
+            { guildId: "1556000000000000099" },
+            { status: "failed" },
+            { messageId: null, approvedAt: null, approvedBy: null },
+          ]) {
+            const saved =
+              await database.foreverRaidDiscordPost.findUniqueOrThrow({
+                where: { eventId },
+              });
+            await database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data,
+            });
+            assert.equal(
+              await findPublicEvent(eventId, database),
+              null,
+              JSON.stringify(data),
+            );
+            assert.equal((await approvedRaidEvents({}, database)).length, 0);
+            assert.deepEqual(await publicEventSitemap(database), []);
+            await database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data: {
+                confirmedAt: saved.confirmedAt,
+                visibility: saved.visibility,
+                approvedAt: saved.approvedAt,
+                approvedBy: saved.approvedBy,
+                origin: saved.origin,
+                guildId: saved.guildId,
+                status: saved.status,
+                messageId: saved.messageId,
+              },
+            });
+          }
+          await assert.rejects(
+            database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data: { confirmedAt: null },
+            }),
+            /visibility_check/,
+          );
+          assert.equal(
             (await approvedRaidEvents({ activity: "Questing" }, database))[0]
               ?.id,
             eventId,
@@ -782,6 +878,10 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
             (await approvedRaidEvents({ faction: "Horde" }, database)).length,
             0,
           );
+          await database.foreverRaidDiscordPost.update({
+            where: { eventId },
+            data: { visibility: "private", confirmedAt: null },
+          });
           await pollRaidPosts(database, settings, request);
           const slash = {
             ...approval,
@@ -805,7 +905,15 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
           await service.withdraw(members[0], eventId);
           assert.equal(
             (await approvedRaidEvents({}, database)).length,
-            1,
+            0,
+            "Private events stay out of the directory after roster changes",
+          );
+          assert.ok(
+            (
+              await database.foreverRaidDiscordPost.findUniqueOrThrow({
+                where: { eventId },
+              })
+            ).approvedAt,
             "Roster changes retain publication approval",
           );
           await database.foreverRaidEvent.update({

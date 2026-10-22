@@ -74,7 +74,9 @@ export function publicAnalyticsPath(value: string): string | null {
     path.startsWith("//") ||
     path.length > 200 ||
     /[\\\r\n]/.test(path) ||
-    /^\/(admin|api|login|reports\/status|appeals\/status)(\/|$)/.test(path)
+    /^\/(admin|api|login|raids|account|reports\/status|appeals\/status)(\/|$)/.test(
+      path,
+    )
   )
     return null;
   return path;

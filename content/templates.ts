@@ -8,6 +8,21 @@ export interface CommunityTemplate {
 
 export const communityTemplates: CommunityTemplate[] = [
   {
+    slug: "host-availability",
+    title: "Community host availability",
+    text: `Public Discord handle (optional public credit):
+Region / faction / character ruleset:
+Activity or class review you can cover:
+Dates available over the next two weeks:
+Named time zone / start / hard finish:
+Experience and what you have personally tested:
+Newcomers welcome / pace / voice preferences:
+Co-host or moderator help needed:
+Confirmed session URL (leave blank until agreed):
+Private staff contact requested: yes / no
+Permission to publish handle and confirmed schedule: yes / no`,
+  },
+  {
     slug: "guild-recruitment",
     title: "Guild recruitment template",
     text: `Guild name:

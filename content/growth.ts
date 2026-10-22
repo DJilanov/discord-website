@@ -67,7 +67,7 @@ export const preparationGuides: EditorialGuide[] = [
     coverImage: "/images/forever-world.webp",
     content: `Before arranging a WoW Forever beta session, confirm that each player can access the test, install the right client, and agree on one achievable goal. Finding a group does not grant beta access. This is a preparation guide, not a hands-on review or a promise that a particular feature is available.
 
-**Official information checked September 30, 2026.** Blizzard's [beta instructions](https://news.blizzard.com/en-us/article/24304160/the-world-of-warcraft-forever-beta-now-live) say the beta is live. Selected opt-in accounts and eligible bundle purchasers can obtain access; opting in alone is not a guaranteed invitation. The announced final full test day is October 21. Check the linked official page again before making plans.
+**Archived beta checklist — status checked October 22, 2026.** Blizzard's [beta instructions](https://news.blizzard.com/en-us/article/24304160/the-world-of-warcraft-forever-beta-now-live) name October 21 as the last full testing day. That date has passed. The historical preparation steps below are not an invitation to an active test; check Blizzard for any new access announcement. For the announced November 4 launch, use the [launch preparation guide](/guides/wow-forever-launch-group-checklist).
 
 ## Confirm access privately
 
@@ -120,7 +120,7 @@ Preparing for launch rather than testing? Use the [friends and guild launch chec
     coverImage: "/images/forever-hero.webp",
     content: `A shared launch starts with a few clear agreements, not a large roster spreadsheet. Write down where you intend to play, when you can meet, who confirms the final plan and what happens when someone arrives late. This checklist is for several days of coordination; the [group-post template](/guides/find-or-organize-wow-forever-group) is for a single session.
 
-**Official information checked September 30, 2026.** Blizzard's [Forever announcement](https://news.blizzard.com/en-us/article/24302093/carve-a-new-path-with-world-of-warcraft-forever) gives November 4, 2026 as the launch date. Confirm the latest regional timing with Blizzard before committing to a calendar invitation. A community plan does not establish a local launch hour.
+**Official information checked October 22, 2026.** Blizzard's [Forever announcement](https://news.blizzard.com/en-us/article/24302093/carve-a-new-path-with-world-of-warcraft-forever) gives November 4, 2026 as the launch date. Confirm the latest regional timing with Blizzard before committing to a calendar invitation. A community plan does not establish a local launch hour. The beta's announced last full testing day, October 21, has passed; do not schedule a new beta session from an older checklist.
 
 ## Agree on region, character ruleset and faction
 
@@ -145,6 +145,20 @@ Agree on pace, breaks, spoilers and voice expectations. Identify roles people wo
 This is a blank worksheet, not a scheduled community event. Complete it with consenting participants. Downloading it does not publish a listing, reserve a place or create a Discord event.
 
 ${templateMarkdown("launch-group-plan")}
+
+## Worked example: one evening, one shared route
+
+This is an illustrative planning exercise, **not an advertised community session or an invitation**. Five friends choose EU, Alliance and the PvP character ruleset. They agree on a questing evening on November 6, from 19:30 to 22:00 Europe/Berlin. For that date, those times are 18:30–21:00 UTC. Their real organizer would still need to confirm access, starting levels and attendance before publishing anything.
+
+They open the [Human route](https://kfcguild.online/tools/forever/leveling/routes/alliance-human), select the actual class/profile and five-player party, and inspect the chapter they intend to start from. The route is a planning reference, not a claim that all five characters can follow identical class quests or that its full itinerary has been playtested. Each player keeps their own progress; a shared link is not a transfer of a private quest log.
+
+They check which roles and relevant tools their current levels support. If their starting positions differ, they choose a meeting point and a short catch-up plan. A player who arrives late knows whom to contact, and the group stops at the stated finish rather than pressuring everyone to keep up overnight.
+
+When the details become real, the planner's **Host this plan** action opens a native event draft with the route context. The organizer reviews faction, ruleset, activity, capacity, times and admission before submitting. Signing in with Discord preserves the validated planning link; it does not create or approve an event by itself. Members do not choose arbitrary posting channels.
+
+Participants sign up through that event. They can mark themselves Tentative or Absent and change back when plans settle. A signup and a selected roster place are distinct. The host uses one maintained event for updates, and an approved community event can provide a public preview and a calendar snapshot without exposing attendee details.
+
+If login or the route is unavailable, the friends use their agreed fallback: a discussion and a new date. They do not publish a fake dungeon session merely to make a board appear active. Afterward they record one useful correction, with participant permission for any public recap.
 
 ## Rehearse the practical details
 

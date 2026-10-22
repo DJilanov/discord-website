@@ -57,6 +57,28 @@
 .raid-heading p {
   margin-bottom: 6px;
 }
+.raid-source-plan {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 16px;
+  margin-bottom: 24px;
+  border-block: 1px solid var(--line);
+}
+.raid-source-plan > div {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+.raid-source-plan span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.raid-source-plan strong {
+  overflow-wrap: anywhere;
+}
 .raid-main h2,
 .raid-admin h2 {
   font-family: var(--font-sans);

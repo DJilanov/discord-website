@@ -10,7 +10,10 @@ export function pageMetadata(
   return {
     title: title.includes("WoW Forever") ? { absolute: title } : title,
     description,
-    alternates: { canonical: `${SITE_URL}${path}` },
+    alternates: {
+      canonical: `${SITE_URL}${path}`,
+      types: { "application/rss+xml": `${SITE_URL}/updates.xml` },
+    },
     robots: {
       index: INDEXABLE && !noindex,
       follow: true,

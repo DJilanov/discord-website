@@ -2126,6 +2126,28 @@
 .resource-callout > div {
   max-width: 700px;
 }
+.tool-group-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-block: 24px;
+  padding-block: 20px;
+  border-block: 1px solid var(--line);
+}
+.tool-group-context > div {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.tool-group-context h2 {
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+.tool-group-context span {
+  font-size: 12px;
+  color: var(--muted);
+}
 .tester-intro {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -2313,4 +2335,16 @@
   .resource-nav {
     gap: 10px 20px;
   }
+}
+.public-event-heading h1 { font-size: 38px; max-width: 900px; overflow-wrap: anywhere; }
+.public-event-artwork { width: 100%; height: auto; aspect-ratio: 3.2; object-fit: cover; margin: 12px 0 28px; }
+.public-event-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: 36px; }
+.public-event-description { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.75; }
+.public-event-actions { display: grid; gap: 12px; }
+.public-event-actions .button { width: 100%; }
+.public-event .article-aside h2 { font-size: 22px; }
+@media (max-width: 720px) {
+  .public-event-heading h1 { font-size: 30px; }
+  .public-event-artwork { aspect-ratio: 2; }
+  .public-event-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }

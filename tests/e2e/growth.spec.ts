@@ -58,7 +58,7 @@ test("preparation articles and copyable templates work on mobile and desktop", a
       (await page.goto("/guides/wow-forever-beta-starter-checklist"))?.status(),
     ).toBe(200);
     await expect(page.locator("article")).toContainText(
-      "Official information checked September 30, 2026",
+      "status checked October 22, 2026",
     );
     await page.locator("img").evaluateAll(async (images) => {
       for (const image of images) {

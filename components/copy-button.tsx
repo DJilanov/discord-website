@@ -6,10 +6,12 @@ export function CopyButton({
   text,
   label = "Copy link",
   errorMessage = "Clipboard unavailable. Select the displayed link to copy it.",
+  analyticsEvent,
 }: {
   text: string;
   label?: string;
   errorMessage?: string;
+  analyticsEvent?: "guild_contact";
 }): React.JSX.Element {
   const [state, setState] = useState<"idle" | "copied" | "error">("idle");
   async function copy(): Promise<void> {
@@ -22,7 +24,12 @@ export function CopyButton({
   }
   return (
     <span className="copy-control">
-      <button type="button" className="button secondary" onClick={copy}>
+      <button
+        type="button"
+        className="button secondary"
+        onClick={copy}
+        data-analytics-event={analyticsEvent}
+      >
         {state === "copied" ? <Check size={16} /> : <Copy size={16} />}
         {state === "copied" ? "Copied" : label}
       </button>

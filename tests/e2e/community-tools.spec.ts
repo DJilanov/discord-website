@@ -37,7 +37,7 @@ test("tools, tasks and new guides render real assets and fit phone, tablet and d
       ).toBe(true);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       if (path === "/contribute") {
-        await expect(page.locator(".test-task")).toHaveCount(5);
+        await expect(page.locator(".test-task")).toHaveCount(7);
         await page.locator("#collector summary").click();
         await expect(page.locator("#collector")).toContainText(
           "private diagnostic route",
@@ -143,7 +143,7 @@ test("new resources are linked, canonical and included in the sitemap", async ({
   await page.goto("/addons");
   await expect(
     page.getByRole("link", { name: "Open WoW Trader", exact: true }),
-  ).toHaveAttribute("href", "https://kfcguild.online/tools/forever/trader");
+  ).toHaveAttribute("href", "https://helper.kfcguild.online/forever/trader");
   await page.getByRole("link", { name: "Pick an assignment" }).click();
   await expect(page).toHaveURL(/\/contribute$/);
   await page.goto("/lfg/new");
