@@ -2,17 +2,30 @@ import "./env";
 import { db } from "../lib/db";
 import {
   canRefreshEditorialGuide,
+  canRefreshDraftGuide,
+  canPublishStarterGuide,
   editorialPublicationData,
 } from "../lib/editorial-publication";
 import { editorialGuides } from "../content/editorial";
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  if (args.some((arg) => arg !== "--dry-run"))
-    throw new Error("Usage: npm run content:publish-editorial -- [--dry-run]");
+  if (args.some((arg) => !["--dry-run", "--publish-starters"].includes(arg)))
+    throw new Error(
+      "Usage: npm run content:publish-editorial -- [--dry-run] [--publish-starters]",
+    );
   const dryRun = args.includes("--dry-run");
-  const result = { created: 0, drafts: 0, updated: 0, preserved: 0 };
-  const sources = editorialGuides.map(editorialPublicationData);
+  const publishStarters = args.includes("--publish-starters");
+  const result = {
+    created: 0,
+    drafts: 0,
+    updated: 0,
+    published: 0,
+    preserved: 0,
+  };
+  const sources = editorialGuides.map((source) =>
+    editorialPublicationData(source, { publishStarters }),
+  );
   for (const data of sources) {
     const outcome = await db.$transaction(
       async (tx): Promise<keyof typeof result> => {
@@ -26,17 +39,34 @@ async function main(): Promise<void> {
           });
           return data.published ? "created" : "drafts";
         }
+        const source = editorialGuides.find(
+          (source) => source.slug === data.slug,
+        )!;
+        const publication =
+          publishStarters && canPublishStarterGuide(existing, source);
         if (
-          !canRefreshEditorialGuide(existing) ||
-          (existing.title === data.title &&
-            existing.excerpt === data.excerpt &&
-            existing.content === data.content)
+          !publication &&
+          (!(
+            canRefreshEditorialGuide(existing) ||
+            canRefreshDraftGuide(existing, source)
+          ) ||
+            (existing.title === data.title &&
+              existing.excerpt === data.excerpt &&
+              existing.content === data.content))
         )
           return "preserved";
-        if (dryRun) return "updated";
+        if (dryRun) return publication ? "published" : "updated";
         const update = await tx.foreverGuide.updateMany({
-          where: { id: existing.id, updatedAt: existing.updatedAt },
+          where: {
+            id: existing.id,
+            updatedAt: existing.updatedAt,
+            published: existing.published,
+            publishedAt: existing.publishedAt,
+          },
           data: {
+            ...(publication
+              ? { published: true, publishedAt: new Date() }
+              : {}),
             title: data.title,
             excerpt: data.excerpt,
             content: data.content,
@@ -55,12 +85,16 @@ async function main(): Promise<void> {
                 : existing.metaDescription,
           },
         });
-        return update.count ? "updated" : "preserved";
+        return update.count
+          ? publication
+            ? "published"
+            : "updated"
+          : "preserved";
       },
     );
     result[outcome] += 1;
   }
-  console.log(JSON.stringify({ dryRun, ...result }));
+  console.log(JSON.stringify({ dryRun, publishStarters, ...result }));
 }
 
 main()

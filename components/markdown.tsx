@@ -6,15 +6,21 @@ import { getArtwork } from "@/content/artwork";
 import { isValidElement } from "react";
 import { CopyButton } from "@/components/copy-button";
 import { canonicalToolHref } from "@/content/tool-links";
+import { ClassGuide } from "@/components/class-guide";
+import { getClassGuide } from "@/content/class-guides";
 
 export function Markdown({
   children,
   contents = false,
   editorial = false,
+  classGuideAssetBase,
+  linkBaseUrl,
 }: {
   children: string;
   contents?: boolean;
   editorial?: boolean;
+  classGuideAssetBase?: string;
+  linkBaseUrl?: string;
 }): React.JSX.Element {
   return (
     <div className="prose">
@@ -23,6 +29,22 @@ export function Markdown({
         skipHtml
         components={{
           pre: ({ children }) => {
+            if (
+              editorial &&
+              isValidElement<{ className?: string; children?: unknown }>(
+                children,
+              ) &&
+              children.props.className === "language-class-guide" &&
+              typeof children.props.children === "string" &&
+              getClassGuide(children.props.children.trim())
+            ) {
+              return (
+                <ClassGuide
+                  guideKey={children.props.children.trim()}
+                  assetBase={classGuideAssetBase}
+                />
+              );
+            }
             const text =
               editorial &&
               isValidElement<{ className?: string; children?: unknown }>(
@@ -46,7 +68,11 @@ export function Markdown({
           },
           a: ({ href, children }) => {
             // Stored guides may predate the move; preserve editor content in storage.
-            const canonicalHref = href ? canonicalToolHref(href) : href;
+            const canonical = href ? canonicalToolHref(href) : href;
+            const canonicalHref =
+              linkBaseUrl && canonical?.startsWith("/")
+                ? new URL(canonical, linkBaseUrl).href
+                : canonical;
             return (
               <a
                 href={canonicalHref}

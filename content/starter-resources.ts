@@ -11,14 +11,34 @@ export const starterResources: EditorialGuide[] = [
   {
     release: "draft",
     slug: "wow-forever-feral-tank-starter-kit",
-    title: "WoW Forever Feral Tank Starter Kit",
+    title: "WoW Forever Feral Tank Guide: Talents and Combat Priorities",
     excerpt:
-      "Prepare a bear tank for a first group: role, build evidence, rage checks, pull communication and a reproducible review worksheet.",
+      "Understand bear talents, rage management, single-target and pack priorities, defensive cooldowns and the decisions behind a first dungeon pull.",
     category: "Getting started",
     coverImage: "/images/forever-world.webp",
-    content: `A useful first bear-tank session starts with a group that understands your level, tools and experience. This starter kit prepares that conversation. It is not a best-in-slot list, a complete rotation or a claim that a particular build has cleared live Forever content.
+    content: `A good bear tank controls the next few seconds: which enemy is dangerous, where the party should stand and how much rage the next response needs. This guide connects talent choices to the pull instead of presenting an unexplained list of buttons. The combat priorities are draft recommendations, not a tested best-in-slot build or an optimal damage simulation.
 
 **Source check: October 22, 2026. Gameplay review pending.** Read Blizzard's [Druid deep dive](https://news.blizzard.com/en-us/article/24301515/world-of-warcraft-forever-class-deep-dives-hunter-and-druid) together with the [October 15 tuning notes](${tuningSource}). Later tuning takes precedence over older previews. The beta's announced final full test day was October 21; arrange a future test only when official access is available.
+
+## Talents and combat priorities
+
+\`\`\`class-guide
+feral-tank
+\`\`\`
+
+## How to read the bear rotation
+
+An opener establishes a target; a priority decides what to do when the pull changes. They are not the same thing. On a simple pull, let the group gather, establish contact and keep the enemy positioned so the party can follow its kill order. Once threat is stable, maintain the effects that are still useful and spend spare rage without removing your ability to react.
+
+Maul is a next-melee commitment. Repeatedly queuing it while rage is scarce can make the rest of the kit feel unavailable. If a loose enemy needs attention, recover that enemy before adding more threat to the one already attacking you. When you have Primal Bite, give that actual threat decision room in the resource budget. Lacerate belongs to a later progression stage and a target that will survive its setup; it should not appear in a level-18 opener.
+
+For several enemies, count the targets you actually control. Swipe's recorded coverage is three nearby enemies, not every creature visible on screen. A fourth or late-arriving enemy still needs a target decision. Avoid rotating attacks through a marked control target simply to make the damage meter look balanced.
+
+## Build for the problem you are solving
+
+For an early bear, compare cost reduction, health and the defensive tools available now. Later, evaluate active threat talents and resource interactions against the pulls you actually host. A deep-tree talent cannot solve a level-15 problem today, and a chance-based rage return should not be spent in your plan before it occurs.
+
+When comparing equipment, separate maximum health, physical mitigation, avoidance and threat. They answer different questions. There is no universal percentage improvement that turns a little more damage into the same amount of survival. Record a concrete before/after equipment change and what kind of incoming damage the comparison represents.
 
 ## Describe the tank you are bringing
 
@@ -57,14 +77,34 @@ Use the [guide-review assignment](/contribute#class-review) to propose a correct
   {
     release: "draft",
     slug: "wow-forever-protection-paladin-starter-kit",
-    title: "WoW Forever Protection Paladin Starter Kit",
+    title: "WoW Forever Protection Paladin Guide: Talents and Rotation",
     excerpt:
-      "Prepare your first Protection Paladin group with version-aware seals, mana checks, control assignments and explicit loot expectations.",
+      "Explore Protection talents, Seal of Fury, Judgement recovery, mana planning, single-target priorities and controlled multi-target pulls.",
     category: "Getting started",
     coverImage: "/images/forever-adventure.webp",
     content: `Protection Paladin preparation is more than picking a tank icon. Your group needs to know which tools your character has learned, how you will recover between pulls and who handles jobs outside your toolkit. Use this kit for a first session or a focused class review, not as a claimed endgame ranking.
 
 **Source check: October 22, 2026. Gameplay review pending.** Start with Blizzard's [Paladin deep dive](https://news.blizzard.com/en-us/article/24302099/world-of-warcraft-forever-class-deep-dives-paladin) and the [October 15 tuning notes](${tuningSource}). The article contains prospective changes as well as current descriptions; compare dates and your actual client. Do not assume a paragraph marked for a future build has already shipped.
+
+## Talents and combat priorities
+
+\`\`\`class-guide
+protection-paladin
+\`\`\`
+
+## Understand the tanking loop
+
+Before the pull, check the tanking buff, active seal and shield. After contact, ask whether the next action is needed for threat, recovery or survival. These jobs can share a button but not the same target or timing. A Judgement used to recover a loose enemy has a different purpose from spending a damage opportunity on the first kill target.
+
+Do not copy a re-seal-after-every-Judgement habit from a different version: the archived Forever tooltip explicitly says the seal is not consumed. Changing a seal should be a decision with an intended effect. Check the seal you have now before relying on its Judgement to taunt.
+
+For a pack, place Consecration where the enemies will remain, not where you first saw them. Its stronger recorded effect goes to the first four entrants. That is a reason to plan a controlled pack, not advertise unlimited threat on a room full of enemies. Keep the priority target and any loose caster visible while the ground effect is running.
+
+## Budget mana before the emergency
+
+A sustainable pull is not the sum of every theoretical maximum mana return. Blocks, shield consumption, enemy behavior and time between triggers affect what actually happens. Record optional damage casts separately from the actions you needed to hold the pull. If the next taunt interaction or defensive action would become unaffordable, cut optional spending before the emergency arrives.
+
+Plan defensive cooldowns around their actual duration and restrictions. Forbearance must be part of the conversation before someone promises one defensive immediately after another. Tell the healer which window you intend to cover; an absorption shield is not an indefinite replacement for healing.
 
 ## Tell the group what is available now
 
@@ -107,14 +147,36 @@ The [class-review assignment](/contribute#class-review) provides the reporting p
   {
     release: "draft",
     slug: "wow-forever-mage-dungeon-starter-kit",
-    title: "WoW Forever Mage Dungeon Starter Kit",
+    title: "WoW Forever Mage Dungeon Guide: Talents and Rotations",
     excerpt:
-      "Prepare a Mage for a first Forever dungeon: current talents, control assignments, mana breaks and a useful build-comparison report.",
+      "Learn why Mage talents matter, compare Frost, Fire and Arcane priorities, manage procs and mana, and protect the party's control plan.",
     category: "Getting started",
     coverImage: "/images/forever-world.webp",
     content: `A Mage can help a new dungeon party by making its plan easier to execute, not just by chasing a larger damage number. Start with the tools your character has today, an agreed target and a clear control assignment. This preparation kit does not prescribe a universal leveling tree or claim a complete live-game test.
 
 **Source check: October 22, 2026. Gameplay review pending.** Read Blizzard's [Mage and Shaman deep dive](https://news.blizzard.com/en-us/article/24302097/world-of-warcraft-forever-class-deep-dives-mage-and-shaman) and the [October 15 tuning notes](${tuningSource}). They document changing Arcane, Fire and Frost mechanics. A familiar Classic spell name is not enough to assume its old behavior remains unchanged.
+
+## Talents and combat priorities
+
+\`\`\`class-guide
+mage-dungeon
+\`\`\`
+
+## Turn a rotation into decisions
+
+A dungeon target is not an endless training target. Before a setup cast, ask whether the enemy will survive long enough, whether movement is imminent and whether a party responsibility needs your next action. A completed useful cast is worth more than an attractive sequence that repeatedly ends after the target dies.
+
+For Frost, distinguish a slow from the condition that lets a spell treat an enemy as frozen. Check the actual proc or effect before assuming an empowered Ice Lance window. A root you can apply to a normal enemy does not prove that a boss can be immobilized. Keep the current Winter's Chill interaction separate from the older shared critical-strike debuff.
+
+For Arcane, inspect both the benefit and the increasing cost of Arcane Blast. The archived stack window runs from its initial application; adding another cast is not a reason to assume a fresh full timer. Use only as much setup as your mana and the target's remaining life justify. A Missile Barrage opportunity still requires a safe channel window.
+
+For Fire, read the current Heating Up charges and the cast time they actually produce. Do not import a guaranteed instant Pyroblast expectation from another expansion. Maintaining personal Fire effects can be useful for the relevant allocation, but a short-lived target may die before the setup pays back its time and mana.
+
+## Control is part of the damage plan
+
+Agree on a Polymorph target and keep area effects away from it. Name an interruption order when several players can cover a dangerous cast. Your responsibility does not disappear because a proc or damage cooldown is active.
+
+When a pack breaks formation, choose a recoverable position instead of scattering enemies farther away. Announce an emergency root or immunity so the tank and healer can react. A rooted enemy can still threaten someone beside it, and an immune Mage cannot continue the same cast sequence while encased in Ice Block.
 
 ## Choose a role for this session
 

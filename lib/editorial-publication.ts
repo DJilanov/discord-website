@@ -7,17 +7,22 @@ import {
   preOctober7Guides,
 } from "@/content/editorial";
 import { preOctober22Fingerprints } from "@/content/editorial-october22-history";
+import { preInteractiveStarterFingerprints } from "@/content/starter-resource-history";
 import type { EditorialGuide } from "@/content/guides";
 import { guideSchema } from "@/lib/validation";
 import type { z } from "zod";
 
 export function editorialPublicationData(
   source: EditorialGuide,
+  options: { publishStarters?: boolean } = {},
 ): z.infer<typeof guideSchema> {
   return guideSchema.parse({
     ...source,
     author: "Open source contributors",
-    published: source.release !== "draft",
+    published:
+      source.release !== "draft" ||
+      (options.publishStarters === true &&
+        Object.hasOwn(preInteractiveStarterFingerprints, source.slug)),
     metaTitle: source.title,
     metaDescription: source.excerpt,
   });
@@ -36,6 +41,41 @@ export function editorialFingerprint(
       }),
     )
     .digest("hex");
+}
+
+export function canRefreshDraftGuide(
+  guide: Pick<
+    ForeverGuide,
+    "slug" | "title" | "excerpt" | "content" | "published" | "publishedAt"
+  >,
+  source: EditorialGuide,
+): boolean {
+  return (
+    source.release === "draft" &&
+    source.slug === guide.slug &&
+    !guide.published &&
+    guide.publishedAt === null &&
+    preInteractiveStarterFingerprints[guide.slug] ===
+      editorialFingerprint(guide)
+  );
+}
+
+export function canPublishStarterGuide(
+  guide: Pick<
+    ForeverGuide,
+    "slug" | "title" | "excerpt" | "content" | "published" | "publishedAt"
+  >,
+  source: EditorialGuide,
+): boolean {
+  return (
+    source.release === "draft" &&
+    source.slug === guide.slug &&
+    Object.hasOwn(preInteractiveStarterFingerprints, guide.slug) &&
+    !guide.published &&
+    guide.publishedAt === null &&
+    (canRefreshDraftGuide(guide, source) ||
+      editorialFingerprint(guide) === editorialFingerprint(source))
+  );
 }
 
 export function canRefreshStarterGuide(

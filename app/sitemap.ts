@@ -5,13 +5,14 @@ import { SITE_URL } from "@/lib/config";
 import { researchTopics } from "@/content/research";
 import { getForeverObservatory, getRecruitmentCensus } from "@/lib/research";
 import { publicEventSitemap } from "@/lib/raids/public-events";
+import { guideSitemapEntries, latestGuideRevision } from "@/lib/guide-sitemap";
 
 export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [guides, guilds, observatory, census, events] = await Promise.all([
     db.foreverGuide.findMany({
       where: { published: true },
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, updatedAt: true, published: true },
       take: 20000,
     }),
     db.foreverGuild.findMany({
@@ -51,26 +52,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "transparency",
     ...Object.keys(pages),
   ];
+  const guideRevision = latestGuideRevision(guides);
   return [
     ...staticPaths.map((path) => ({
       url: `${SITE_URL}/${path}`,
-      ...(path === "research" && researchModified
-        ? { lastModified: researchModified }
-        : path.startsWith("research/")
-          ? {
-              lastModified:
-                path === "research/recruitment"
-                  ? (census.dataAsOf ?? undefined)
-                  : path === "research/economy"
-                    ? (observatory?.market.scan?.completedAt ?? catalogModified)
-                    : catalogModified,
-            }
-          : {}),
+      ...(path === "guides" && guideRevision
+        ? { lastModified: guideRevision }
+        : path === "research" && researchModified
+          ? { lastModified: researchModified }
+          : path.startsWith("research/")
+            ? {
+                lastModified:
+                  path === "research/recruitment"
+                    ? (census.dataAsOf ?? undefined)
+                    : path === "research/economy"
+                      ? (observatory?.market.scan?.completedAt ??
+                        catalogModified)
+                      : catalogModified,
+              }
+            : {}),
     })),
-    ...guides.map((guide) => ({
-      url: `${SITE_URL}/guides/${guide.slug}`,
-      lastModified: guide.updatedAt,
-    })),
+    ...guideSitemapEntries(guides),
     ...guilds.map((guild) => ({
       url: `${SITE_URL}/guilds/${guild.slug}`,
       lastModified: guild.updatedAt,

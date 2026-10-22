@@ -76,6 +76,12 @@ export default async function GuidePage({
           : [
                 "find-or-organize-wow-forever-group",
                 "clear-loot-rules-better-groups",
+                "wow-forever-feral-tank-starter-kit",
+                "wow-forever-protection-paladin-starter-kit",
+                "wow-forever-mage-dungeon-starter-kit",
+                "wow-forever-hall-of-thanes-group-preparation",
+                "wow-forever-ruins-of-lordaeron-group-preparation",
+                "wow-forever-excavation-site-group-preparation",
               ].includes(guide.slug)
             ? { href: "/lfg", label: "Find your next group" }
             : { href: "/discord", label: "Explore the Discord" };

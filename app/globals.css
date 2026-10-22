@@ -1,3 +1,6 @@
+@import "../components/class-guide.css";
+@import "../components/guide-library.css";
+
 :root {
   --bg: #0c0d10;
   --bg-deep: #08090b;
