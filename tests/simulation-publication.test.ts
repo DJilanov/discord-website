@@ -10,7 +10,7 @@ import {
   editorialFingerprint,
 } from "../lib/editorial-publication";
 
-test("nine distinct class guides and one tier list validate as private sources until explicitly published", () => {
+test("nine distinct class guides and one comparison guide validate as private sources until explicitly published", () => {
   assert.equal(simulationGuideSlugs.length, 9);
   assert.equal(simulationGuides.length, 10);
   assert.equal(new Set(simulationGuides.map((guide) => guide.slug)).size, 10);

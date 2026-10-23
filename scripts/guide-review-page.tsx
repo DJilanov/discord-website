@@ -71,13 +71,7 @@ export function GuideReviewPage({
           }
         />
       )}
-      <div
-        className={
-          slug === "wow-forever-dps-tier-list"
-            ? "review-reader-layout tier-list-layout"
-            : "review-reader-layout"
-        }
-      >
+      <div className="review-reader-layout">
         <article>
           <Markdown
             contents

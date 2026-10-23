@@ -150,8 +150,63 @@ test("offline controls point to separately rendered scenarios, and the article d
   assert.equal(html(".sim-scenario-nav a").last().attr("href"), "solo.html");
   const article = simulationGuides.find((guide) => guide.slug === dpsTierSlug);
   assert(article);
-  assert(article.title.includes("Solo and Raid"));
+  assert(article.title.includes("Solo vs Raid"));
   assert(article.content.includes("210,000"));
   assert(article.content.includes("eight classes"));
   assert(article.content.includes("not separately optimized solo rotations"));
+});
+
+test("the community explainer retains its URL and points to KFC without repeating the ranking board", () => {
+  const article = simulationGuides.find((guide) => guide.slug === dpsTierSlug);
+  assert(article);
+  assert.equal(article.slug, "wow-forever-dps-tier-list");
+  assert(!article.title.includes("Tier List"));
+  const html = load(
+    renderToStaticMarkup(<Markdown editorial>{article.content}</Markdown>),
+  );
+  assert.equal(html("[data-tier-build]").length, 0);
+  assert.equal(html("[data-tier-scenario]").length, 0);
+  for (const path of [
+    "/tools/forever/tier-list",
+    "/tools/forever/tier-list/solo",
+  ])
+    assert(html(`a[href='https://kfcguild.online${path}']`).length > 0);
+  assert(
+    article.content.includes(
+      tierScenarios.solo.entries
+        .find((row) => row.id === "fury-horde")!
+        .dps.toFixed(2),
+    ),
+  );
+  assert(
+    article.content.includes(
+      tierScenarios.raid.entries
+        .find((row) => row.id === "fury-horde")!
+        .dps.toFixed(2),
+    ),
+  );
+});
+
+test("all nine class guides link directly to both canonical rankings with the publication boundary intact", () => {
+  const guides = simulationGuides.filter((guide) => guide.slug !== dpsTierSlug);
+  assert.equal(guides.length, 9);
+  for (const guide of guides) {
+    const html = load(
+      renderToStaticMarkup(<Markdown editorial>{guide.content}</Markdown>),
+    );
+    for (const path of [
+      "/tools/forever/tier-list",
+      "/tools/forever/tier-list/solo",
+    ])
+      assert.equal(
+        html(`a[href='https://kfcguild.online${path}']`).length,
+        1,
+        guide.slug,
+      );
+    assert(html(`a[href='/guides/${dpsTierSlug}']`).length > 0);
+    if (guide.slug.includes("paladin"))
+      assert(
+        guide.content.includes("Paladin research builds are not included"),
+      );
+  }
 });

@@ -149,13 +149,7 @@ export default async function GuidePage({
           />
         </div>
       )}
-      <div
-        className={
-          guide.slug === dpsTierSlug
-            ? "article-layout tier-list-layout"
-            : "article-layout"
-        }
-      >
+      <div className="article-layout">
         <article>
           <Markdown contents editorial tierScenario={scenario}>
             {guide.content}
