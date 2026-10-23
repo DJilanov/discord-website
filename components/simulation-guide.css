@@ -267,15 +267,43 @@
   flex-wrap: wrap;
   gap: 8px 22px;
   font-size: 12px;
-  color: var(--gold);
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 16px;
+  color: var(--muted);
+  padding-top: 18px;
+}
+.sim-board-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.prose .sim-board-heading h3 {
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 28px;
+  color: #e9c980;
+  margin: 5px 0 0;
+  text-wrap: balance;
+}
+.sim-board-heading .sim-eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.sim-board-sample {
+  text-align: right;
+  color: var(--muted);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.sim-board-sample strong {
+  display: block;
+  font-size: 21px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }
 .sim-tier-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 170px;
   gap: 12px;
-  margin: 22px 0;
+  margin: 20px 0 10px;
 }
 .sim-search {
   position: relative;
@@ -301,38 +329,242 @@
 .sim-tier-controls input {
   padding-left: 38px;
 }
-.sim-tier-bands {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  border-block: 1px solid var(--line);
-}
-.sim-band {
-  display: flex;
-  flex-direction: column;
-  padding: 14px 10px;
-  gap: 4px;
-}
-.sim-band strong {
-  font-size: 23px;
-}
-.sim-band span {
-  color: var(--muted);
-  font-size: 10px;
-}
 .sim-band-S {
-  color: #f4b5b8;
+  --sim-tier-color: #ff8585;
 }
 .sim-band-A {
-  color: #e8ca85;
+  --sim-tier-color: #ffc285;
 }
 .sim-band-B {
-  color: #9bd0af;
+  --sim-tier-color: #f5dd80;
 }
 .sim-band-C {
-  color: #9ac6f2;
+  --sim-tier-color: #cce77e;
 }
 .sim-band-D {
-  color: #c6b3e5;
+  --sim-tier-color: #8cdaa2;
+}
+.sim-tier-board {
+  border: 1px solid #45433e;
+  border-radius: 5px;
+  background: #18191b;
+}
+.sim-tier-row {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr);
+  min-height: 126px;
+}
+.sim-tier-row + .sim-tier-row {
+  border-top: 2px solid #101113;
+}
+.sim-tier-label {
+  background: var(--sim-tier-color);
+  color: #191b1b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.sim-tier-row:first-child .sim-tier-label {
+  border-top-left-radius: 4px;
+}
+.sim-tier-row:last-child .sim-tier-label {
+  border-bottom-left-radius: 4px;
+}
+.sim-tier-label strong {
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 32px;
+  line-height: 1;
+}
+.sim-tier-label small {
+  font-size: 10px;
+  font-weight: 600;
+}
+.sim-tier-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  min-width: 0;
+}
+.sim-tier-entry {
+  width: 88px;
+  flex-shrink: 0;
+}
+.sim-tier-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 116px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.sim-tile-art {
+  position: relative;
+  display: block;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border: 1px solid #62605a;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px #0008;
+  transition:
+    border-color 120ms,
+    box-shadow 120ms;
+}
+.sim-tile-art > img:first-child {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.sim-tile-art > .sim-tile-class {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--sim-class);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px #000;
+}
+.sim-tile-dps {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  position: absolute;
+  inset: auto 0 0;
+  border-top: 1px solid #ffffff26;
+  border-radius: 0 0 2px 2px;
+  background: #080a0df2;
+  color: #fff;
+  padding: 3px 1px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+.sim-tile-dps strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+.sim-tile-dps small {
+  font-size: 8px;
+  color: #c4c7cd;
+}
+.sim-tile-name {
+  color: #e9e9e7;
+  font-size: 11px;
+  line-height: 1.35;
+  margin-top: 7px;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.sim-tile-variant {
+  color: #b7bac0;
+  font-size: 9px;
+  line-height: 1.35;
+}
+.sim-tier-tile[aria-pressed="true"] .sim-tile-art,
+.sim-tier-tile:hover .sim-tile-art {
+  border-color: var(--sim-class);
+  box-shadow:
+    0 0 0 2px var(--sim-class),
+    0 3px 10px #0009;
+}
+.sim-tier-tile[aria-pressed="true"] .sim-tile-name {
+  color: var(--sim-class);
+}
+.sim-tier-empty {
+  color: #a8abb1;
+  font-size: 11px;
+  align-self: center;
+  padding: 20px 0;
+}
+.sim-build-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+.sim-preview-identity {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex: 1;
+  min-width: 0;
+}
+.sim-preview-identity img {
+  flex-shrink: 0;
+  border: 1px solid var(--sim-class);
+  border-radius: 3px;
+}
+.sim-preview-identity strong {
+  font-size: 14px;
+  color: var(--sim-class);
+  overflow-wrap: anywhere;
+}
+.sim-build-preview small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.sim-preview-result {
+  text-align: right;
+  flex-shrink: 0;
+}
+.sim-preview-result > strong {
+  color: var(--text);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.sim-preview-result > strong > small {
+  display: inline;
+  font-size: 10px;
+}
+.prose .sim-build-preview > a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  color: var(--gold);
+  font-size: 12px;
+  text-decoration: none;
+}
+.sim-ranking-details {
+  border-block: 1px solid var(--line);
+  margin: 20px 0;
+}
+.sim-ranking-details > summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  list-style: none;
+  cursor: pointer;
+  min-height: 50px;
+  font-size: 13px;
+  color: var(--gold);
+}
+.sim-ranking-details > summary::-webkit-details-marker {
+  display: none;
+}
+.sim-details-chevron {
+  margin-left: auto;
+}
+.sim-ranking-details[open] .sim-details-chevron {
+  transform: rotate(180deg);
 }
 .prose .simulation-guide .sim-result-count {
   font-size: 12px;
@@ -422,6 +654,7 @@
   padding-top: 6px;
 }
 .sim-tier-letter {
+  color: var(--sim-tier-color);
   font-size: 18px;
   font-weight: 700;
 }
@@ -433,6 +666,66 @@
   outline-offset: 4px;
 }
 @media (max-width: 650px) {
+  .prose .sim-board-heading h3 {
+    font-size: 23px;
+  }
+  .sim-board-sample {
+    display: none;
+  }
+  .sim-tier-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    min-height: 112px;
+  }
+  .sim-tier-label strong {
+    font-size: 26px;
+  }
+  .sim-tier-tiles {
+    padding: 12px 10px;
+    gap: 12px 8px;
+  }
+  .sim-tier-entry {
+    width: 80px;
+  }
+  .sim-tier-tile {
+    min-height: 98px;
+  }
+  .sim-tile-art {
+    width: 72px;
+    height: 72px;
+  }
+  .sim-tile-art > .sim-tile-class {
+    width: 19px;
+    height: 19px;
+  }
+  .sim-tile-name {
+    font-size: 10px;
+  }
+  .sim-tile-dps strong {
+    font-size: 14px;
+  }
+  .sim-tile-dps small {
+    font-size: 7px;
+  }
+  .sim-tile-variant {
+    font-size: 8px;
+  }
+  .sim-build-preview {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .sim-preview-identity strong {
+    font-size: 12px;
+  }
+  .sim-preview-result > strong {
+    font-size: 16px;
+  }
+  .sim-build-preview > a {
+    flex-basis: 100%;
+  }
+  .sim-tier-facts {
+    gap: 6px 16px;
+    font-size: 10px;
+  }
   .sim-build-metrics {
     grid-template-columns: 1fr;
     gap: 12px;

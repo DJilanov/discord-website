@@ -133,3 +133,28 @@ deployment. Publication does not establish live-game balance, first-page Google
 rankings, an AI recommendation, gameplay review or completed community activity.
 
 Detailed local evidence: `artifacts/simulation-guides-20261023`.
+
+## Visual Tier Board Revision
+
+The ranking now opens as a coloured S–D board, using local spec artwork,
+class badges and each build's exact one-decimal benchmark DPS at the bottom
+of its icon. Selecting a tile exposes its class, allocation, rank, measurement
+date and sampling error. Its guide link selects the same build through a
+validated `#build-<id>` fragment; unknown or cross-class fragments cannot
+select another build.
+
+Search and class filters retain the original global ranks and thresholds.
+The complete server-rendered DPS table remains under an expandable summary;
+no measurement, ranking policy, saved settings, source content or publication
+date changes. This is a website-only presentation revision, not a new
+simulation or database publication.
+
+Focused tests verify all 25 placements, icon assets, DPS ribbons, preview paths
+and fragment targets. Browser checks cover six widths from 320px to 1440px,
+all 25 selections at each width, all nine class filters, keyboard selection,
+empty states, the expandable table and all 25 exact-build guide links. Scoped
+accessibility checks cover desktop and two phone widths. Release receipts and
+screenshots are retained in `artifacts/simulation-tier-board-20261023`.
+The revision's isolated full suite passed 381 tests; production compilation,
+strict TypeScript and scoped ESLint also passed. The temporary test database
+cluster and SSH forward were stopped after verification.
