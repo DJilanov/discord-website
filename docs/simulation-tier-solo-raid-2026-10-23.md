@@ -27,12 +27,28 @@ update. `--rollback-backup=/absolute/private.json` restores that article only wh
 the published revision and SEO metadata still match this release. Concurrent or
 unrecognized editorial changes are refused. Other guides remain untouched.
 
-Local checks passed 389 community tests with an isolated PostgreSQL database, strict
-TypeScript, scoped ESLint and 17 focused evidence/publication tests after the final
-metadata guard. Browser checks passed both modes at 1440, 390 and 320 pixels,
+Local checks passed 393 community tests after rebasing onto the current sign-in and
+OAuth-header fixes, with isolated PostgreSQL, strict TypeScript and scoped ESLint.
+Browser checks passed both modes at 1440, 390 and 320 pixels,
 including filters, image loading, mode history and exact links. Public Fury imports
 reproduced 416.68 Solo and 839.87 Raid DPS at the recorded sampling settings.
 
-Publication requires committed/pushed source, an isolated Linux build and candidate
-and public browser checks. This document records implementation and local evidence;
-deployment receipts record the actual activated commits and article backup.
+The committed/pushed application release `c8ad9cab901f6a761ad7917b675f56410d2c0684`
+was built on Linux and activated with Helper `e1b02de4eaa46717b8136b2e26e30e29c27fe9cf`.
+Candidate and public checks each passed all 12 ranking cases. Public SSR, canonicals,
+indexability, Helper JSON-LD and sitemap checks passed; a 13-page/127-asset sweep
+included both site homes, simulators and existing recipe icons. The article update
+preserved all 26 other guides and its own category, author, cover, visibility and
+publication date. No new numerical engines were published.
+
+An initial publication attempt could not traverse the private audit directory and
+safely restored the previous website without changing the article. The guarded CLI
+then ran as the deployment operator, preserving private permissions and the
+unprivileged website runtime. The article backup is root-owned mode 0600. Owned
+candidates and the isolated local database were stopped after verification.
+
+Private deployment receipts and rollback are under
+`/home/wow-forever-discord-release-audit/tier-solo-raid-20261023-c8ad9ca/`.
+From that directory, `node control.mjs --rollback` restores the article and previous
+website only while their current identities still match this release. The separate
+documentation follow-up does not change the deployed application commit above.
