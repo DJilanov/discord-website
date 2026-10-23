@@ -414,7 +414,10 @@ export function SimulationTierList({
           <div key={tier} className={`sim-band sim-band-${tier}`}>
             <strong>{tier}</strong>
             <span>
-              {visible.filter((build) => build.tier === tier).length} builds
+              {visible.filter((build) => build.tier === tier).length}{" "}
+              {visible.filter((build) => build.tier === tier).length === 1
+                ? "build"
+                : "builds"}
             </span>
           </div>
         ))}
@@ -432,7 +435,9 @@ export function SimulationTierList({
           </caption>
           <thead>
             <tr>
-              <th scope="col">Rank</th>
+              <th scope="col" aria-label="Rank">
+                #
+              </th>
               <th scope="col">Build / class</th>
               <th scope="col">DPS</th>
               <th scope="col">Tier</th>

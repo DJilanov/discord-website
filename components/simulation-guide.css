@@ -362,6 +362,19 @@
   font-size: 10px;
   color: var(--muted);
   background: transparent;
+  white-space: nowrap;
+}
+.public-site .prose .sim-ranking-table tbody th {
+  background: transparent;
+  text-transform: none;
+  font-size: 14px;
+}
+.public-site .prose .sim-ranking-table .sim-rank-name {
+  text-decoration: none;
+  color: var(--text);
+}
+.public-site .prose .sim-ranking-table .sim-rank-name:hover {
+  color: var(--gold);
 }
 .sim-ranking-table th:first-child,
 .sim-ranking-table td:first-child {
@@ -465,7 +478,7 @@
   }
   .sim-ranking-table th:last-child,
   .sim-ranking-table td:last-child {
-    width: 28px;
+    width: 36px;
   }
   .sim-ranking-table .sim-measured {
     font-size: 9px;
