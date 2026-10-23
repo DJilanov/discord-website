@@ -44,6 +44,13 @@ protects callback codes and cookies and stops before fictitious publication.
 
 ## Limits
 
+The public check also exposed an HTTP 502 on sign-in with the larger Alliance
+reference. The proxy error log confirmed an upstream response-header overflow:
+the callback, state and PKCE cookies exceeded Nginx's default header buffer.
+The scoped proxy configuration increases that buffer to 16 KiB with matching
+buffer limits. Streamed response buffering remains off, and body limits, TLS,
+canonical host, cookies and application auth validation are unchanged.
+
 A simulated Discord identity is not evidence that a real person's provider
 account completed authorization. Browser checks also do not establish guide
 gameplay accuracy, attendance, a host commitment or search-result growth. Those
