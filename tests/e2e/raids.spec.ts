@@ -9,6 +9,7 @@ import {
 import AxeBuilder from "@axe-core/playwright";
 import { encode } from "next-auth/jwt";
 import { mkdir, readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { randomBytes, randomUUID } from "node:crypto";
 import { hash } from "bcryptjs";
 import { z } from "zod";
@@ -28,8 +29,146 @@ import {
 } from "../../lib/raids/specializations";
 import { eventTypes, eventTypeDefinitions } from "../../lib/raids/event-types";
 import { raidHelperFixture } from "../fixtures/raid-helper";
-import { raidService } from "../../lib/raids/service";
-import { toolGroupCreatePath } from "../../lib/tool-group-draft";
+import {
+  toolGroupCreatePath,
+  toolGroupDraftSchema,
+  toolGroupEventType,
+} from "../../lib/tool-group-draft";
+
+test("ordinary member OAuth roundtrip preserves tool plans and never grants channel selection", async ({
+  page,
+  context,
+}) => {
+  test.setTimeout(180000);
+  const drafts = z
+    .array(toolGroupDraftSchema)
+    .min(1)
+    .max(6)
+    .parse(
+      process.env.FOREVER_RAIDS_E2E_TOOL_DRAFTS
+        ? JSON.parse(
+            readFileSync(process.env.FOREVER_RAIDS_E2E_TOOL_DRAFTS, "utf8"),
+          )
+        : [
+            {
+              version: 1,
+              kind: "leveling",
+              label: "Orc leveling",
+              sourceUrl:
+                "https://kfcguild.online/tools/forever/leveling/routes/horde-orc?plan=questing&class=warrior",
+              faction: "Horde",
+              capacity: 5,
+            },
+            {
+              version: 1,
+              kind: "leveling",
+              label: "Hall of Thanes",
+              sourceUrl:
+                "https://kfcguild.online/tools/forever/leveling/routes/alliance-human/dungeons/thanes?chapter=chapter-126-14-16-darkshore&plan=alternative",
+              faction: "Alliance",
+              capacity: 3,
+            },
+          ],
+    );
+  const before = await db.foreverRaidEvent.count();
+  await page.route("https://discord.com/**", async (route): Promise<void> => {
+    await route.fulfill({
+      contentType: "text/html",
+      body: "<!doctype html><title>Isolated Discord authorization fixture</title>",
+    });
+  });
+  for (const draft of drafts) {
+    await context.clearCookies();
+    const path = toolGroupCreatePath(draft);
+    await page.goto(path);
+    await page
+      .getByRole("button", { name: "Sign in with Discord", exact: true })
+      .click();
+    await expect(page).toHaveURL(
+      /^https:\/\/discord\.com\/api\/oauth2\/authorize/,
+    );
+    const authorization = new URL(page.url());
+    expect(authorization.searchParams.get("code_challenge_method")).toBe(
+      "S256",
+    );
+    expect(authorization.searchParams.get("scope")).toBe("identify");
+    const callback = new URL(authorization.searchParams.get("redirect_uri")!);
+    expect(callback.origin).toBe(origin);
+    callback.searchParams.set(
+      "code",
+      "synthetic-browser-member-authorization-code",
+    );
+    callback.searchParams.set(
+      "state",
+      authorization.searchParams.get("state")!,
+    );
+    callback.searchParams.set("iss", "https://discord.com");
+    await page.goto(callback.href);
+    await expect(page).toHaveURL(new URL(path, origin).href);
+    await expect(
+      page.getByRole("heading", { name: "Create event", exact: true }),
+    ).toBeVisible();
+    const session = z
+      .object({ user: z.object({ id: z.string() }) })
+      .parse(
+        await (await page.request.get("/api/community/auth/session")).json(),
+      );
+    expect(session.user.id).toBe(memberIds[1]);
+    expect((await page.request.get("/api/raids/channels")).status()).toBe(403);
+    for (const width of [1440, 390, 320]) {
+      await page.setViewportSize({ width, height: 960 });
+      await expect(
+        page.getByRole("textbox", { name: "Title", exact: true }),
+      ).toHaveValue(`${draft.label} group`);
+      await expect(
+        page.getByRole("combobox", { name: "Event type", exact: true }),
+      ).toHaveValue(toolGroupEventType(draft));
+      if (draft.faction)
+        await expect(
+          page.getByRole("combobox", { name: "Faction", exact: true }),
+        ).toHaveValue(draft.faction);
+      await expect(
+        page.getByRole("spinbutton", { name: "Capacity", exact: true }),
+      ).toHaveValue(String(draft.capacity ?? 5));
+      await expect(
+        page.getByRole("combobox", { name: "Admission", exact: true }),
+      ).toHaveValue("open");
+      expect(
+        await page
+          .getByRole("textbox", { name: "Details", exact: true })
+          .inputValue(),
+      ).toContain(draft.sourceUrl);
+      await expect(
+        page.getByRole("link", { name: "Open source plan", exact: true }),
+      ).toHaveAttribute("href", draft.sourceUrl);
+      await expect(
+        page.getByRole("combobox", { name: "Region", exact: true }),
+      ).toHaveValue("EU");
+      await expect(
+        page.getByRole("combobox", { name: "Character ruleset", exact: true }),
+      ).toHaveValue("PvP");
+      await expect(
+        page.getByRole("spinbutton", {
+          name: "Duration (minutes)",
+          exact: true,
+        }),
+      ).toHaveValue("180");
+      await expect(
+        page.getByLabel("Discord channel", { exact: true }),
+      ).toHaveCount(0);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+      ).toBe(true);
+      await page.screenshot({
+        path: `artifacts/member-tool-oauth-${draft.faction?.toLowerCase() ?? "unknown"}-${toolGroupEventType(draft)}-${width}.png`,
+        fullPage: true,
+      });
+    }
+  }
+  expect(await db.foreverRaidEvent.count()).toBe(before);
+});
 
 test("tool plan prefill keeps native event creation and administrator-only channel choices", async ({
   page,
@@ -59,7 +198,9 @@ test("tool plan prefill keeps native event creation and administrator-only chann
   await expect(
     page.getByRole("combobox", { name: "Faction", exact: true }),
   ).toHaveValue("Horde");
-  await expect(page.getByRole("combobox", { name: "Admission", exact: true })).toHaveValue("open");
+  await expect(
+    page.getByRole("combobox", { name: "Admission", exact: true }),
+  ).toHaveValue("open");
   await expect(
     page.getByRole("textbox", { name: "Details", exact: true }),
   ).toHaveValue(/Our planning reference:/);

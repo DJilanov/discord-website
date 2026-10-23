@@ -32,7 +32,7 @@ export default defineConfig({
   },
   reporter: [["list"]],
   webServer: {
-    command: `npx next dev --hostname 127.0.0.1 -p ${port}`,
+    command: `npx next dev --webpack --hostname 127.0.0.1 -p ${port}`,
     url: `http://127.0.0.1:${port}/api/health`,
     reuseExistingServer: false,
     timeout: 120000,

@@ -51,18 +51,18 @@ export const contributorTasks: ContributorTask[] = [
   },
   {
     id: "class-review",
-    title: "Review one class starter kit",
+    title: "Review one class guide",
     status: "Open browser check",
     time: "20-30 minutes",
     target: "/guides",
     targetLabel: "Browse published resources",
     purpose:
-      "Check a precise class claim before a starter draft becomes public advice.",
+      "Improve one published class section using a source check or a reproducible observation.",
     steps: [
-      "Ask a maintainer for the Feral tank, Protection Paladin or Mage starter draft. Do not treat an unpublished draft as approved gameplay advice.",
+      "Open a published class guide from the library. Choose a Feral tank, Protection Paladin or Mage starter kit, or one of the nine simulation-backed DPS guides.",
       "Choose one section. Record the official source date, client build, level and specialization relevant to it.",
-      "Separate source verification from gameplay testing. If access is unavailable, mark gameplay not tested instead of filling in a result.",
-      "Return the exact claim, suggested wording and evidence in tool-support. Maintainers review the draft in admin before publishing; public credit requires your approval.",
+      "Separate source verification, simulation evidence and gameplay testing. If access is unavailable, mark gameplay not tested. A level-60 single-target simulation does not establish level-30 dungeon performance.",
+      "Return the guide URL, exact claim, suggested wording and evidence in tool-support. Maintainers review corrections before updating the published article; public credit requires your approval.",
     ],
     completion:
       "One accepted correction or dated source check. A whole-kit gameplay review requires coverage of all stated scenarios, not one pull.",
@@ -72,14 +72,14 @@ export const contributorTasks: ContributorTask[] = [
     title: "Check a dungeon preparation route",
     status: "Open browser check",
     time: "20-30 minutes",
-    target: "/guides/wow-forever-launch-group-checklist",
-    targetLabel: "Open the planning example",
+    target: "/guides/wow-forever-hall-of-thanes-group-preparation",
+    targetLabel: "Open dungeon preparation",
     purpose:
       "Make Hall of Thanes, Ruins of Lordaeron or Excavation Site preparation more useful without inventing encounter tactics.",
     steps: [
-      "Ask a maintainer for the relevant preparation draft and identify the travel, quest or event-setup section you will check.",
+      "Open the published Hall of Thanes, Ruins of Lordaeron or Excavation Site preparation guide. Identify the travel, quest or event-setup section you will check.",
       "Record region, faction, ruleset, level and source/client build. Compare quest requirements with the character's own log only when testing is actually available.",
-      "Follow the planning link through LFG or native event creation. Review the draft, but do not submit a fake public session.",
+      "Follow the planning link through LFG or native event creation. Check the proposed group details, but do not submit a fake public session.",
       "Return one reproducible correction and what remains untested. Do not publish a player's name or screenshot without their approval.",
     ],
     completion:
@@ -123,18 +123,20 @@ export const contributorTasks: ContributorTask[] = [
   },
   {
     id: "organizer",
-    title: "Rehearse a group post",
+    title: "Check the member-to-host journey",
     status: "Open browser check",
     time: "15 minutes",
     target: "/guides/host-first-wow-forever-group",
     targetLabel: "Open the host workflow",
     purpose:
-      "Check whether another player can understand the plan without a second round of questions.",
+      "Check the planner handoff and whether an ordinary member can review an event without administrator controls.",
     steps: [
-      "Copy the blank group template and fill it for a proposed session privately.",
+      "Choose your actual faction, race and group size in the leveling planner, then follow Find a group and Host this plan.",
+      "Sign in with the Discord account you use in this community. Check that the source link, title, activity, faction and capacity survive sign-in. Region, character ruleset, date and duration still need your review.",
+      "As an ordinary member, check that there is no Discord channel picker. Administrator-only posting controls must not appear.",
       "Check region, character ruleset, faction, calendar date, named time zone and UTC conversion.",
       "Ask a consenting participant to explain the start time, finish, needed roles and loot rules back to you.",
-      "Report an unclear field or instruction. Do not submit a fake event to the public board; publish only a real session you will host.",
+      "Stop before submitting unless this is a real agreed session. Report the result or error text, never cookies, OAuth callback URLs, authorization codes or tokens.",
     ],
     completion:
       "One usability finding or confirmed worksheet check. An actual hosted session is a separate commitment.",
