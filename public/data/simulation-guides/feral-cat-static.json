@@ -1,0 +1,537 @@
+{
+  "schema": "community-recorded-simulation-build.v1",
+  "id": "feral-cat-static",
+  "release": "18c6325ffc446938063c598f",
+  "wasmSha256": "1e5d84fd3d73d93ec47b18d8dcf05998ec21095d2431986bacc7a4fedc2b23e4",
+  "databaseSha256": "43fa27f482434a950cfcd755a1ccc560f85d5128d2e6f1e200ae1bb28e01a24b",
+  "settings": {
+    "player": {
+      "talentsString": "050022-45010032021030212051-055",
+      "rotation": {
+        "type": "TypeAPL",
+        "priorityList": [
+          {
+            "action": {
+              "autocastOtherCooldowns": {}
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "cmp": {
+                        "op": "OpLe",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "4s"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "currentComboPoints": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "3"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 31018
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "currentComboPoints": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "5"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "dotRemainingTime": {
+                            "spellId": {
+                              "spellId": 9896
+                            }
+                          }
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "5s"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 31018
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "currentComboPoints": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "5"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "not": {
+                        "val": {
+                          "dotIsActive": {
+                            "spellId": {
+                              "spellId": 9896
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "8s"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 9896
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "not": {
+                        "val": {
+                          "dotIsActive": {
+                            "spellId": {
+                              "spellId": 9904
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "9s"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpLt",
+                        "lhs": {
+                          "currentComboPoints": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "5"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 9904
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "cmp": {
+                  "op": "OpLe",
+                  "lhs": {
+                    "currentEnergy": {}
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "60"
+                    }
+                  }
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 1322605
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "castSpell": {
+                "spellId": {
+                  "spellId": 9830
+                }
+              }
+            }
+          }
+        ]
+      },
+      "name": "Player",
+      "race": "RaceNightElf",
+      "class": "ClassDruid",
+      "equipment": {
+        "items": [
+          {
+            "id": 279253,
+            "enchant": 1508
+          },
+          {
+            "id": 19491
+          },
+          {
+            "id": 272105,
+            "enchant": 2488
+          },
+          {
+            "id": 13340,
+            "enchant": 247
+          },
+          {
+            "id": 252484,
+            "enchant": 1891
+          },
+          {
+            "id": 18375,
+            "enchant": 1885
+          },
+          {
+            "id": 272099,
+            "enchant": 1887
+          },
+          {
+            "id": 227805
+          },
+          {
+            "id": 237818,
+            "enchant": 1506
+          },
+          {
+            "id": 22472,
+            "enchant": 1887
+          },
+          {
+            "id": 19514
+          },
+          {
+            "id": 19325
+          },
+          {
+            "id": 13965
+          },
+          {
+            "id": 272437
+          },
+          {
+            "id": 272601,
+            "enchant": 2646
+          },
+          {},
+          {
+            "id": 220606
+          }
+        ]
+      },
+      "consumes": {
+        "flask": "FlaskOfDistilledWisdom",
+        "food": "FoodGrilledSquid",
+        "agilityElixir": "ElixirOfTheMongoose",
+        "manaRegenElixir": "GreaterMagebloodElixir",
+        "strengthBuff": "JujuPower",
+        "attackPowerBuff": "JujuMight",
+        "mainHandImbue": "DenseWeightstone",
+        "defaultPotion": "MajorManaPotion",
+        "defaultConjured": "ConjuredDemonicRune",
+        "dragonBreathChili": true,
+        "zanzaBuff": "GroundScorpokAssay",
+        "sapperExplosive": "SapperGoblinSapper"
+      },
+      "bonusStats": {},
+      "level": 60,
+      "itemSwap": {},
+      "buffs": {
+        "blessingOfKings": true,
+        "blessingOfWisdom": "TristateEffectImproved",
+        "blessingOfMight": "TristateEffectImproved"
+      },
+      "profession1": "Engineering",
+      "profession2": "Leatherworking",
+      "cooldowns": {},
+      "reactionTimeMs": 200,
+      "distanceFromTarget": 5,
+      "isbSbFrequency": 3,
+      "isbCrit": 25,
+      "isbWarlocks": 1,
+      "stormstrikeFrequency": 20,
+      "stormstrikeNatureAttackerFrequency": 4,
+      "healingModel": {},
+      "feralDruid": {
+        "options": {
+          "latencyMs": 100
+        }
+      }
+    },
+    "settings": {
+      "iterations": 1,
+      "phase": 6,
+      "fixedRngSeed": "1337",
+      "showDamageMetrics": true,
+      "language": "en",
+      "faction": "Alliance",
+      "filters": {
+        "oneHandedWeapons": true,
+        "twoHandedWeapons": true
+      },
+      "ruleset": "RulesetForever"
+    },
+    "raidBuffs": {
+      "giftOfTheWild": "TristateEffectImproved",
+      "powerWordFortitude": "TristateEffectImproved",
+      "strengthOfEarthTotem": "TristateEffectRegular",
+      "graceOfAirTotem": "TristateEffectRegular",
+      "arcaneBrilliance": true,
+      "divineSpirit": true,
+      "battleShout": "TristateEffectRegular",
+      "trueshotAura": true,
+      "leaderOfThePack": true,
+      "moonkinAura": true,
+      "manaSpringTotem": "TristateEffectRegular"
+    },
+    "debuffs": {
+      "exposeArmor": "TristateEffectImproved",
+      "sunderArmor": true,
+      "curseOfRecklessness": true
+    },
+    "partyBuffs": {
+      "windfuryTotem": true
+    },
+    "encounter": {
+      "duration": 300,
+      "executeProportion20": 0.2,
+      "executeProportion25": 0.25,
+      "executeProportion35": 0.35,
+      "targets": [
+        {
+          "id": 213336,
+          "name": "Level 60",
+          "level": 63,
+          "mobType": "MobTypeDragonkin",
+          "stats": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            805,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3731,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            127393,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "minBaseDamage": 3000,
+          "damageSpread": 0.3333,
+          "swingSpeed": 2,
+          "parryHaste": true
+        }
+      ]
+    },
+    "epWeightsStats": {
+      "stats": [
+        2.4,
+        2.43,
+        0,
+        0.61,
+        0.38,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.79,
+        0,
+        0,
+        0,
+        0,
+        1,
+        26.59,
+        28.68,
+        0,
+        0,
+        26.59,
+        0.03,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pseudoStats": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16.5,
+        0,
+        0,
+        13.33,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "epRatios": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

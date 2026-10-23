@@ -1,0 +1,427 @@
+{
+  "schema": "community-recorded-simulation-build.v1",
+  "id": "mage-frost-static",
+  "release": "a5f95c49c57e46f727b0267a",
+  "wasmSha256": "1e5d84fd3d73d93ec47b18d8dcf05998ec21095d2431986bacc7a4fedc2b23e4",
+  "databaseSha256": "43fa27f482434a950cfcd755a1ccc560f85d5128d2e6f1e200ae1bb28e01a24b",
+  "settings": {
+    "player": {
+      "talentsString": "05500050000002--055500033100032025",
+      "rotation": {
+        "type": "TypeAPL",
+        "priorityList": [
+          {
+            "action": {
+              "condition": {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "math": {
+                      "op": "OpSub",
+                      "lhs": {
+                        "maxMana": {}
+                      },
+                      "rhs": {
+                        "currentMana": {}
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "1200"
+                    }
+                  }
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "itemId": 12662
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "autocastOtherCooldowns": {}
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "cmp": {
+                        "op": "OpLt",
+                        "lhs": {
+                          "currentManaPercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "10%"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGt",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "25s"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 12051
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 44543
+                  }
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 30455
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "auraNumStacks": {
+                      "auraId": {
+                        "spellId": 12579
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "5"
+                    }
+                  }
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 10161
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "castSpell": {
+                "spellId": {
+                  "spellId": 25304,
+                  "rank": 11
+                }
+              }
+            }
+          }
+        ]
+      },
+      "name": "Player",
+      "race": "RaceOrc",
+      "class": "ClassMage",
+      "equipment": {
+        "items": [
+          {
+            "id": 22267,
+            "enchant": 2544
+          },
+          {
+            "id": 22403
+          },
+          {
+            "id": 227808,
+            "enchant": 2488
+          },
+          {
+            "id": 22330,
+            "enchant": 1888
+          },
+          {
+            "id": 14152,
+            "enchant": 1891
+          },
+          {
+            "id": 18497,
+            "enchant": 2566
+          },
+          {
+            "id": 14146,
+            "enchant": 931
+          },
+          {
+            "id": 228190
+          },
+          {
+            "id": 16687,
+            "enchant": 2544
+          },
+          {
+            "id": 254013,
+            "enchant": 929
+          },
+          {
+            "id": 272407
+          },
+          {
+            "id": 22339
+          },
+          {
+            "id": 12930
+          },
+          {
+            "id": 272438
+          },
+          {
+            "id": 272683,
+            "enchant": 2443
+          },
+          {
+            "id": 22329
+          },
+          {
+            "id": 13938
+          }
+        ]
+      },
+      "consumes": {
+        "flask": "FlaskOfSupremePower",
+        "food": "FoodRunnTumTuberSurprise",
+        "manaRegenElixir": "GreaterMagebloodElixir",
+        "spellPowerBuff": "GreaterArcaneElixir",
+        "firePowerBuff": "ElixirOfGreaterFirepower",
+        "frostPowerBuff": "ElixirOfFrostPower",
+        "mainHandImbue": "WizardOil",
+        "defaultPotion": "MajorManaPotion",
+        "defaultConjured": "ConjuredDemonicRune",
+        "zanzaBuff": "CerebralCortexCompound"
+      },
+      "bonusStats": {},
+      "level": 60,
+      "itemSwap": {},
+      "buffs": {
+        "blessingOfWisdom": "TristateEffectImproved"
+      },
+      "profession1": "Engineering",
+      "profession2": "Tailoring",
+      "cooldowns": {},
+      "reactionTimeMs": 200,
+      "distanceFromTarget": 10,
+      "isbSbFrequency": 3,
+      "isbCrit": 25,
+      "isbWarlocks": 1,
+      "stormstrikeFrequency": 20,
+      "stormstrikeNatureAttackerFrequency": 4,
+      "healingModel": {},
+      "mage": {
+        "options": {
+          "armor": "MageArmor"
+        }
+      }
+    },
+    "settings": {
+      "iterations": 1,
+      "phase": 6,
+      "fixedRngSeed": "1337",
+      "showDamageMetrics": true,
+      "language": "en",
+      "faction": "Horde",
+      "filters": {
+        "oneHandedWeapons": true,
+        "twoHandedWeapons": true
+      },
+      "ruleset": "RulesetForever"
+    },
+    "raidBuffs": {
+      "giftOfTheWild": "TristateEffectImproved",
+      "arcaneBrilliance": true,
+      "divineSpirit": true,
+      "moonkinAura": true,
+      "manaSpringTotem": "TristateEffectRegular"
+    },
+    "debuffs": {
+      "judgementOfWisdom": true
+    },
+    "partyBuffs": {},
+    "encounter": {
+      "duration": 300,
+      "executeProportion20": 0.2,
+      "executeProportion25": 0.25,
+      "executeProportion35": 0.35,
+      "targets": [
+        {
+          "id": 213336,
+          "name": "Level 60",
+          "level": 63,
+          "mobType": "MobTypeDragonkin",
+          "stats": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            805,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3731,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            127393,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "minBaseDamage": 3000,
+          "damageSpread": 0.3333,
+          "swingSpeed": 2,
+          "parryHaste": true
+        }
+      ]
+    },
+    "epWeightsStats": {
+      "stats": [
+        0,
+        0,
+        0,
+        0.49,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0.11,
+        18.59,
+        13.91,
+        6.85,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pseudoStats": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "epRatios": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

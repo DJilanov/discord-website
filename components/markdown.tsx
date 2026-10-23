@@ -8,6 +8,11 @@ import { CopyButton } from "@/components/copy-button";
 import { canonicalToolHref } from "@/content/tool-links";
 import { ClassGuide } from "@/components/class-guide";
 import { getClassGuide } from "@/content/class-guides";
+import {
+  SimulationGuide,
+  SimulationTierList,
+} from "@/components/simulation-guide";
+import { simulationClassProfiles } from "@/content/simulation-class-profiles";
 
 export function Markdown({
   children,
@@ -15,12 +20,16 @@ export function Markdown({
   editorial = false,
   classGuideAssetBase,
   linkBaseUrl,
+  simulationAssetBase,
+  simulationDataBase,
 }: {
   children: string;
   contents?: boolean;
   editorial?: boolean;
   classGuideAssetBase?: string;
   linkBaseUrl?: string;
+  simulationAssetBase?: string;
+  simulationDataBase?: string;
 }): React.JSX.Element {
   return (
     <div className="prose">
@@ -29,6 +38,36 @@ export function Markdown({
         skipHtml
         components={{
           pre: ({ children }) => {
+            if (
+              editorial &&
+              isValidElement<{ className?: string; children?: unknown }>(
+                children,
+              ) &&
+              typeof children.props.children === "string"
+            ) {
+              const key = children.props.children.trim();
+              if (
+                children.props.className === "language-simulation-guide" &&
+                simulationClassProfiles.some((profile) => profile.key === key)
+              )
+                return (
+                  <SimulationGuide
+                    classKey={key}
+                    assetBase={simulationAssetBase}
+                    dataBase={simulationDataBase}
+                  />
+                );
+              if (
+                children.props.className === "language-simulation-tier" &&
+                key === "standard"
+              )
+                return (
+                  <SimulationTierList
+                    assetBase={simulationAssetBase}
+                    dataBase={simulationDataBase}
+                  />
+                );
+            }
             if (
               editorial &&
               isValidElement<{ className?: string; children?: unknown }>(

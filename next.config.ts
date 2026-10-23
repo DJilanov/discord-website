@@ -54,6 +54,10 @@ const config: NextConfig = {
           { key: "Referrer-Policy", value: "no-referrer" },
         ],
       })),
+      {
+        source: "/data/simulation-guides/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
     ];
   },
 };

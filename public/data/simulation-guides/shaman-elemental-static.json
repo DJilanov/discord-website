@@ -1,0 +1,548 @@
+{
+  "schema": "community-recorded-simulation-build.v1",
+  "id": "shaman-elemental-static",
+  "release": "89677ade12794161c4d60db0",
+  "wasmSha256": "dc3f76e034dd3f81a66da57da0224931425f37005a45730031b71260740ef466",
+  "databaseSha256": "c777db42c835aa55b07ac4cd4f42baf962150544426b92b27a4dcd27d595bbd6",
+  "settings": {
+    "player": {
+      "talentsString": "550133102001131-0550300310031022",
+      "rotation": {
+        "type": "TypeAPL",
+        "priorityList": [
+          {
+            "action": {
+              "condition": {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "math": {
+                      "op": "OpSub",
+                      "lhs": {
+                        "maxMana": {}
+                      },
+                      "rhs": {
+                        "currentMana": {}
+                      }
+                    }
+                  },
+                  "rhs": {
+                    "const": {
+                      "val": "1200"
+                    }
+                  }
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "itemId": 12662
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "autocastOtherCooldowns": {}
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "not": {
+                        "val": {
+                          "cmp": {
+                            "op": "OpGt",
+                            "lhs": {
+                              "totemRemainingTime": {
+                                "totemType": "Fire"
+                              }
+                            },
+                            "rhs": {
+                              "const": {
+                                "val": "0s"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "5s"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 10438,
+                  "rank": 6
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "not": {
+                        "val": {
+                          "dotIsActive": {
+                            "spellId": {
+                              "spellId": 10448,
+                              "rank": 5
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "cmp": {
+                        "op": "OpGe",
+                        "lhs": {
+                          "remainingTime": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "10s"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 10448,
+                  "rank": 5
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "castSpell": {
+                "spellId": {
+                  "spellId": 17364
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "and": {
+                  "vals": [
+                    {
+                      "cmp": {
+                        "op": "OpGt",
+                        "lhs": {
+                          "totemRemainingTime": {
+                            "totemType": "Fire"
+                          }
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "0s"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 408345,
+                  "rank": 5
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "castSpell": {
+                "spellId": {
+                  "spellId": 1326047,
+                  "rank": 4
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "condition": {
+                "cmp": {
+                  "op": "OpGe",
+                  "lhs": {
+                    "currentMana": {}
+                  },
+                  "rhs": {
+                    "math": {
+                      "op": "OpMul",
+                      "lhs": {
+                        "remainingTime": {}
+                      },
+                      "rhs": {
+                        "const": {
+                          "val": "20"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "castSpell": {
+                "spellId": {
+                  "spellId": 15208,
+                  "rank": 10
+                }
+              }
+            }
+          },
+          {
+            "action": {
+              "castSpell": {
+                "spellId": {
+                  "spellId": 548,
+                  "rank": 3
+                }
+              }
+            }
+          }
+        ]
+      },
+      "name": "Player",
+      "race": "RaceTroll",
+      "class": "ClassShaman",
+      "equipment": {
+        "items": [
+          {
+            "id": 22267,
+            "enchant": 2544
+          },
+          {
+            "id": 22403
+          },
+          {
+            "id": 272958,
+            "enchant": 2488
+          },
+          {
+            "id": 22330,
+            "enchant": 849
+          },
+          {
+            "id": 16666,
+            "enchant": 1893
+          },
+          {
+            "id": 16671,
+            "enchant": 2566
+          },
+          {
+            "id": 16672,
+            "enchant": 927
+          },
+          {
+            "id": 18405
+          },
+          {
+            "id": 252486,
+            "enchant": 2544
+          },
+          {
+            "id": 22240,
+            "enchant": 1887
+          },
+          {
+            "id": 272406
+          },
+          {
+            "id": 22339
+          },
+          {
+            "id": 12930
+          },
+          {
+            "id": 272438
+          },
+          {
+            "id": 272603,
+            "enchant": 2568
+          },
+          {},
+          {
+            "id": 249398
+          }
+        ]
+      },
+      "consumes": {
+        "flask": "FlaskOfSupremePower",
+        "food": "FoodNightfinSoup",
+        "agilityElixir": "ElixirOfTheMongoose",
+        "manaRegenElixir": "GreaterMagebloodElixir",
+        "strengthBuff": "JujuPower",
+        "attackPowerBuff": "JujuMight",
+        "spellPowerBuff": "GreaterArcaneElixir",
+        "shadowPowerBuff": "ElixirOfShadowPower",
+        "firePowerBuff": "ElixirOfFirepower",
+        "frostPowerBuff": "ElixirOfFrostPower",
+        "mainHandImbue": "ShadowOil",
+        "defaultPotion": "MajorManaPotion",
+        "defaultConjured": "ConjuredDemonicRune",
+        "dragonBreathChili": true,
+        "miscConsumes": {
+          "boglingRoot": true,
+          "jujuFlurry": true,
+          "raptorPunch": true
+        },
+        "zanzaBuff": "CerebralCortexCompound",
+        "alcohol": "AlcoholKreegsStoutBeatdown"
+      },
+      "bonusStats": {},
+      "level": 60,
+      "itemSwap": {},
+      "buffs": {
+        "blessingOfKings": true,
+        "blessingOfWisdom": "TristateEffectImproved",
+        "blessingOfMight": "TristateEffectImproved"
+      },
+      "profession1": "Engineering",
+      "profession2": "Enchanting",
+      "cooldowns": {},
+      "reactionTimeMs": 200,
+      "distanceFromTarget": 5,
+      "isbSbFrequency": 3,
+      "isbCrit": 25,
+      "isbWarlocks": 1,
+      "stormstrikeFrequency": 20,
+      "stormstrikeNatureAttackerFrequency": 4,
+      "healingModel": {},
+      "elementalShaman": {
+        "options": {
+          "mainHandImbue": "RockbiterImbue"
+        }
+      }
+    },
+    "settings": {
+      "iterations": 1,
+      "phase": 6,
+      "fixedRngSeed": "1337",
+      "showDamageMetrics": true,
+      "language": "en",
+      "faction": "Horde",
+      "filters": {
+        "oneHandedWeapons": true,
+        "twoHandedWeapons": true
+      },
+      "ruleset": "RulesetForever"
+    },
+    "raidBuffs": {
+      "giftOfTheWild": "TristateEffectImproved",
+      "powerWordFortitude": "TristateEffectImproved",
+      "bloodPact": "TristateEffectRegular",
+      "strengthOfEarthTotem": "TristateEffectImproved",
+      "graceOfAirTotem": "TristateEffectImproved",
+      "arcaneBrilliance": true,
+      "divineSpirit": true,
+      "battleShout": "TristateEffectImproved",
+      "trueshotAura": true,
+      "leaderOfThePack": true,
+      "moonkinAura": true,
+      "manaSpringTotem": "TristateEffectImproved",
+      "shadowProtection": true,
+      "natureResistanceTotem": true,
+      "frostResistanceAura": true,
+      "fireResistanceAura": true,
+      "thorns": "TristateEffectImproved",
+      "devotionAura": "TristateEffectImproved",
+      "stoneskinTotem": "TristateEffectImproved",
+      "retributionAura": "TristateEffectImproved"
+    },
+    "debuffs": {
+      "judgementOfWisdom": true,
+      "judgementOfTheCrusader": "TristateEffectImproved",
+      "faerieFire": true,
+      "curseOfElements": true,
+      "curseOfShadow": true,
+      "exposeArmor": "TristateEffectImproved",
+      "curseOfRecklessness": true
+    },
+    "partyBuffs": {
+      "windfuryTotem": true
+    },
+    "encounter": {
+      "duration": 300,
+      "executeProportion20": 0.2,
+      "executeProportion25": 0.25,
+      "executeProportion35": 0.35,
+      "targets": [
+        {
+          "id": 213336,
+          "name": "Level 60",
+          "level": 63,
+          "mobType": "MobTypeDragonkin",
+          "stats": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            805,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3731,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            127393,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "minBaseDamage": 3000,
+          "damageSpread": 0.3333,
+          "swingSpeed": 2,
+          "parryHaste": true
+        }
+      ]
+    },
+    "epWeightsStats": {
+      "stats": [
+        0.01,
+        0,
+        0,
+        0.14,
+        0,
+        1,
+        0,
+        0.1,
+        0,
+        0,
+        1,
+        0,
+        0.02,
+        12.37,
+        7.57,
+        1.49,
+        0,
+        0.01,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.01,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "pseudoStats": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "epRatios": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

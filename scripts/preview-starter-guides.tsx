@@ -5,6 +5,7 @@ import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import { GuideLibrary } from "../components/guide-library";
 import { starterResources } from "../content/starter-resources";
 import { editorialGuides } from "../content/editorial";
+import { simulationGuides } from "../content/simulation-guides";
 import { GuideReviewPage } from "./guide-review-page";
 
 const require = createRequire(import.meta.url);
@@ -14,16 +15,34 @@ function document(title: string, body: string, script = true): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">${renderToStaticMarkup(<title>{title}</title>)}<link rel="stylesheet" href="review.css"></head><body>${body}${script ? '<script src="review.js" defer></script>' : ""}</body></html>`;
 }
 
-function Library(): React.JSX.Element {
+function Library({
+  simulation = false,
+}: {
+  simulation?: boolean;
+}): React.JSX.Element {
   return (
-    <GuideLibrary guides={starterResources} privateReview assetBase="assets" />
+    <GuideLibrary
+      guides={simulation ? simulationGuides : starterResources}
+      privateReview
+      assetBase="assets"
+    />
   );
 }
 
 async function main(): Promise<void> {
   const output = resolve(process.argv[2] ?? "artifacts/starter-review-rich");
+  const simulation = process.argv.includes("--simulation"),
+    guides = simulation ? simulationGuides : starterResources;
   await mkdir(join(output, "assets"), { recursive: true });
   await cp("public/images/guide-icons", join(output, "assets/guide-icons"), {
+    recursive: true,
+  });
+  await cp(
+    "public/images/simulation-icons",
+    join(output, "assets/simulation-icons"),
+    { recursive: true },
+  );
+  await cp("public/data/simulation-guides", join(output, "data"), {
     recursive: true,
   });
   for (const guide of editorialGuides) {
@@ -74,6 +93,8 @@ async function main(): Promise<void> {
       "\n" +
       (await readFile("components/guide-library.css", "utf8")) +
       "\n" +
+      (await readFile("components/simulation-guide.css", "utf8")) +
+      "\n" +
       (await readFile("scripts/guide-review.css", "utf8")),
   );
   await build({
@@ -91,10 +112,10 @@ async function main(): Promise<void> {
     join(output, "index.html"),
     document(
       "WoW Forever Guides | Private Review",
-      `<div id="library-root">${renderToString(<Library />)}</div>`,
+      `<div id="library-root"${simulation ? ' data-simulation="true"' : ""}>${renderToString(<Library simulation={simulation} />)}</div>`,
     ),
   );
-  for (const guide of starterResources)
+  for (const guide of guides)
     await writeFile(
       join(output, `${guide.slug}.html`),
       document(
@@ -106,13 +127,13 @@ async function main(): Promise<void> {
     join(output, "public-library.html"),
     document(
       "Guide Library Release Preview",
-      `<div id="library-root" data-public="true">${renderToString(<GuideLibrary guides={editorialGuides} assetBase="assets" />)}</div>`,
+      `<div id="library-root" data-public="true">${renderToString(<GuideLibrary guides={[...editorialGuides, ...simulationGuides]} assetBase="assets" />)}</div>`,
     ),
   );
   console.log(
     JSON.stringify({
       output,
-      guides: starterResources.length,
+      guides: guides.length,
       publicationWrites: 0,
     }),
   );

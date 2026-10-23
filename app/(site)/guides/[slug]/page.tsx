@@ -12,6 +12,7 @@ import { Breadcrumbs, JsonLd, PageHeader } from "@/components/ui";
 import { Markdown } from "@/components/markdown";
 import { artworkDescription, getArtwork } from "@/content/artwork";
 import { guideReadingPaths } from "@/content/editorial";
+import { simulationGuideSlugs, dpsTierSlug } from "@/content/simulation-guides";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -54,7 +55,16 @@ export default async function GuidePage({
 }: Props): Promise<React.JSX.Element> {
   const guide = await getGuide((await params).slug);
   if (!guide) notFound();
-  const readingPath = guideReadingPaths[guide.slug];
+  const readingPath =
+    guideReadingPaths[guide.slug] ??
+    (simulationGuideSlugs.includes(guide.slug)
+      ? [
+          dpsTierSlug,
+          ...simulationGuideSlugs
+            .filter((slug) => slug !== guide.slug)
+            .slice(0, 2),
+        ]
+      : undefined);
   const related = await db.foreverGuide.findMany({
     where: {
       published: true,
@@ -82,7 +92,9 @@ export default async function GuidePage({
                 "wow-forever-hall-of-thanes-group-preparation",
                 "wow-forever-ruins-of-lordaeron-group-preparation",
                 "wow-forever-excavation-site-group-preparation",
-              ].includes(guide.slug)
+              ].includes(guide.slug) ||
+              simulationGuideSlugs.includes(guide.slug) ||
+              guide.slug === dpsTierSlug
             ? { href: "/lfg", label: "Find your next group" }
             : { href: "/discord", label: "Explore the Discord" };
   return (
@@ -116,22 +128,30 @@ export default async function GuidePage({
           read
         </span>
       </div>
+      {guide.slug !== dpsTierSlug && (
+        <div
+          className={
+            guide.coverImage === "/images/wow-trader-workspace.webp"
+              ? "editorial-cover product-cover"
+              : "editorial-cover"
+          }
+        >
+          <Image
+            src={guide.coverImage}
+            alt={artworkDescription(guide.coverImage, guide.title)}
+            fill
+            priority
+            sizes="(max-width: 1280px) 100vw, 1200px"
+          />
+        </div>
+      )}
       <div
         className={
-          guide.coverImage === "/images/wow-trader-workspace.webp"
-            ? "editorial-cover product-cover"
-            : "editorial-cover"
+          guide.slug === dpsTierSlug
+            ? "article-layout tier-list-layout"
+            : "article-layout"
         }
       >
-        <Image
-          src={guide.coverImage}
-          alt={artworkDescription(guide.coverImage, guide.title)}
-          fill
-          priority
-          sizes="(max-width: 1280px) 100vw, 1200px"
-        />
-      </div>
-      <div className="article-layout">
         <article>
           <Markdown contents editorial>
             {guide.content}

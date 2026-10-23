@@ -1,5 +1,6 @@
 @import "../components/class-guide.css";
 @import "../components/guide-library.css";
+@import "../components/simulation-guide.css";
 
 :root {
   --bg: #0c0d10;

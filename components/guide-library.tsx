@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { EditorialGuide } from "@/content/guides";
+import { simulationClassProfiles } from "@/content/simulation-class-profiles";
 
 export type GuideLibraryEntry = Pick<
   EditorialGuide,
@@ -12,6 +13,12 @@ export type GuideLibraryEntry = Pick<
 type Filter = "all" | "class" | "dungeon" | "community";
 
 const classEntries: Record<string, { name: string; title: string }> = {
+  ...Object.fromEntries(
+    simulationClassProfiles.map((profile) => [
+      `wow-forever-${profile.key}-dps-guide`,
+      { name: profile.key, title: profile.name },
+    ]),
+  ),
   "wow-forever-feral-tank-starter-kit": { name: "druid", title: "Feral Tank" },
   "wow-forever-protection-paladin-starter-kit": {
     name: "paladin",
@@ -123,6 +130,24 @@ export function GuideLibrary({
         </div>
       </section>
       <div className="review-library-content">
+        {guides.some((guide) => guide.slug === "wow-forever-dps-tier-list") && (
+          <a
+            className="review-tier-feature"
+            href={
+              privateReview
+                ? "wow-forever-dps-tier-list.html"
+                : "/guides/wow-forever-dps-tier-list"
+            }
+          >
+            <span>
+              <small>25 tested builds · all nine classes</small>
+              <strong>WoW Forever DPS Tier List</strong>
+            </span>
+            <span>
+              Level 60 pre-raid <ArrowRight size={19} />
+            </span>
+          </a>
+        )}
         <div className="review-library-heading">
           <div>
             <span className="review-kicker">The field library</span>
@@ -210,7 +235,7 @@ export function GuideLibrary({
                       >
                         {character && (
                           <Image
-                            src={`${assetBase}/guide-icons/class_${character.name}.jpg`}
+                            src={`${assetBase}/${guide.slug.endsWith("-dps-guide") ? "simulation-icons" : "guide-icons"}/class_${character.name}.jpg`}
                             alt=""
                             width={64}
                             height={64}
