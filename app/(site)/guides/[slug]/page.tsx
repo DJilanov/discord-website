@@ -13,9 +13,11 @@ import { Markdown } from "@/components/markdown";
 import { artworkDescription, getArtwork } from "@/content/artwork";
 import { guideReadingPaths } from "@/content/editorial";
 import { simulationGuideSlugs, dpsTierSlug } from "@/content/simulation-guides";
+import { parseTierScenario } from "@/lib/simulation-tier-schema";
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ scenario?: string | string[] }>;
 }
 const getGuide = cache(async (slug: string): Promise<ForeverGuide | null> => {
   return db.foreverGuide.findFirst({ where: { slug, published: true } });
@@ -52,9 +54,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 export default async function GuidePage({
   params,
+  searchParams,
 }: Props): Promise<React.JSX.Element> {
   const guide = await getGuide((await params).slug);
   if (!guide) notFound();
+  const scenario = parseTierScenario((await searchParams)?.scenario);
   const readingPath =
     guideReadingPaths[guide.slug] ??
     (simulationGuideSlugs.includes(guide.slug)
@@ -153,7 +157,7 @@ export default async function GuidePage({
         }
       >
         <article>
-          <Markdown contents editorial>
+          <Markdown contents editorial tierScenario={scenario}>
             {guide.content}
           </Markdown>
           <div className="article-next">

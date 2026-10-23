@@ -3,6 +3,7 @@ import { Markdown } from "../components/markdown";
 import { starterResources } from "../content/starter-resources";
 import { simulationGuides } from "../content/simulation-guides";
 import { simulationClassProfiles } from "../content/simulation-class-profiles";
+import type { TierScenario } from "../lib/simulation-tier-schema";
 
 export const reviewGuides = [...starterResources, ...simulationGuides];
 
@@ -23,7 +24,13 @@ export function reviewCover(slug: string): string {
   );
 }
 
-export function GuideReviewPage({ slug }: { slug: string }): React.JSX.Element {
+export function GuideReviewPage({
+  slug,
+  scenario = "raid",
+}: {
+  slug: string;
+  scenario?: TierScenario;
+}): React.JSX.Element {
   const guide = reviewGuides.find((entry) => entry.slug === slug);
   const profile = simulationClassProfiles.find(
     (profile) => slug === `wow-forever-${profile.key}-dps-guide`,
@@ -79,6 +86,11 @@ export function GuideReviewPage({ slug }: { slug: string }): React.JSX.Element {
             linkBaseUrl="https://www.wowforeverdiscord.online"
             simulationAssetBase="./assets"
             simulationDataBase="./data"
+            tierScenario={scenario}
+            tierScenarioHrefs={{
+              raid: "wow-forever-dps-tier-list.html#dps-rankings",
+              solo: "wow-forever-dps-tier-list-solo.html#dps-rankings",
+            }}
           >
             {guide.content}
           </Markdown>

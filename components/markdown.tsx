@@ -8,10 +8,9 @@ import { CopyButton } from "@/components/copy-button";
 import { canonicalToolHref } from "@/content/tool-links";
 import { ClassGuide } from "@/components/class-guide";
 import { getClassGuide } from "@/content/class-guides";
-import {
-  SimulationGuide,
-  SimulationTierList,
-} from "@/components/simulation-guide";
+import { SimulationGuide } from "@/components/simulation-guide";
+import { SimulationTierList } from "@/components/simulation-tier-list";
+import type { TierScenario } from "@/lib/simulation-tier-schema";
 import { simulationClassProfiles } from "@/content/simulation-class-profiles";
 
 export function Markdown({
@@ -22,6 +21,8 @@ export function Markdown({
   linkBaseUrl,
   simulationAssetBase,
   simulationDataBase,
+  tierScenario,
+  tierScenarioHrefs,
 }: {
   children: string;
   contents?: boolean;
@@ -30,6 +31,8 @@ export function Markdown({
   linkBaseUrl?: string;
   simulationAssetBase?: string;
   simulationDataBase?: string;
+  tierScenario?: TierScenario;
+  tierScenarioHrefs?: Readonly<Record<TierScenario, string>>;
 }): React.JSX.Element {
   return (
     <div className="prose">
@@ -63,6 +66,8 @@ export function Markdown({
               )
                 return (
                   <SimulationTierList
+                    scenario={tierScenario}
+                    scenarioHrefs={tierScenarioHrefs}
                     assetBase={simulationAssetBase}
                     dataBase={simulationDataBase}
                   />

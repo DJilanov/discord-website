@@ -8,10 +8,12 @@ import {
   simulationEvidenceSchema,
   rankSimulationBuilds,
 } from "../lib/simulation-evidence-schema";
+import { SimulationGuide } from "../components/simulation-guide";
+import { SimulationTierList } from "../components/simulation-tier-list";
 import {
-  SimulationGuide,
-  SimulationTierList,
-} from "../components/simulation-guide";
+  buildsForTierScenario,
+  tierScenarios,
+} from "../lib/simulation-tier-evidence";
 import { Markdown } from "../components/markdown";
 import { simulationClassProfiles } from "../content/simulation-class-profiles";
 import { load } from "cheerio";
@@ -108,13 +110,15 @@ test("known editorial fences render server-readable rankings; untrusted and unkn
     ).includes("build notebook"),
   );
   const html = renderToStaticMarkup(<SimulationTierList />);
-  assert.equal((html.match(/<tr>/g) ?? []).length, 26);
+  assert.equal((html.match(/<tr>/g) ?? []).length, 22);
   assert(html.includes("Monte Carlo"));
 });
 
 test("the visual tier board keeps every measured build in its original tier with DPS below its spec icon", () => {
   const html = load(renderToStaticMarkup(<SimulationTierList />));
-  const ranked = rankSimulationBuilds(simulationEvidence.builds);
+  const ranked = rankSimulationBuilds(
+    buildsForTierScenario(tierScenarios.raid),
+  );
   assert.equal(html(".sim-tier-row").length, 5);
   assert.equal(html("[data-tier-build]").length, ranked.length);
   assert.equal(html(".sim-tier-tile[aria-pressed='true']").length, 1);
@@ -150,7 +154,7 @@ test("the visual tier board keeps every measured build in its original tier with
   assert.equal(html(".sim-ranking-details").attr("open"), undefined);
   assert.equal(
     html(".sim-build-preview > a").attr("href"),
-    `/guides/wow-forever-${ranked[0].classKey}-dps-guide#build-${ranked[0].id}`,
+    ranked[0].benchmarkHref,
   );
 });
 
@@ -160,7 +164,7 @@ test("tier and class guide asset overrides keep the visual board usable in the o
   );
   assert.equal(
     html(".sim-tier-tile img[src^='./assets/simulation-icons/']").length,
-    50,
+    42,
   );
   const guide = load(
     renderToStaticMarkup(<SimulationGuide classKey="warlock" />),

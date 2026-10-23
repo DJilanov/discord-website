@@ -80,13 +80,13 @@ Need a party rather than another spreadsheet? [Find a group](/lfg). You can use 
 simulationGuides.push({
   release: "draft",
   slug: dpsTierSlug,
-  title: "WoW Forever DPS Tier List: Level 60 Pre-Raid Rankings",
+  title: "WoW Forever DPS Tier List: Solo and Raid Rankings",
   excerpt:
-    "Compare 25 tested WoW Forever DPS builds under one level-60 benchmark: rankings, gear, rotations, uncertainty and transparent simulation methodology.",
+    "Compare 21 published WoW Forever builds in separate Solo and Raid DPS rankings, with exact simulator setups, buffs, debuffs and clear methodology.",
   category: "Community",
   coverImage: "/images/forever-hero.webp",
   content:
-    `Compare **25 tested level-60 DPS builds across all nine classes** in one five-minute, single-target benchmark. Each class guide includes the equipment, talents and recorded rotation behind its result.
+    `Compare **21 published level-60 builds** in two separate rankings. Choose **Raid DPS** for shared raid support or **Solo DPS** for your own support only. Open any result's exact setup to reproduce it in the simulator.
 
 ## DPS rankings and tested builds
 
@@ -94,37 +94,45 @@ simulationGuides.push({
 standard
 \`\`\`
 
-## How we produced the ranking
+## Solo or Raid: what changes?
 
-Every row comes from a saved simulation response and an exact recorded setup. Scope: level 60, pre-raid reference equipment, one level-63 target, 300 seconds and 5,000 fights per build. These are beta-model estimates, not level-30 dungeon observations, player combat logs or a prediction that the same order will hold at launch.
+**Raid DPS** supplies the same full-v2 raid, party and individual buff package, plus a documented set of boss debuffs. Armor reductions, damage-school support, Hunter's Mark and Judgement of Wisdom are included. Their stacking, caps and behavior follow each pinned engine; incompatible effects are not assumed to stack. World buffs and externally supplied Power Infusion or Innervate are excluded.
 
-The benchmark starts from the reviewed complete equipment, talents, race, professions, consumes and explicit rotation for each build. It replaces raid, party and individual support with the same full-v2 policy, uses the same single-target encounter, fixes duration at 300 seconds with no variation, and runs seed 58723001 for 5,000 iterations per build. External debuffs are disabled; effects applied by the character's own modeled actions remain.
+**Solo DPS** removes outside buffs, boss debuffs and mana grants. Your character keeps its own pet, modeled abilities and configured baseline self-support. For example, a Warrior can retain Battle Shout; a solo Shaman receives one air totem, not Windfury plus Grace of Air. Talent, form and pet effects still follow that character's engine.
 
-The target is level 63 and Dragonkin. The reference contains fixed target stats and execute windows; it is not a combat-log reconstruction of a released raid boss. There is no movement or additional target. The policy preserves each character's saved equipment and consumes: it does not give every class identical gear, race, positioning or practical access to expensive rewards.
+Both lists use the **same equipment, talents, race, professions, consumables, positioning and rotation** for each build. Configured support is assumed maintained. These are not separately optimized solo rotations, and a Solo score does not claim that you can survive or defeat a raid boss alone. Farming speed, travel, recovery time and survivability need different measurements.
 
-The refreshed set contains 125,000 benchmark iterations. Nineteen rows reuse prior receipts only after exact request bytes, publication, database, engine and response identities match. Six updated rows add 30,000 new fights. Reusing an identical authenticated measurement is not a claim that those fights were rerun on the article's publication date.
+## Why did the old list show about 600 while my Warrior simulated about 800?
 
-Every row retains its measurement date, request/response hashes, engine hash and catalog hash. Models are pinned per profile, not silently represented as one universal backend version. Current client descriptions do not by themselves prove every server-side rule in those models. Original build-validation DPS is shown in the class guides separately and is never sorted into this common-policy table.
+The previous comparison supplied raid buffs but removed external boss debuffs. That was neither a self-supported Solo setup nor a fully supported Raid setup. Removing armor reductions can make a large difference to physical damage.
 
-## What S, A, B, C and D mean
+We replaced that hybrid ranking with separately measured Solo and Raid results. We did not rename its old scores or multiply them by an estimated buff bonus. The original build-validation score in a class guide is another recorded experiment and can retain different support. Use **Open exact Raid setup** or **Open exact Solo setup** for the inputs behind a ranking.
 
-These are disclosed editorial bands based on the strongest measured reference: S is at least 95% of its DPS; A is 85% to below 95%; B is 70% to below 85%; C is 55% to below 70%; D is below 55%. They are convenient groups, not a game mechanic, a statistical confidence classification or a recruitment rule.
+## How to reproduce a result
 
-The percentage is relative to this table's leader, not a universal class-power score. The same character can move between bands when another build improves, even if its own DPS does not change. We do not manufacture a placement for unmeasured builds or include the two separate provisional-enchant opt-in scenarios as ordinary equipment.
+1. Save your current simulator character before loading another setup. The exact import also loads its sampling settings.
+2. Choose Solo or Raid, then select a spec. Open its exact setup rather than a generic class default.
+3. Keep the imported gear, talents, consumes, buffs, debuffs and encounter unchanged.
+4. Confirm the imported **5,000 iterations** and fixed seed **58723001**, then run the simulation.
+5. Compare the result under that same engine and support policy. Changing a setting creates a different experiment.
 
-## Read close results as close results
+Each build fights one stationary **level-63 Dragonkin for 300 seconds**, with no duration variation, extra targets or health-based early ending. Characters are level 60 with selected pre-raid equipment. This is a controlled single-target damage test, not a log reconstruction or a leveling/dungeon ranking.
 
-The displayed plus/minus value is an approximate 95% Monte Carlo error of the mean, calculated as 1.96 times the sample standard deviation divided by the square root of 5,000. It describes sampling noise in this model. It does not cover uncertain mechanics, equipment access, human timing, target movement or future tuning. Shared random seeds also mean it is not an independent paired-significance test.
+## Measured evidence and coverage
 
-Do not interpret a tiny decimal difference as a practical advantage. A smaller confidence interval does not make an incorrect mechanic correct. We intentionally round the visible DPS while retaining the full measurements in the downloadable evidence.
+The two datasets contain **210,000 freshly measured fights**: 21 builds × 5,000 fights × two scenarios. Every result retains its date, input/output hashes, engine hash, database hash and exact import. The downloadable JSON belongs to the currently selected scenario.
 
-## Why other tier lists can disagree
+This first split uses the 21 standard builds with published, replayable simulator setups, across eight classes. Four newer research builds—Retribution, Shockadin, DS/Ruin and Destruction—are omitted until matching numerical publication is verified. Provisional proc-enchant opt-in variants are not ordinary entries.
 
-Level-30 dungeon lists answer a different question from this level-60 pre-raid reference. Fight length, target level, AoE, movement, pet uptime, melee weaving, cooldown rules, world-buff assumptions, debuff allocation and available gear can all change an ordering. Compare those settings before concluding that one table is wrong.
+The class guides can discuss newer reviewed research. Their original study references are not silently substituted into this ranking. For the precise equipment, rotation and support behind a score, use that row's exact simulator setup.
 
-This table does not claim that a damage leader is the best class for every player or group. Control, support, healing, survivability, encounter jobs, enjoyment and reliable attendance all matter, but they are not measured by a single-target DPS total.
+## What the tier letters mean
 
-## Class guides and complete rotations
+Tiers are relative to the **leader of the selected scenario**: S ≥95%, A ≥85%, B ≥70%, C ≥55%, D below 55%. Solo and Raid have independent leaders and independent ordering. A tier is not a recruitment rule or a measurement of healing, utility or survivability.
+
+The plus/minus number is an approximate 95% Monte Carlo sampling margin: 1.96 × sample standard deviation / √5,000. It measures random sampling noise inside the model, not uncertain mechanics or real-player performance. Close scores should be read as close scores, not proof of a practical advantage.
+
+## Class guides
 
 ${simulationClassProfiles.map((profile) => `- [${profile.name} DPS guide: builds, gear and rotations](/guides/wow-forever-${profile.key}-dps-guide)`).join("\n")}
 
@@ -132,32 +140,28 @@ ${simulationClassProfiles.map((profile) => `- [${profile.name} DPS guide: builds
 
 ### Which is the best DPS class in WoW Forever?
 
-The first row is the highest measured reference in this particular benchmark. It is not proof of the strongest class at every level, in every dungeon or on every future raid encounter. Open that row's class guide to inspect the actual gear, talents and constraints.
-
-### Is this a level-30 beta DPS tier list?
-
-No. These characters are level 60 and fight a level-63 target. We do not relabel their output as observed beta dungeon performance.
-
-### Does this prove a best-in-slot set?
-
-No. It compares selected reviewed complete loadouts. It does not establish an exhaustive global maximum, independent alternatives for every slot, guaranteed item availability or the cheapest farming route.
+The top row leads the selected Solo or Raid experiment. It is not proof of the strongest class at every level or in every encounter. Movement, cleave, utility, gear access and player execution can change what is best for your group.
 
 ### Why is my result different?
 
-Check the exact engine, equipment, talents, race, professions, pet, position, consumes, buffs, debuffs, duration and target. Loading a current default is not the same as loading a version-pinned measured setup. Report a reproducible discrepancy rather than comparing only the final number.
+First compare the scenario and use its exact import. Then check engine version, equipment, talents, pet, consumes, buffs, debuffs, duration, target, iterations and seed. A generic default or original study reference is not necessarily the ranking's setup.
 
-### When will the list change?
+### Is the Solo list a farming or leveling guide?
 
-After a reviewed model, build or comparison-policy change has actual new evidence. A calendar date or new patch announcement alone does not refresh a measurement. Corrections and future revisions must retain the earlier evidence and explain what changed.
+No. It measures sustained single-target damage against the same boss without outside support. It does not measure kill-and-recover cycles, route speed, survival or the best solo talent build.
 
-## Sources, corrections and community
+### Does this prove best-in-slot equipment?
 
-These are our original experiment results. The [Forever client reference](https://kfcguild.online/tools/forever/encyclopedia), [talent calculators](https://kfcguild.online/tools/forever/encyclopedia/talents) and [simulator](https://kfcguild.online/tools/forever/simulator) expose the underlying tools and their own evidence labels. Talent-source attribution is retained beside the build data.
+No. These are selected complete reference builds, not an exhaustive search of every possible setup. A non-raid item may still require reputation, PvP ranks or an expensive craft.
 
-Discuss a specific result in the [WoW Forever community Discord](/discord), or [find a group](/lfg) to put a sensible build into practice. This is an independent fan resource, not an official Blizzard ranking. No position in Google is guaranteed by this article or its structured data.
+## Sources and corrections
+
+These are original experiment results from versioned beta models. The [simulator](https://kfcguild.online/tools/forever/simulator), [item and talent references](https://kfcguild.online/tools/forever/encyclopedia) and per-result hashes expose the underlying setup. Current client text alone does not confirm every server-side mechanic.
+
+Bring an exact setup link and a reproducible difference to the [community Discord](/discord). You can also [find a group](/lfg); a lower tier does not mean your class has no place in one.
 
 ## Review history
 
-- October 23, 2026: first community edition with 25 common-policy results, all nine class guides and per-row evidence. Measurement dates remain separate from publication and source-review dates.
-`.trim(),
+- October 23, 2026: the original community edition included 25 hybrid-policy results and nine class guides.
+- This revision separates Solo and Raid, measures both afresh, and restricts rankings to 21 publicly replayable builds. The earlier evidence remains historical; it is not relabeled as either new scenario.`.trim(),
 });

@@ -127,20 +127,27 @@ export const simulationEvidenceSchema = z
   });
 export type SimulationBuild = z.infer<typeof simulationBuildSchema>;
 export type SimulationEvidence = z.infer<typeof simulationEvidenceSchema>;
-export interface RankedSimulationBuild extends SimulationBuild {
+export interface SimulationRank {
   rank: number;
   share: number;
   tier: "S" | "A" | "B" | "C" | "D";
   monteCarlo95: number;
 }
-export function rankSimulationBuilds(
-  builds: readonly SimulationBuild[],
-): RankedSimulationBuild[] {
+export interface SimulationDpsMetric {
+  readonly id: string;
+  readonly dps: number;
+  readonly stdev: number;
+  readonly iterations: number;
+}
+export type RankedSimulationBuild = SimulationBuild & SimulationRank;
+export function rankSimulationBuilds<T extends SimulationDpsMetric>(
+  builds: readonly T[],
+): (T & SimulationRank)[] {
   const sorted = [...builds].sort(
     (a, b) => b.dps - a.dps || a.id.localeCompare(b.id),
   );
   const top = sorted[0]?.dps ?? 1;
-  return sorted.map((build, index): RankedSimulationBuild => {
+  return sorted.map((build, index): T & SimulationRank => {
     const share = (build.dps / top) * 100;
     return {
       ...build,

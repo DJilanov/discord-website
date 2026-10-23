@@ -5,7 +5,8 @@ import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import { GuideLibrary } from "../components/guide-library";
 import { starterResources } from "../content/starter-resources";
 import { editorialGuides } from "../content/editorial";
-import { simulationGuides } from "../content/simulation-guides";
+import { simulationGuides, dpsTierSlug } from "../content/simulation-guides";
+import type { TierScenario } from "../lib/simulation-tier-schema";
 import { GuideReviewPage } from "./guide-review-page";
 
 const require = createRequire(import.meta.url);
@@ -115,14 +116,21 @@ async function main(): Promise<void> {
       `<div id="library-root"${simulation ? ' data-simulation="true"' : ""}>${renderToString(<Library simulation={simulation} />)}</div>`,
     ),
   );
-  for (const guide of guides)
-    await writeFile(
-      join(output, `${guide.slug}.html`),
-      document(
-        guide.title,
-        `<div id="guide-root" data-guide="${guide.slug}">${renderToString(<GuideReviewPage slug={guide.slug} />)}</div>`,
-      ),
-    );
+  for (const guide of guides) {
+    const scenarios: readonly TierScenario[] =
+      guide.slug === dpsTierSlug ? ["raid", "solo"] : ["raid"];
+    for (const scenario of scenarios)
+      await writeFile(
+        join(
+          output,
+          `${guide.slug}${guide.slug === dpsTierSlug && scenario === "solo" ? "-solo" : ""}.html`,
+        ),
+        document(
+          guide.title,
+          `<div id="guide-root" data-guide="${guide.slug}" data-scenario="${scenario}">${renderToString(<GuideReviewPage slug={guide.slug} scenario={scenario} />)}</div>`,
+        ),
+      );
+  }
   await writeFile(
     join(output, "public-library.html"),
     document(
