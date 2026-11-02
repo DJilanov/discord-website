@@ -115,6 +115,12 @@ Before activation, `deploy/activate.sh` verifies the selected build's manifests,
 JavaScript and CSS. HTTP 200 HTML or a running PM2 process is not sufficient evidence of a
 healthy release. After switching, check public assets and browser navigation as well as health.
 
+The verifier supports both Turbopack's CSS in `static/chunks` and Webpack's
+`static/css`, including nested App Router JavaScript chunks. When reusing verified
+dependencies through external symlinks, build with `next build --webpack` in the
+new source directory; Turbopack does not support that dependency layout. Missing,
+empty and escaped assets must still block activation.
+
 During disk cleanup, obtain active paths from both running and saved PM2 configuration, including
 `FOREVER_BUILD_DIR`, `KFC_BUILD_DIR` and resolved release symlinks. Never delete production output
 because it has a `.next-*` name, an old modification date or no open file handle. Preserve complete

@@ -53,16 +53,30 @@ export async function verifyProductionBuild(
     await requireFile(resolve(build, "server", entry));
   }
 
-  const chunks = join(build, "static/chunks");
-  const staticAssets = (await readdir(chunks)).filter((name) =>
-    /\.(js|css)$/.test(name),
-  );
+  async function collectAssets(directory: string): Promise<string[]> {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const assets: string[] = [];
+    for (const entry of entries) {
+      const filename = join(directory, entry.name);
+      if (entry.isDirectory()) assets.push(...(await collectAssets(filename)));
+      else if (/\.(js|css)$/.test(entry.name)) assets.push(filename);
+    }
+    return assets;
+  }
+
+  const staticAssets = await collectAssets(join(build, "static/chunks"));
+  try {
+    staticAssets.push(...(await collectAssets(join(build, "static/css"))));
+  } catch (error: unknown) {
+    if (!(error instanceof Error && "code" in error && error.code === "ENOENT"))
+      throw error;
+  }
   if (
     !staticAssets.some((name) => name.endsWith(".js")) ||
     !staticAssets.some((name) => name.endsWith(".css"))
   )
     throw new Error("Production JavaScript or CSS assets are missing");
-  for (const asset of staticAssets) await requireFile(join(chunks, asset));
+  for (const asset of staticAssets) await requireFile(asset);
   return {
     buildDirectory,
     buildId,

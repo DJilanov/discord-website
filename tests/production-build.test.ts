@@ -48,6 +48,41 @@ test("rejects the cache-only active-build cleanup failure", async (t) => {
   );
 });
 
+test("accepts Webpack CSS and verifies nested App Router chunks", async (t) => {
+  const root = await fixture(t);
+  const build = join(root, ".next-release-test");
+  await rm(join(build, "static/chunks/app.css"));
+  await mkdir(join(build, "static/css"));
+  await writeFile(join(build, "static/css/app.css"), "body{}");
+  await mkdir(join(build, "static/chunks/app/guides"), { recursive: true });
+  await writeFile(
+    join(build, "static/chunks/app/guides/page.js"),
+    "export {};",
+  );
+  assert.equal(
+    (await verifyProductionBuild(root, ".next-release-test")).staticAssets,
+    3,
+  );
+  await writeFile(join(build, "static/chunks/app/guides/page.js"), "");
+  await assert.rejects(
+    verifyProductionBuild(root, ".next-release-test"),
+    /empty/,
+  );
+});
+
+test("rejects Webpack builds whose CSS escapes the selected output", async (t) => {
+  const root = await fixture(t);
+  const build = join(root, ".next-release-test");
+  await rm(join(build, "static/chunks/app.css"));
+  await mkdir(join(build, "static/css"));
+  await writeFile(join(root, "outside.css"), "body{}");
+  await symlink(join(root, "outside.css"), join(build, "static/css/app.css"));
+  await assert.rejects(
+    verifyProductionBuild(root, ".next-release-test"),
+    /escapes/,
+  );
+});
+
 test("rejects missing CSS even when all manifests and JavaScript remain", async (t) => {
   const root = await fixture(t);
   await rm(join(root, ".next-release-test/static/chunks/app.css"));
