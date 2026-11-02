@@ -39,6 +39,7 @@ prisma/migrations/026_raid_role_reserves.sql
 prisma/migrations/035_raid_attendance.sql
 prisma/migrations/036_raid_signup_import.sql
 prisma/migrations/037_raid_discord_mirrors.sql
+prisma/migrations/038_raid_leadership.sql
 lib/raids/discord-forum.ts
 lib/raids/event-request.ts
 lib/raids/listing-conversion.ts

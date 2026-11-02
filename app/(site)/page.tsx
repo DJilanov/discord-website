@@ -130,9 +130,13 @@ export default async function Home(): Promise<React.JSX.Element> {
               </Link>
             </div>
             <div className="hero-coverage">
-              <span className="faction-alliance">Alliance</span>
+              <span className="faction-alliance">
+                <Link href="/alliance">Alliance</Link>
+              </span>
               <span className="coverage-divider" aria-hidden="true" />
-              <span className="faction-horde">Horde</span>
+              <span className="faction-horde">
+                <Link href="/horde">Horde</Link>
+              </span>
               <span>
                 <Globe2 size={15} />
                 EU &amp; NA

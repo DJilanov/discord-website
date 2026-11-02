@@ -10,6 +10,7 @@ import {
 } from "./event-types";
 
 export interface PublicEvent {
+  rosterPublished?: boolean;
   id: string;
   title: string;
   eventType: EventType;
@@ -19,6 +20,8 @@ export interface PublicEvent {
   faction: string;
   ruleset: string;
   description: string;
+  leaderName: string;
+  assistantName: string;
   startsAt: Date;
   endsAt: Date;
   signupClosesAt: Date;
@@ -47,6 +50,8 @@ export async function findPublicEvent(
       faction: true,
       ruleset: true,
       description: true,
+      leaderName: true,
+      assistantName: true,
       startsAt: true,
       endsAt: true,
       signupClosesAt: true,
@@ -65,9 +70,16 @@ export async function findPublicEvent(
   });
   if (!event?.discordPost?.messageId) return null;
   const { _count, discordPost, ...summary } = event;
+  const rosterPublished = Boolean(
+    await database.foreverRaidRosterPublication.findFirst({
+      where: { eventId: id },
+      select: { id: true },
+    }),
+  );
   const eventType = z.enum(eventTypes).parse(event.eventType);
   return {
     ...summary,
+    rosterPublished,
     eventType,
     activity: eventTypeDefinitions[eventType].label,
     accepted: _count.signups,

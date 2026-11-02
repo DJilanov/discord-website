@@ -4,6 +4,10 @@ import { deleteStored } from "../lib/storage";
 import { SITE_URL } from "../lib/config";
 
 async function main(): Promise<void> {
+  const privateNoteCutoff = new Date(Date.now() - 90 * 86400000);
+  await db.foreverRaidRosterResponse.updateMany({ where: { createdAt: { lt: privateNoteCutoff }, reason: { not: null } }, data: { reason: null } });
+  await db.foreverRaidNotification.updateMany({ where: { kind: "leader", createdAt: { lt: privateNoteCutoff } }, data: { payload: {} } });
+
   const now = new Date();
   await db.foreverRaidInteraction.deleteMany({
     where: { expiresAt: { lt: now } },

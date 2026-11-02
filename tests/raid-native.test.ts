@@ -8,6 +8,7 @@ import type {
 } from "../lib/raids/contracts";
 import { classes, specializationsByClass } from "../lib/raids/specializations";
 import { discordEventPanel } from "../lib/raids/discord-panel";
+import { discordMirrorPanel } from "../lib/raids/discord-mirrors";
 import {
   damageKind,
   discordEmojis,
@@ -20,6 +21,8 @@ import {
   nativeMessageSchema,
   nativeStateSchema,
   nativeTarget,
+  type NativeButton,
+  type NativeSelect,
 } from "../lib/raids/native-contracts";
 import { draftControl, renderNativePanel } from "../lib/raids/native-ui";
 import { raidCatalogFixture } from "./fixtures/raid-catalog";
@@ -46,6 +49,8 @@ const event: EventView = {
   faction: "Alliance",
   ruleset: "PvP",
   description: "Test rules",
+  leaderName: "",
+  assistantName: "",
   startsAt: "2035-11-05T18:00:00Z",
   endsAt: "2035-11-05T21:00:00Z",
   signupClosesAt: "2035-11-05T17:45:00Z",
@@ -106,6 +111,170 @@ function panel(
     "http://127.0.0.1:19300",
   );
 }
+
+test("Published rosters close signup panels and expose public attendance labels before the original deadline", (): void => {
+  const value: EventView = {
+    ...event,
+    rosterPublished: true,
+    signups: [
+      { ...signup(0), attendanceReply: "pending" },
+      { ...signup(1), attendanceReply: "confirmed" },
+      { ...signup(2, "absent"), attendanceReply: "declined" },
+    ],
+  };
+  const text = JSON.stringify(discordEventPanel(value, "https://example.test"));
+  assert.match(text, /Signups closed/);
+  assert.match(text, /Waiting/);
+  assert.match(text, /Confirmed/);
+  assert.match(text, /Declined/);
+  const native = panel("signup", value);
+  const manage = panel("manage", { ...value, isOrganizer: true });
+  assert(
+    manage.components
+      .flatMap<NativeButton | NativeSelect>((row) => row.components)
+      .some(
+        (control) =>
+          control.type === 3 && control.custom_id.endsWith(":candidate"),
+      ),
+  );
+  assert(
+    !native.components
+      .flatMap<NativeButton | NativeSelect>((row) => row.components)
+      .some(
+        (control) =>
+          control.type === 2 &&
+          control.label === "Confirm signup" &&
+          !control.disabled,
+      ),
+  );
+});
+test("First signup separates saved character setup from explicit raid confirmation", (): void => {
+  const setup = panel("signup", event, []);
+  assert.equal(setup.embeds[0].title, "Step 1 of 2 · Your character");
+  assert(
+    setup.components
+      .flatMap<NativeButton | NativeSelect>((row) => row.components)
+      .some(
+        (control) =>
+          control.type === 2 && control.label === "Save character & continue",
+      ),
+  );
+  assert(
+    !setup.components
+      .flatMap<NativeButton | NativeSelect>((row) => row.components)
+      .some(
+        (control) => control.type === 2 && control.label === "Confirm signup",
+      ),
+  );
+  const confirm = panel("signup");
+  assert.equal(confirm.embeds[0].title, "Step 2 of 2 · Confirm your signup");
+  assert(
+    confirm.components
+      .flatMap<NativeButton | NativeSelect>((row) => row.components)
+      .some(
+        (control) => control.type === 2 && control.label === "Confirm signup",
+      ),
+  );
+  const mine = panel("mine", {
+    ...event,
+    signups: [{ ...signup(0, "registered"), isMine: true }],
+  });
+  assert.match(mine.embeds[0].description, /leader will select the roster/);
+});
+
+test("Availability controls and named lists keep unavailable people out of seats and remain within Discord limits", () => {
+  const value: EventView = {
+    ...event,
+    admission: "open",
+    signups: [
+      signup(0, "registered"),
+      signup(1, "tentative"),
+      signup(2, "absent"),
+    ],
+  };
+  const post = discordEventPanel(value, "https://example.test");
+  assert.match(
+    post.embeds[0].fields.find((field) => field.name === "Roster")!.value,
+    /1 signed up/,
+  );
+  assert.match(
+    post.embeds[0].fields.find((field) => field.name === "Tentative (1)")!
+      .value,
+    /Hero1/,
+  );
+  assert.match(
+    post.embeds[0].fields.find((field) => field.name === "Absent (1)")!.value,
+    /Hero2/,
+  );
+  for (const action of ["absent", "tentative"] as const)
+    assert.equal(nativeTarget(`nraid:e:${event.id}:${action}`).action, action);
+  const signupPanel = panel("signup", value);
+  nativeMessageSchema.parse(signupPanel);
+  assert.equal(signupPanel.components.length, 5);
+  const unavailable = {
+    ...value,
+    isOrganizer: true,
+    signups: [{ ...signup(0, "absent"), isMine: true }],
+  };
+  const mine = panel("mine", unavailable);
+  assert.match(mine.embeds[0].description, /Absent/);
+  const prompt = renderNativePanel(
+    unavailable,
+    [character],
+    {
+      id: randomUUID(),
+      revision: 1,
+      completed: false,
+      state: nativeStateSchema.parse({
+        mode: "signup",
+        characterId: character.id,
+        specialization: "Fury",
+        attendance: "tentative",
+      }),
+    },
+    "https://example.test",
+  );
+  assert.match(prompt.embeds[0].description, /clears soft reserves/);
+  assert.ok(
+    prompt.components.some((row) =>
+      row.components.some(
+        (control) =>
+          "label" in control && control.label === "Confirm Tentative",
+      ),
+    ),
+  );
+  const large = discordEventPanel(
+    {
+      ...event,
+      capacity: 100,
+      signups: Array.from({ length: 300 }, (_, index) =>
+        signup(
+          index,
+          index % 3 === 0
+            ? "tentative"
+            : index % 3 === 1
+              ? "absent"
+              : "accepted",
+        ),
+      ),
+    },
+    "https://example.test",
+  );
+  const embed = large.embeds[0];
+  assert.ok(embed.fields.some((field) => field.name === "Absent (100)"));
+  assert.ok(embed.fields.some((field) => field.name === "Tentative (100)"));
+  assert.ok(embed.fields.length <= 25);
+  assert.ok(embed.fields.every((field) => field.value.length <= 1024));
+  assert.ok(
+    embed.title.length +
+      embed.description.length +
+      embed.fields.reduce(
+        (sum, field) => sum + field.name.length + field.value.length,
+        0,
+      ) <=
+      6000,
+  );
+});
 
 test("All class/spec emojis are application-owned, complete and distinct by class", () => {
   assert.equal(Object.keys(discordEmojis()).length, 36);
@@ -189,11 +358,12 @@ test("Fifteen-player public rosters list each confirmed name once, with class/sp
   assert.ok(!confirmed.includes("Hero15") && !confirmed.includes("Hero16"));
   assert.match(
     embed.fields.find((field) => field.name === "Roster")!.value,
-    /15\/25 confirmed/,
+    /15\/25 selected/,
   );
-  const damage = embed.fields.find((field) => field.name.startsWith("DPS"))!;
-  assert.match(damage.name, /\(15\/16\)/);
-  assert.doesNotMatch(damage.value, /unclassified|melee|ranged/);
+  assert.doesNotMatch(
+    embed.fields.find((field) => field.name.startsWith("DPS"))!.value,
+    /unclassified|melee|ranged/,
+  );
 });
 test("Large hostile-text rosters stay within every Discord embed budget and retain overflow counts", () => {
   const signups = Array.from({ length: 100 }, (_, index) => ({
@@ -241,6 +411,233 @@ test("TBC damage classifications are reviewed; Forever talent names never imply 
     "ranged",
   );
   assert.equal(damageKind({ ...warrior, role: "tank" }), null);
+});
+test("Forever DPS summaries show occupancy without unknown or invented range counts", () => {
+  const value: EventView = {
+    ...event,
+    eventType: "questing",
+    admission: "open",
+    capacity: 5,
+    roleCaps: { tank: 1, healer: 1, damage: 3 },
+    signups: [signup(0), signup(1)],
+  };
+  const field = discordEventPanel(
+    value,
+    "https://example.test",
+  ).embeds[0].fields.find((entry) => entry.name === "DPS (2/3)");
+  assert.ok(field);
+  assert.match(field.value, /1 more needed/);
+  assert.match(field.value, /Hero0/);
+  assert.match(field.value, /Hero1/);
+  assert.doesNotMatch(field.value, /unclassified|melee|ranged/);
+});
+test("Five-player posts pair compact dates and show each player directly under their role once", () => {
+  const members = [
+    { ...signup(0), role: "tank" as const },
+    { ...signup(1), role: "healer" as const },
+    signup(2),
+    signup(3),
+  ];
+  const embed = discordEventPanel(
+    {
+      ...event,
+      eventType: "questing",
+      admission: "open",
+      capacity: 5,
+      roleCaps: { tank: 1, healer: 1, damage: 3 },
+      signups: members,
+    },
+    "https://example.test",
+  ).embeds[0];
+  assert.deepEqual(
+    embed.fields.map((field) => field.name),
+    ["When", "Finish", "Roster", "Tanks (1/1)", "Healers (1/1)", "DPS (2/3)"],
+  );
+  assert.match(embed.fields[0].value, /:f>/);
+  assert.doesNotMatch(embed.fields[0].value, /:F>/);
+  assert.ok(embed.fields[0].inline && embed.fields[1].inline);
+  assert.equal(embed.fields[2].inline, false);
+  const text = embed.fields.map((field) => field.value).join("\n");
+  for (const member of members)
+    assert.equal(text.split(`**${member.character.name}**`).length - 1, 1);
+  assert.doesNotMatch(text, /▰|▱|`\d{2}`/);
+  assert.match(embed.fields[5].value, /1 more needed/);
+  assert.match(embed.description, /WoW Forever · Questing/);
+});
+test("Five-player DPS lines distinguish a Marksmanship Hunter from Combat Rogues in text", (): void => {
+  const hunter: SignupView = {
+    ...signup(2, "registered"),
+    character: {
+      ...character,
+      name: "Vargos Inc",
+      className: "Hunter",
+      specialization: "Marksmanship",
+    },
+  };
+  const rogue: SignupView = {
+    ...signup(3),
+    character: {
+      ...character,
+      name: "Psyrogue",
+      className: "Rogue",
+      specialization: "Combat",
+    },
+  };
+  const value: EventView = {
+    ...event,
+    eventType: "questing",
+    capacity: 5,
+    admission: "open",
+    roleCaps: { tank: 1, healer: 1, damage: 3 },
+    signups: [hunter, rogue],
+  };
+  const dps = discordEventPanel(
+    value,
+    "https://example.test",
+  ).embeds[0].fields.find((field) => field.name === "DPS (2/3)");
+  assert.ok(dps);
+  const hunterLine = dps.value
+    .split("\n")
+    .find((line) => line.includes("Vargos Inc"));
+  assert.ok(hunterLine);
+  assert.match(hunterLine, /\*\*Vargos Inc\*\* · Hunter · Marksmanship/);
+  assert.doesNotMatch(hunterLine, /Rogue|Combat/);
+  assert.match(dps.value, /\*\*Psyrogue\*\* · Rogue · Combat/);
+  assert.equal(hunter.character.className, "Hunter");
+  const noSpec = discordEventPanel(
+    {
+      ...value,
+      signups: [
+        { ...hunter, character: { ...hunter.character, specialization: null } },
+      ],
+    },
+    "https://example.test",
+  ).embeds[0].fields.find((field) => field.name === "DPS (1/3)")!;
+  assert.match(noSpec.value, /\*\*Vargos Inc\*\* · Hunter/);
+  assert.doesNotMatch(noSpec.value, /null|undefined/);
+  const raid = discordEventPanel(
+    { ...value, eventType: "raid", capacity: 20 },
+    "https://example.test",
+  )
+    .embeds[0].fields.map((field) => field.value)
+    .join("\n");
+  assert.ok(raid.includes("**Vargos Inc**"));
+  assert.doesNotMatch(raid, /\*\*Vargos Inc\*\* · Hunter/);
+});
+
+test("Long organizer notes stay available behind a bounded excerpt instead of pushing down the roster", () => {
+  const origin = "https://example.test";
+  const embed = discordEventPanel(
+    { ...event, description: "@everyone **rules** ".repeat(150) },
+    origin,
+  ).embeds[0];
+  assert.ok(embed.description.length < 550);
+  assert.ok(
+    embed.description.includes(
+      `[Full event details](${origin}/raids/${event.id})`,
+    ),
+  );
+  assert.doesNotMatch(embed.description, /@everyone/);
+  const short = discordEventPanel(event, origin).embeds[0];
+  assert.ok(short.description.includes(event.description));
+  assert.doesNotMatch(short.description, /Full event details/);
+});
+test("Over-subscribed small groups keep role captions and overflow inside Discord's field limits", () => {
+  const embed = discordEventPanel(
+    {
+      ...event,
+      eventType: "dungeon",
+      admission: "open",
+      capacity: 5,
+      roleCaps: { tank: 1, healer: 1, damage: 3 },
+      signups: Array.from({ length: 100 }, (_, index) => ({
+        ...signup(index, "registered"),
+        character: { ...character, name: "*".repeat(40) },
+      })),
+    },
+    "https://example.test",
+  ).embeds[0];
+  assert.ok(embed.fields.every((field) => field.value.length <= 1024));
+  assert.match(
+    embed.fields.find((field) => field.name === "DPS (100/3)")!.value,
+    /more/,
+  );
+  assert.match(
+    embed.fields.find((field) => field.name === "Tanks (0/1)")!.value,
+    /1 more needed/,
+  );
+  assert.ok(embed.fields.length <= 25);
+});
+test("Discord posts expose the saved finish and duration, and linked copies use the same event", () => {
+  const value = { ...event, endsAt: "2035-11-06T06:00:00Z" };
+  const source = {
+    guildId: "1557000000000000010",
+    channelId: "1557000000000000012",
+    messageId: "1557000000000000013",
+  };
+  const primary = discordEventPanel(value, "https://example.test");
+  const mirror = discordMirrorPanel(value, "https://example.test", source);
+  const finish = primary.embeds[0].fields.find(
+    (field) => field.name === "Finish",
+  );
+  assert.ok(finish);
+  assert.equal(finish.value, `<t:${Date.parse(value.endsAt) / 1000}:f>\n12h`);
+  assert.deepEqual(mirror.embeds, primary.embeds);
+  assert.ok(
+    mirror.components.every((row) =>
+      row.components.every(
+        (control) => control.type === 2 && control.style === 5,
+      ),
+    ),
+  );
+  assert.ok(
+    mirror.components.some((row) =>
+      row.components.some(
+        (control) =>
+          control.type === 2 &&
+          control.url === `https://example.test/raids/${value.id}`,
+      ),
+    ),
+  );
+});
+test("DPS range breakdowns are shown only when every damage player has a reviewed classification", () => {
+  const warrior: SignupView = {
+    ...signup(0),
+    character: {
+      ...character,
+      game: "tbc",
+      className: "Warrior",
+      specialization: "Fury",
+    },
+  };
+  const hunter: SignupView = {
+    ...signup(2),
+    character: {
+      ...character,
+      game: "tbc",
+      className: "Hunter",
+      specialization: "Marksmanship",
+    },
+  };
+  const reviewed = discordEventPanel(
+    { ...event, game: "tbc", signups: [warrior, hunter] },
+    "https://example.test",
+  ).embeds[0].fields.find((entry) => entry.name.startsWith("DPS"));
+  assert.ok(reviewed);
+  assert.match(reviewed.value, /1 melee · 1 ranged/);
+  const unknown = discordEventPanel(
+    {
+      ...event,
+      game: "tbc",
+      signups: [
+        warrior,
+        { ...hunter, character: { ...hunter.character, specialization: null } },
+      ],
+    },
+    "https://example.test",
+  ).embeds[0].fields.find((entry) => entry.name.startsWith("DPS"));
+  assert.ok(unknown);
+  assert.doesNotMatch(unknown.value, /unclassified|melee|ranged/);
 });
 test("HR names are disclosed publicly and before signup without internal footers or unbounded lists", () => {
   const raid: EventView = {
@@ -307,7 +704,11 @@ test("Open signups use compact roster groups without pretending they are confirm
     embed.fields.find((field) => field.name === "Roster")!.value,
     /2 signed up.*25 planned seats/,
   );
-  const groups = embed.fields.filter((field) => classes.some((name) => field.name.includes(name)) || field.name.includes("group"));
+  const groups = embed.fields.filter(
+    (field) =>
+      classes.some((name) => field.name.includes(name)) ||
+      field.name.includes("group"),
+  );
   assert.ok(groups.some((group) => group.value.includes("Hero0")));
   assert.ok(groups.some((group) => group.value.includes("Hero1")));
   assert.ok(!embed.fields.some((field) => field.name.startsWith("Signed up")));
@@ -316,6 +717,31 @@ test("Open signups use compact roster groups without pretending they are confirm
     panel("mine", raid).embeds[0].description,
     /Signed up; roster not selected/,
   );
+});
+
+test("Discord signup totals include confirmed players and exclude nonattending responses", () => {
+  for (const admission of ["open", "automatic", "approval"]) {
+    const value = {
+      ...event,
+      admission,
+      signups: [
+        ...Array.from({ length: 4 }, (_, index) => signup(index)),
+        signup(4, "tentative"),
+        signup(5, "absent"),
+        signup(6, "withdrawn"),
+      ],
+    };
+    const embed = discordEventPanel(value, "https://example.test").embeds[0];
+    const roster = embed.fields.find((field) => field.name === "Roster")!;
+    assert.match(roster.value, /4 signed up/);
+    assert.match(roster.value, /4(?:\/25)? selected/);
+    assert.doesNotMatch(roster.value, /0 signed up/);
+    if (admission === "open")
+      assert.doesNotMatch(
+        embed.fields.find((field) => field.name === "Roster")!.value,
+        /roster selection pending/,
+      );
+  }
 });
 
 test("Native buttons are rollout-gated, use explicit actions and disable closed mutation controls", () => {
@@ -386,7 +812,8 @@ test("Raid posts link directly to the visual SR page without replacing native re
   };
   const reservesUrl = `https://example.test/raids/${raid.id}/reserves`;
   try {
-    process.env.COMMUNITY_AUTH_SECRET = "synthetic-native-secret-only-for-tests";
+    process.env.COMMUNITY_AUTH_SECRET =
+      "synthetic-native-secret-only-for-tests";
     for (const native of ["false", "true"])
       for (const status of ["open", "locked", "cancelled"]) {
         process.env.FOREVER_RAIDS_NATIVE_ENABLED = native;
@@ -411,7 +838,9 @@ test("Raid posts link directly to the visual SR page without replacing native re
         );
         assert.ok(post.components.length <= 5);
         assert.ok(post.components.every((row) => row.components.length <= 5));
-        assert.ok(post.embeds[0].fields.every((field) => field.value.length <= 1024));
+        assert.ok(
+          post.embeds[0].fields.every((field) => field.value.length <= 1024),
+        );
         nativeMessageSchema.parse(post);
         if (native === "true") {
           const reserveControl = controls.find(
@@ -430,13 +859,18 @@ test("Raid posts link directly to the visual SR page without replacing native re
       const post = discordEventPanel(value, "https://example.test");
       assert.ok(
         !post.components
-          .flatMap((row) => row.components.filter((control) => control.type === 2))
+          .flatMap((row) =>
+            row.components.filter((control) => control.type === 2),
+          )
           .some(
-            (control) => control.type === 2 && control.url?.endsWith("/reserves"),
+            (control) =>
+              control.type === 2 && control.url?.endsWith("/reserves"),
           ),
       );
       assert.ok(
-        !post.embeds[0].fields.some((field) => field.value.includes("/reserves")),
+        !post.embeds[0].fields.some((field) =>
+          field.value.includes("/reserves"),
+        ),
       );
     }
   } finally {

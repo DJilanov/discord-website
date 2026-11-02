@@ -114,6 +114,15 @@ export const characterSpecializationSchema = z
   })
   .strict();
 
+const leadershipNameSchema = z
+  .string()
+  .trim()
+  .max(80)
+  .regex(
+    /^[^\u0000-\u001f\u007f]*$/,
+    "Use a single-line character or Discord name.",
+  );
+
 const eventFields = z
   .object({
     requestKey: z.uuid(),
@@ -145,6 +154,8 @@ const eventFields = z
       .strict(),
     admission: z.enum(admissionModes),
     description: z.string().trim().max(3000),
+    leaderName: leadershipNameSchema.default(""),
+    assistantName: leadershipNameSchema.default(""),
     catalogId: z.string().min(1).max(100).nullable(),
     reserveLimit: z.number().int().min(0).max(10),
     reserveLimits: reserveLimitsSchema.nullable().default(null),
@@ -165,6 +176,11 @@ export const eventSettingsSchema = eventFields
     requestKey: true,
     discordChannelId: true,
     confirmDiscordPublication: true,
+  })
+  .extend({
+    // Older clients must not erase leadership when submitting other settings.
+    leaderName: leadershipNameSchema.optional(),
+    assistantName: leadershipNameSchema.optional(),
   })
   .refine((event) => validRealm(event.game, event.realm), {
     path: ["realm"],
@@ -193,7 +209,32 @@ export const policyAcknowledgementSchema = z
     policyChecksum: z.string().regex(/^[a-f0-9]{64}$/),
   })
   .strict();
+export const signupCharacterUpdateSchema = z
+  .object({
+    className: z.enum(classes),
+    specialization: specializationSchema,
+    clearReserves: z.boolean().default(false),
+  })
+  .strict()
+  .refine(
+    (character) =>
+      specializationMatchesClass(character.className, character.specialization),
+    {
+      path: ["specialization"],
+      message: "Choose a specialization for this class.",
+    },
+  );
+export type SignupCharacterUpdate = z.infer<typeof signupCharacterUpdateSchema>;
+
 export const eventActionSchema = z.discriminatedUnion("action", [
+  z
+    .object({
+      action: z.literal("edit_signup_character"),
+      version: z.number().int().positive(),
+      signupId: z.string().min(1).max(100),
+      character: signupCharacterUpdateSchema,
+    })
+    .strict(),
   z
     .object({
       action: z.literal("edit"),
@@ -284,6 +325,8 @@ export interface CatalogView {
   items: CatalogItem[];
 }
 export interface SignupView {
+  rosterDirectMessages?: boolean;
+  attendanceReply?: string;
   id: string;
   character: StoredCharacter;
   role: SignupRole;
@@ -297,6 +340,7 @@ export interface SignupView {
   note?: string | null;
 }
 export interface EventView {
+  rosterPublished?: boolean;
   id: string;
   game: RaidGame;
   realm: string;
@@ -307,6 +351,8 @@ export interface EventView {
   faction: string;
   ruleset: string;
   description: string;
+  leaderName: string;
+  assistantName: string;
   startsAt: string;
   endsAt: string;
   signupClosesAt: string;

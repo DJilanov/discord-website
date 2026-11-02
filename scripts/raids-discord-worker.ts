@@ -9,6 +9,8 @@ import {
   deliverRaidPosts,
   raidDiscordRequest,
 } from "../lib/raids/discord-delivery";
+import { runRosterNotifications } from "../lib/raids/roster-confirmation-delivery";
+import { runRosterAnnouncements } from "../lib/raids/roster-announcements";
 import { runNativeRaidWork } from "../lib/raids/native-worker";
 import { deliverRaidMirrors } from "../lib/raids/discord-mirrors";
 
@@ -82,6 +84,18 @@ async function main(): Promise<void> {
           if (process.argv.includes("--once"))
             throw new Error("Discord event delivery could not run.");
         }
+      }
+      try {
+        await runRosterNotifications(db);
+      } catch {
+        console.error(
+          "Roster notification queue unavailable; retrying next cycle.",
+        );
+      }
+      try {
+        await runRosterAnnouncements(db);
+      } catch {
+        console.error("Public roster update unavailable; retrying next cycle.");
       }
       try {
         const count = await deliverRaidMirrors(db);

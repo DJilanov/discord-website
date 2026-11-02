@@ -4,20 +4,30 @@ import {
   listingForums,
   listingGuildId,
 } from "@/lib/discord-listings/contracts";
+import { kfcGuildId } from "../../content/kfc-community";
+import { kfcRaidForumIds } from "../../content/kfc-raiding";
 
 const groupForums: readonly string[] = Object.values(listingForums).flatMap(
   ({ pve, pvp, scheduled }) => [pve, pvp, scheduled],
 );
 
-export const raidForumThreadSchema = z.object({
-  id: discordId,
-  guild_id: z.literal(listingGuildId),
-  parent_id: discordId.refine((id) => groupForums.includes(id)),
-  owner_id: discordId,
-  type: z.literal(11),
-  name: z.string(),
-  thread_metadata: z.object({ archived: z.boolean(), locked: z.boolean() }),
-});
+export const raidForumThreadSchema = z
+  .object({
+    id: discordId,
+    guild_id: z.union([z.literal(listingGuildId), z.literal(kfcGuildId)]),
+    parent_id: discordId,
+    owner_id: discordId,
+    type: z.literal(11),
+    name: z.string(),
+    thread_metadata: z.object({ archived: z.boolean(), locked: z.boolean() }),
+  })
+  .refine((thread): boolean =>
+    thread.guild_id === listingGuildId
+      ? groupForums.includes(thread.parent_id)
+      : Object.values(kfcRaidForumIds).some(
+          (id): boolean => id === thread.parent_id,
+        ),
+  );
 
 export type RaidForumThread = z.infer<typeof raidForumThreadSchema>;
 

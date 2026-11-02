@@ -3,6 +3,44 @@
   display: flex;
   flex-direction: column;
 }
+.raid-signup-help {
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+.raid-signup-help h1 {
+  line-height: 1.2;
+}
+.raid-help-steps {
+  padding-left: 1.5rem;
+}
+.raid-help-steps > li {
+  padding-left: 0.5rem;
+  margin: 2rem 0;
+}
+.raid-help-example {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+}
+.raid-signup-help section {
+  margin-top: 2rem;
+}
+.raid-signup-help dl > div {
+  margin: 1rem 0;
+}
+.raid-signup-help dt {
+  font-weight: 600;
+}
+.raid-signup-help dd {
+  margin: 0.25rem 0 0;
+}
+.raid-signup-help code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .raid-nav {
   display: flex;
   justify-content: space-between;
@@ -735,6 +773,21 @@ label.raid-form {
 .raid-summary svg {
   color: var(--blue);
 }
+.raid-leadership {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin: 1rem 0;
+}
+.raid-leadership dt {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.raid-leadership dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
 .raid-description {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -788,6 +841,97 @@ label.raid-form {
   gap: 8px;
   align-items: center;
   flex-shrink: 0;
+}
+.raid-edit-signup {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.raid-edit-signup:hover {
+  text-decoration: underline;
+}
+.raid-edit-signup:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.raid-signup-editor {
+  width: min(640px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  margin: auto;
+  padding: clamp(16px, 4vw, 24px);
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.raid-signup-editor::backdrop {
+  background: #000c;
+}
+.raid-signup-editor h2 {
+  overflow-wrap: anywhere;
+}
+.raid-signup-editor-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.raid-signup-editor-preview span,
+.raid-signup-editor-preview strong {
+  display: block;
+}
+.raid-signup-editor-preview > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.raid-signup-editor-preview > div > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.raid-signup-editor-warning {
+  padding: 12px;
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+}
+.raid-signup-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.raid-signup-editor .raid-class-choice .raid-choice-face {
+  min-height: 72px;
+  gap: 6px;
+  padding: 8px;
+}
+.raid-signup-editor .raid-choice-art img {
+  width: 32px;
+  height: 32px;
+}
+.raid-signup-editor .raid-spec-choice .raid-choice-face {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 64px;
+  gap: 10px;
+  padding: 10px 30px 10px 10px;
+}
+.raid-signup-editor .raid-spec-choice .raid-choice-copy {
+  min-height: 0;
+  text-align: left;
+}
+.raid-signup-editor .raid-spec-choice .raid-choice-check {
+  top: calc(50% - 9px);
+  right: 8px;
 }
 .raid-organizer,
 .raid-loot {

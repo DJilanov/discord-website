@@ -18,6 +18,38 @@ export const scheduledEventSchema = z.object({
   entity_metadata: z.object({ location: z.string() }).nullable().optional(),
 });
 export type ScheduledEvent = z.infer<typeof scheduledEventSchema>;
+
+interface KfcEventPublication {
+  readonly discordPost: {
+    readonly guildId: string;
+    readonly visibility: string;
+    readonly approvedAt: Date | null;
+    readonly confirmedAt: Date | null;
+    readonly messageId: string | null;
+  } | null;
+  readonly discordMirrors: readonly {
+    readonly guildId: string;
+    readonly status: string;
+  }[];
+}
+
+export function kfcCalendarPublicationEligible(
+  event: KfcEventPublication,
+): boolean {
+  const post = event.discordPost;
+  return Boolean(
+    post?.visibility === "community" &&
+    post.approvedAt &&
+    post.confirmedAt &&
+    post.messageId &&
+    (post.guildId === kfcGuildId ||
+      event.discordMirrors.some(
+        (mirror): boolean =>
+          mirror.guildId === kfcGuildId && mirror.status === "sent",
+      )),
+  );
+}
+
 export interface CanonicalScheduledEvent {
   id: string;
   title: string;

@@ -15,6 +15,8 @@ import {
 } from "../lib/discord-audit-client";
 import { analyzeKfcReadiness } from "../lib/kfc-readiness";
 import { saveDiscordAudit } from "../lib/discord-audit-files";
+import { RaidingStore } from "../lib/kfc-raiding/storage";
+import { kfcAccessMemberBindings } from "../lib/kfc-access-members";
 
 interface PublisherBindings {
   channels: Record<string, string>;
@@ -63,10 +65,17 @@ async function main(): Promise<void> {
   const revisionBindings = await bindings("kfc-revision");
   if (!community.shamanId) throw new Error("Shaman binding is missing.");
   const snapshot = await collectDiscordAudit(credentials);
+  const raiding = await new RaidingStore(".data/kfc-raiding").config();
   const report = analyzeKfcReadiness(snapshot, {
     community: community.channels,
     revision: revisionBindings.channels,
     shamanId: community.shamanId,
+    ...(raiding
+      ? {
+          raiding,
+          access: await kfcAccessMemberBindings(snapshot, credentials.token),
+        }
+      : {}),
   });
   const privateAudit = await saveDiscordAudit(
     snapshot,

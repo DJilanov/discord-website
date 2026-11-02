@@ -10,6 +10,7 @@ import {
 import { webBridgeStore } from "@/lib/discord-bridge/web-store";
 import { BridgeError } from "@/lib/discord-bridge/store";
 import { ephemeral } from "@/lib/discord-bridge/commands";
+import { isRosterInteraction, rosterInteraction } from "@/lib/raids/roster-confirmation-interactions";
 import { isRaidInteraction, raidInteraction } from "@/lib/raids/interactions";
 import {
   isNativeRaidInteraction,
@@ -71,6 +72,14 @@ const interactionSchema = z.object({
     .optional(),
 });
 export async function handleInteraction(raw: unknown): Promise<object> {
+  if (isRosterInteraction(raw)) {
+    try { return await rosterInteraction(raw); }
+    catch (error) {
+      if (error instanceof HttpError) return ephemeral(error.message);
+      if (error instanceof z.ZodError) return ephemeral("Invalid roster invitation. Reopen My signup.");
+      throw error;
+    }
+  }
   if (isNativeRaidInteraction(raw)) {
     try {
       return await nativeRaidInteraction(raw);

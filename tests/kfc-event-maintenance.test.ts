@@ -7,14 +7,85 @@ import {
 } from "../content/kfc-community";
 import {
   kfcCalendarContent,
+  kfcCalendarPublicationEligible,
   scheduledEventPatch,
   type ScheduledEvent,
   type CanonicalScheduledEvent,
+  type ScheduledEventProjection,
 } from "../lib/kfc-event-maintenance";
 const now = new Date("2026-10-09T12:00:00Z");
 const binding = scheduledEventBindings[0];
 const kfcProjection = binding.projections[0];
 const foreverProjection = binding.projections[1];
+
+test("An approved primary KFC signup needs no mirror to synchronize its calendar entry", (): void => {
+  assert.equal(
+    kfcCalendarPublicationEligible({
+      discordPost: {
+        guildId: kfcGuildId,
+        visibility: "community",
+        approvedAt: now,
+        confirmedAt: now,
+        messageId: "1566478926795243681",
+      },
+      discordMirrors: [],
+    }),
+    true,
+  );
+});
+
+test("A signup hosted in Forever needs a delivered KFC mirror", (): void => {
+  const post = {
+    guildId: foreverGuildId,
+    visibility: "community",
+    approvedAt: now,
+    confirmedAt: now,
+    messageId: "1555464828921978970",
+  };
+  for (const status of ["pending", "failed", "removed"])
+    assert.equal(
+      kfcCalendarPublicationEligible({
+        discordPost: post,
+        discordMirrors: [{ guildId: kfcGuildId, status }],
+      }),
+      false,
+    );
+  assert.equal(
+    kfcCalendarPublicationEligible({ discordPost: post, discordMirrors: [] }),
+    false,
+  );
+  assert.equal(
+    kfcCalendarPublicationEligible({
+      discordPost: post,
+      discordMirrors: [{ guildId: kfcGuildId, status: "sent" }],
+    }),
+    true,
+  );
+});
+
+test("Missing delivery, publication consent, approval and private posts remain ineligible", (): void => {
+  const post = {
+    guildId: kfcGuildId,
+    visibility: "community",
+    approvedAt: now,
+    confirmedAt: now,
+    messageId: "1566478926795243681",
+  };
+  for (const discordPost of [
+    null,
+    { ...post, approvedAt: null },
+    { ...post, confirmedAt: null },
+    { ...post, messageId: null },
+    { ...post, visibility: "private" },
+  ])
+    assert.equal(
+      kfcCalendarPublicationEligible({
+        discordPost,
+        discordMirrors: [{ guildId: kfcGuildId, status: "sent" }],
+      }),
+      false,
+    );
+});
 function canonical(): CanonicalScheduledEvent {
   return {
     id: binding.eventId,
@@ -26,7 +97,9 @@ function canonical(): CanonicalScheduledEvent {
   };
 }
 function native(
-  projection: (typeof binding.projections)[number] = kfcProjection,
+  projection: ScheduledEventProjection & {
+    guildId: ScheduledEvent["guild_id"];
+  } = kfcProjection,
 ): ScheduledEvent {
   return {
     id: projection.scheduledId,
@@ -39,6 +112,30 @@ function native(
     channel_id: null,
   };
 }
+test("Both leveling groups have KFC calendar bindings and the existing Forever projection is retained", (): void => {
+  assert.equal(kfcProjection.scheduledId, "1566688030972969075");
+  assert.equal(foreverProjection.scheduledId, "1560892325117435904");
+  const psy = scheduledEventBindings.find(
+    (entry): boolean => entry.eventId === "cmvy07lb500000m4sbok6tgqq",
+  );
+  assert.ok(psy);
+  assert.deepEqual(psy.projections, [
+    { guildId: kfcGuildId, scheduledId: "1566688035708473495" },
+  ]);
+  const projection = psy.projections[0];
+  assert.deepEqual(
+    scheduledEventPatch(
+      { ...canonical(), id: psy.eventId, title: "Psyrogue group" },
+      native(projection),
+      projection,
+      now,
+    ),
+    {
+      name: "Psyrogue group",
+      scheduled_end_time: "2026-11-05T19:30:00.000Z",
+    },
+  );
+});
 test("Scheduled sync changes only the mismatched title/end and preserves equivalent start timestamps", (): void => {
   assert.deepEqual(
     scheduledEventPatch(canonical(), native(), kfcProjection, now),

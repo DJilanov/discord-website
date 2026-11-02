@@ -17,7 +17,10 @@ export function PublicEventSummary({
 }): React.JSX.Element {
   const artwork = eventArtwork("forever", event.eventType, event.raidName);
   const ended = event.endsAt <= now;
-  const signupClosed = event.signupClosesAt <= now || event.status !== "open";
+  const signupClosed =
+    event.rosterPublished === true ||
+    event.signupClosesAt <= now ||
+    event.status !== "open";
   return (
     <div className="container public-event">
       <Breadcrumbs
@@ -52,9 +55,15 @@ export function PublicEventSummary({
               ["Activity", event.raidName],
               ["Finish", formatGroupStart(event.endsAt, event.region)],
               ["Group size", `${event.capacity} players`],
+              ...(event.leaderName ? [["Leader", event.leaderName]] : []),
+              ...(event.assistantName
+                ? [["Assistant", event.assistantName]]
+                : []),
               [
                 "Signup closes",
-                formatGroupStart(event.signupClosesAt, event.region),
+                event.rosterPublished
+                  ? "Closed · roster published"
+                  : formatGroupStart(event.signupClosesAt, event.region),
               ],
               [
                 "Places",

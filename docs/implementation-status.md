@@ -14,7 +14,7 @@ character identity is collected. Staff status changes are audited. First-party a
 research actions, dataset downloads, and feedback submissions while continuing to respect DNT/GPC.
 Recruiting demand uses approved listings, shows freshness and sample size, and suppresses cells below
 three. Migration `034_research_feedback` is applied in production and build directory
-`.next-release-research-20261004-r2` is active. The pre-migration backup restored successfully in an
+`.next-release-research-20261004-r3` is active. The pre-migration backup restored successfully in an
 isolated scratch database. Live checks covered every report, sitemap/robots, Article/Dataset
 metadata, and a real feedback submission; the exact verification row was removed afterward. See
 [research-feedback-loop.md](research-feedback-loop.md).

@@ -526,7 +526,7 @@ test("Explicit member guilds are normalized and KFC invite overrides are restric
   );
   assert.equal(
     kfcDiscordInviteUrl({ KFC_DISCORD_INVITE_URL: "https://example.com/" }),
-    "https://discord.gg/WGv4APs9DY",
+    "https://discord.gg/BT3CgxbqZF",
   );
 });
 

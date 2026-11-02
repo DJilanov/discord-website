@@ -13,6 +13,8 @@ const labels: Record<string, string> = {
   faction: "Faction",
   ruleset: "Character ruleset",
   description: "Details",
+  leaderName: "Leader",
+  assistantName: "Assistant",
   startsAt: "Start",
   endsAt: "End",
   signupClosesAt: "Signup deadline",

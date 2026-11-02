@@ -1,3 +1,4 @@
+import { assertRosterRepliesBeforeLock } from "./roster-confirmations";
 import { Prisma, type PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import { db } from "@/lib/db";
@@ -95,6 +96,7 @@ export interface RaidService {
   ): Promise<void>;
   list(member: MemberIdentity): Promise<EventSummary[]>;
   get(member: MemberIdentity, id: string): Promise<EventView>;
+  revision(member: MemberIdentity, id: string): Promise<number>;
   history(
     member: MemberIdentity,
     id: string,
@@ -149,6 +151,14 @@ async function clock(client: Transaction): Promise<Date> {
     { now: Date }[]
   >`SELECT clock_timestamp() AS now`;
   return row.now;
+}
+async function requireSignupOpen(
+  client: Transaction,
+  event: { id: string; signupClosesAt: Date },
+): Promise<void> {
+  if ((await clock(client)) >= event.signupClosesAt ||
+    await client.foreverRaidRosterPublication.findFirst({ where: { eventId: event.id }, select: { id: true } }))
+    throw new HttpError(409, "Signups have closed.");
 }
 async function lockedEvent(
   client: Transaction,
@@ -316,6 +326,8 @@ function view(event: StoredEvent, member: MemberIdentity): EventView {
     faction: event.faction,
     ruleset: event.ruleset,
     description: event.description,
+    leaderName: event.leaderName,
+    assistantName: event.assistantName,
     startsAt: event.startsAt.toISOString(),
     endsAt: event.endsAt.toISOString(),
     signupClosesAt: event.signupClosesAt.toISOString(),
@@ -359,6 +371,7 @@ function view(event: StoredEvent, member: MemberIdentity): EventView {
         partyIndex: signup.partyIndex,
         slotIndex: signup.slotIndex,
         isMine: signup.memberId === member.id,
+      rosterDirectMessages: signup.rosterDirectMessages,
         reserves: signup.reserves,
         needsAcknowledgement:
           signup.policyChecksum !== eventPolicyChecksum(event) ||
@@ -531,7 +544,26 @@ export function raidService(
       });
       if (!event) throw new HttpError(404, "Event not found.");
       authorize(event, member);
-      return view(event, member);
+      const result = view(event, member);
+      result.rosterPublished = Boolean(await connection.foreverRaidRosterPublication.findFirst({ where: { eventId: id }, select: { id: true } }));
+      const replies = await connection.foreverRaidRosterInvitation.findMany({ where: { eventId: id }, select: { signupId: true, state: true } });
+      for (const signup of result.signups) signup.attendanceReply = replies.find((reply) => reply.signupId === signup.id)?.state;
+      return result;
+    },
+    async revision(member: MemberIdentity, id: string): Promise<number> {
+      await assertMember(connection, member);
+      const event = await connection.foreverRaidEvent.findUnique({
+        where: { id },
+        select: {
+          version: true,
+          audience: true,
+          organizerId: true,
+          discordPost: true,
+        },
+      });
+      if (!event) throw new HttpError(404, "Event not found.");
+      authorize(event, member);
+      return event.version;
     },
     async history(
       member: MemberIdentity,
@@ -673,6 +705,8 @@ export function raidService(
             faction: input.faction,
             ruleset: input.ruleset,
             description: input.description,
+            leaderName: input.leaderName || member.displayName.slice(0, 80),
+            assistantName: input.assistantName,
             ...times,
             capacity: input.capacity,
             roleCaps: input.roleCaps,
@@ -784,8 +818,7 @@ export function raidService(
       if (!event) throw new HttpError(404, "Event not found.");
       authorize(event, member, true);
       requireOpen(event);
-      if ((await clock(connection)) >= event.signupClosesAt)
-        throw new HttpError(409, "Signups have closed.");
+      await requireSignupOpen(connection, event);
       const source = signupImportSource(text);
       const members = await connection.foreverMember.findMany({
         where: { discordId: { in: source.signUps.map((row) => row.userId) } },
@@ -914,8 +947,7 @@ export function raidService(
             409,
             "The event changed. Preview the export again before importing.",
           );
-        if ((await clock(client)) >= event.signupClosesAt)
-          throw new HttpError(409, "Signups have closed.");
+        await requireSignupOpen(client, event);
         for (const selection of input.selections) {
           if (!source.signUps.some((row) => row.userId === selection.userId))
             throw new HttpError(
@@ -1146,8 +1178,7 @@ export function raidService(
         const event = await lockedEvent(client, id);
         authorize(event, member);
         requireOpen(event);
-        if ((await clock(client)) >= event.signupClosesAt)
-          throw new HttpError(409, "Signups have closed.");
+        await requireSignupOpen(client, event);
         if (
           (event.policyRevision > 0 || input.policyChecksum !== undefined) &&
           input.policyChecksum !== eventPolicyChecksum(event)
@@ -1194,10 +1225,12 @@ export function raidService(
         const old = event.signups.find(
           (signup) => signup.memberId === member.id,
         );
-        const sameSpecialization =
-          old !== undefined &&
-          storedCharacterSchema.parse(old.character).specialization ===
-            snapshot.specialization;
+        const oldCharacter = old
+          ? storedCharacterSchema.parse(old.character)
+          : null;
+        const sameBuild =
+          oldCharacter?.className === snapshot.className &&
+          oldCharacter?.specialization === snapshot.specialization;
         const policyChecksum = eventPolicyChecksum(event);
         const sameSignup =
           old !== undefined &&
@@ -1205,7 +1238,7 @@ export function raidService(
             ? participatingStatuses.some((status) => status === old.status)
             : old.status === input.attendance) &&
           old?.characterId === character.id &&
-          sameSpecialization &&
+          sameBuild &&
           old.role === input.role;
         if (sameSignup && old.policyChecksum === policyChecksum) return;
         const available = seatAvailable(
@@ -1235,7 +1268,7 @@ export function raidService(
           input.attendance === "joining" &&
           old?.characterId === character.id &&
           participatingStatuses.some((status) => status === old.status) &&
-          sameSpecialization
+          sameBuild
             ? old.reserves
             : [];
         const limit = reserveQuota(
@@ -1462,6 +1495,50 @@ export function raidService(
           return;
         }
         requireOpen(event);
+        if (input.action === "edit_signup_character") {
+          if ((await clock(client)) >= event.signupClosesAt)
+            throw new HttpError(409, "Roster changes have closed.");
+          const signup = event.signups.find(
+            (row) => row.id === input.signupId && row.status !== "withdrawn",
+          );
+          if (!signup) throw new HttpError(404, "Signup not found.");
+          const previous = storedCharacterSchema.parse(signup.character);
+          const character = storedCharacterSchema.parse({
+            ...previous,
+            className: input.character.className,
+            specialization: input.character.specialization,
+          });
+          if (
+            previous.className === character.className &&
+            previous.specialization === character.specialization
+          )
+            return;
+          if (signup.reserves.length > 0 && !input.character.clearReserves)
+            throw new HttpError(
+              409,
+              "Changing class or specialization clears this player's soft reserves. Confirm clearing them before saving.",
+            );
+          // Signup snapshots are event-local; an organizer cannot rewrite another member's profile.
+          await client.foreverRaidSignup.update({
+            where: { id: signup.id },
+            data: { character, reserves: [] },
+          });
+          await audit(client, id, member.id, "signup_character_updated", {
+            signupId: signup.id,
+            characterName: character.name,
+            before: {
+              className: previous.className,
+              specialization: previous.specialization,
+              reserves: signup.reserves,
+            },
+            after: {
+              className: character.className,
+              specialization: character.specialization,
+              reserves: [],
+            },
+          });
+          return;
+        }
         if (input.action === "edit") {
           const settings = input.settings;
           const times = validateEvent(settings, await clock(client), event);
@@ -1558,6 +1635,8 @@ export function raidService(
             faction: settings.faction,
             ruleset: settings.ruleset,
             description: settings.description,
+            leaderName: settings.leaderName ?? event.leaderName,
+            assistantName: settings.assistantName ?? event.assistantName,
             capacity: settings.capacity,
             roleCaps: settings.roleCaps,
             admission: settings.admission,
@@ -1780,6 +1859,7 @@ export function raidService(
           });
           return;
         }
+        await assertRosterRepliesBeforeLock(client, id);
         const lockedAt = await clock(client);
         const policyChecksum = eventPolicyChecksum(event);
         if (
@@ -1885,9 +1965,10 @@ export function raidService(
       authorize(event, member, true);
       if (!event.snapshot)
         throw new HttpError(409, "Lock the roster before exporting.");
+      const amendment = await connection.foreverRaidRosterAmendment.findFirst({ where: { eventId: id }, orderBy: { revision: "desc" } });
       return {
-        payload: event.snapshot.payload,
-        checksum: event.snapshot.checksum,
+        payload: amendment?.payload ?? event.snapshot.payload,
+        checksum: amendment?.checksum ?? event.snapshot.checksum,
       };
     },
   };

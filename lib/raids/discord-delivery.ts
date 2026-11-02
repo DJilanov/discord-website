@@ -4,7 +4,11 @@ import { join } from "node:path";
 import { z } from "zod";
 import type { PrismaClient } from "@prisma/client";
 import { raidService } from "./service";
-import { discordEventPanel, raidPostMarker } from "./discord-panel";
+import {
+  discordEventPanel,
+  raidPostMarker,
+  raidControlsSignature,
+} from "./discord-panel";
 import type { RaidDiscordSettings } from "./discord-settings";
 import { pilotDiscordIds, memberBetaEnabled } from "./config";
 import { eventArtwork, isEventArtworkFile } from "./event-artwork";
@@ -141,6 +145,7 @@ const messageSchema = z.object({
   id: z.string().regex(/^\d{17,20}$/),
   channel_id: z.string(),
   content: z.string().optional(),
+  components: z.array(z.unknown()).default([]),
   author: z.object({ id: z.string(), bot: z.literal(true) }),
   embeds: z
     .array(
@@ -428,18 +433,20 @@ export async function deliverRaidPosts(
         );
         const expected = body.embeds[0];
         shouldUpdate ||=
+          raidControlsSignature(existing.components) !==
+            raidControlsSignature(body.components) ||
           JSON.stringify({
             title: existingEmbed?.title,
             description: existingEmbed?.description,
             color: existingEmbed?.color,
             fields: existingEmbed?.fields,
           }) !==
-          JSON.stringify({
-            title: expected.title,
-            description: expected.description,
-            color: expected.color,
-            fields: expected.fields,
-          });
+            JSON.stringify({
+              title: expected.title,
+              description: expected.description,
+              color: expected.color,
+              fields: expected.fields,
+            });
         if (shouldUpdate) {
           if (thread?.thread_metadata.archived) {
             const reopened = raidForumThreadSchema.parse(

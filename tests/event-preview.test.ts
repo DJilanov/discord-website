@@ -45,6 +45,7 @@ test("Registered, pending and benched signups do not consume confirmed places", 
     true,
   );
   assert.equal(summary.confirmed.length, 1);
+  assert.equal(summary.signedUp.length, 4);
   assert.equal(summary.registered.length, 1);
   assert.equal(summary.pending.length, 1);
   assert.equal(summary.bench.length, 1);
@@ -53,6 +54,43 @@ test("Registered, pending and benched signups do not consume confirmed places", 
   assert.deepEqual(
     summary.groups.map((group) => group.openPlaces),
     [0, 1, 3],
+  );
+});
+test("Confirming all four players does not reduce the signed-up total to zero", () => {
+  const players = Array.from({ length: 4 }, (_, index) =>
+    signup(`player-${index}`, "registered"),
+  );
+  for (let confirmed = 0; confirmed <= players.length; confirmed += 1) {
+    const summary = summarizeEventRoster(
+      players.map((player, index) => ({
+        ...player,
+        status: index < confirmed ? "accepted" : "registered",
+      })),
+      5,
+      partyCaps,
+      true,
+    );
+    assert.equal(summary.signedUp.length, 4);
+    assert.equal(summary.confirmed.length, confirmed);
+    assert.equal(summary.registered.length, 4 - confirmed);
+    assert.equal(summary.available, 5 - confirmed);
+  }
+});
+test("Tentative, absent and withdrawn responses are not counted as signups", () => {
+  const summary = summarizeEventRoster(
+    [
+      signup("joined", "accepted"),
+      signup("tentative", "tentative"),
+      signup("absent", "absent"),
+      signup("withdrawn", "withdrawn"),
+    ],
+    5,
+    partyCaps,
+    true,
+  );
+  assert.deepEqual(
+    summary.signedUp.map((player) => player.id),
+    ["joined"],
   );
 });
 test("Five-person parties expose exactly five confirmed or open slots", () => {

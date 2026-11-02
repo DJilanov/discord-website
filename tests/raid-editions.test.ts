@@ -116,6 +116,8 @@ test("TBC presets cover nine raids with editable 10/25-person roster defaults", 
 test("Channel choices expose labels and IDs only; forged and removed destinations fail closed", () => {
   const values = {
     FOREVER_RAIDS_ENABLED: "true",
+    FOREVER_RAIDS_ACCESS_MODE: "pilot",
+    FOREVER_RAIDS_PILOT_DISCORD_IDS: "1556000000000000001",
     FOREVER_RAIDS_DISCORD_ENABLED: "true",
     DISCORD_GUILD_ID: "1556000000000000010",
     DISCORD_APPLICATION_ID: "1556000000000000012",

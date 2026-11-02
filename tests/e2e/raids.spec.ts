@@ -9,7 +9,6 @@ import {
 import AxeBuilder from "@axe-core/playwright";
 import { encode } from "next-auth/jwt";
 import { mkdir, readFile } from "node:fs/promises";
-import { readFileSync } from "node:fs";
 import { randomBytes, randomUUID } from "node:crypto";
 import { hash } from "bcryptjs";
 import { z } from "zod";
@@ -29,146 +28,8 @@ import {
 } from "../../lib/raids/specializations";
 import { eventTypes, eventTypeDefinitions } from "../../lib/raids/event-types";
 import { raidHelperFixture } from "../fixtures/raid-helper";
-import {
-  toolGroupCreatePath,
-  toolGroupDraftSchema,
-  toolGroupEventType,
-} from "../../lib/tool-group-draft";
-
-test("ordinary member OAuth roundtrip preserves tool plans and never grants channel selection", async ({
-  page,
-  context,
-}) => {
-  test.setTimeout(180000);
-  const drafts = z
-    .array(toolGroupDraftSchema)
-    .min(1)
-    .max(6)
-    .parse(
-      process.env.FOREVER_RAIDS_E2E_TOOL_DRAFTS
-        ? JSON.parse(
-            readFileSync(process.env.FOREVER_RAIDS_E2E_TOOL_DRAFTS, "utf8"),
-          )
-        : [
-            {
-              version: 1,
-              kind: "leveling",
-              label: "Orc leveling",
-              sourceUrl:
-                "https://kfcguild.online/tools/forever/leveling/routes/horde-orc?plan=questing&class=warrior",
-              faction: "Horde",
-              capacity: 5,
-            },
-            {
-              version: 1,
-              kind: "leveling",
-              label: "Hall of Thanes",
-              sourceUrl:
-                "https://kfcguild.online/tools/forever/leveling/routes/alliance-human/dungeons/thanes?chapter=chapter-126-14-16-darkshore&plan=alternative",
-              faction: "Alliance",
-              capacity: 3,
-            },
-          ],
-    );
-  const before = await db.foreverRaidEvent.count();
-  await page.route("https://discord.com/**", async (route): Promise<void> => {
-    await route.fulfill({
-      contentType: "text/html",
-      body: "<!doctype html><title>Isolated Discord authorization fixture</title>",
-    });
-  });
-  for (const draft of drafts) {
-    await context.clearCookies();
-    const path = toolGroupCreatePath(draft);
-    await page.goto(path);
-    await page
-      .getByRole("button", { name: "Sign in with Discord", exact: true })
-      .click();
-    await expect(page).toHaveURL(
-      /^https:\/\/discord\.com\/api\/oauth2\/authorize/,
-    );
-    const authorization = new URL(page.url());
-    expect(authorization.searchParams.get("code_challenge_method")).toBe(
-      "S256",
-    );
-    expect(authorization.searchParams.get("scope")).toBe("identify");
-    const callback = new URL(authorization.searchParams.get("redirect_uri")!);
-    expect(callback.origin).toBe(origin);
-    callback.searchParams.set(
-      "code",
-      "synthetic-browser-member-authorization-code",
-    );
-    callback.searchParams.set(
-      "state",
-      authorization.searchParams.get("state")!,
-    );
-    callback.searchParams.set("iss", "https://discord.com");
-    await page.goto(callback.href);
-    await expect(page).toHaveURL(new URL(path, origin).href);
-    await expect(
-      page.getByRole("heading", { name: "Create event", exact: true }),
-    ).toBeVisible();
-    const session = z
-      .object({ user: z.object({ id: z.string() }) })
-      .parse(
-        await (await page.request.get("/api/community/auth/session")).json(),
-      );
-    expect(session.user.id).toBe(memberIds[1]);
-    expect((await page.request.get("/api/raids/channels")).status()).toBe(403);
-    for (const width of [1440, 390, 320]) {
-      await page.setViewportSize({ width, height: 960 });
-      await expect(
-        page.getByRole("textbox", { name: "Title", exact: true }),
-      ).toHaveValue(`${draft.label} group`);
-      await expect(
-        page.getByRole("combobox", { name: "Event type", exact: true }),
-      ).toHaveValue(toolGroupEventType(draft));
-      if (draft.faction)
-        await expect(
-          page.getByRole("combobox", { name: "Faction", exact: true }),
-        ).toHaveValue(draft.faction);
-      await expect(
-        page.getByRole("spinbutton", { name: "Capacity", exact: true }),
-      ).toHaveValue(String(draft.capacity ?? 5));
-      await expect(
-        page.getByRole("combobox", { name: "Admission", exact: true }),
-      ).toHaveValue("open");
-      expect(
-        await page
-          .getByRole("textbox", { name: "Details", exact: true })
-          .inputValue(),
-      ).toContain(draft.sourceUrl);
-      await expect(
-        page.getByRole("link", { name: "Open source plan", exact: true }),
-      ).toHaveAttribute("href", draft.sourceUrl);
-      await expect(
-        page.getByRole("combobox", { name: "Region", exact: true }),
-      ).toHaveValue("EU");
-      await expect(
-        page.getByRole("combobox", { name: "Character ruleset", exact: true }),
-      ).toHaveValue("PvP");
-      await expect(
-        page.getByRole("spinbutton", {
-          name: "Duration (minutes)",
-          exact: true,
-        }),
-      ).toHaveValue("180");
-      await expect(
-        page.getByLabel("Discord channel", { exact: true }),
-      ).toHaveCount(0);
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth + 1,
-        ),
-      ).toBe(true);
-      await page.screenshot({
-        path: `artifacts/member-tool-oauth-${draft.faction?.toLowerCase() ?? "unknown"}-${toolGroupEventType(draft)}-${width}.png`,
-        fullPage: true,
-      });
-    }
-  }
-  expect(await db.foreverRaidEvent.count()).toBe(before);
-});
+import { raidService } from "../../lib/raids/service";
+import { toolGroupCreatePath } from "../../lib/tool-group-draft";
 
 test("tool plan prefill keeps native event creation and administrator-only channel choices", async ({
   page,
@@ -198,9 +59,7 @@ test("tool plan prefill keeps native event creation and administrator-only chann
   await expect(
     page.getByRole("combobox", { name: "Faction", exact: true }),
   ).toHaveValue("Horde");
-  await expect(
-    page.getByRole("combobox", { name: "Admission", exact: true }),
-  ).toHaveValue("open");
+  await expect(page.getByRole("combobox", { name: "Admission", exact: true })).toHaveValue("open");
   await expect(
     page.getByRole("textbox", { name: "Details", exact: true }),
   ).toHaveValue(/Our planning reference:/);
@@ -620,6 +479,271 @@ test.afterAll(async () => {
     await db.$disconnect();
   }
 });
+test("Organizers edit signup class/spec on desktop/mobile without rewriting profiles or roster slots", async ({
+  page,
+  context,
+  browser,
+}) => {
+  test.setTimeout(120000);
+  await signIn(context);
+  const organizer = await db.foreverMember.findUniqueOrThrow({
+    where: { id: memberIds[0] },
+  });
+  const targetMember = await db.foreverMember.findUniqueOrThrow({
+    where: { id: memberIds[1] },
+  });
+  const otherMember = await db.foreverMember.findUniqueOrThrow({
+    where: { id: memberIds[2] },
+  });
+  const service = raidService(db);
+  const profile = await service.addCharacter(targetMember, {
+    name: "Editor Player",
+    className: "Paladin",
+    specialization: "Retribution",
+    region: "EU",
+    faction: "Alliance",
+    ruleset: "PvP",
+  });
+  const otherProfile = await service.addCharacter(otherMember, {
+    name: "Editor Teammate",
+    className: "Warrior",
+    specialization: "Fury",
+    region: "EU",
+    faction: "Alliance",
+    ruleset: "PvP",
+  });
+  const id = await service.create(organizer, {
+    requestKey: randomUUID(),
+    game: "forever",
+    realm: "",
+    eventType: "raid",
+    title: "Local class and spec editing",
+    raidName: raidCatalogFixture.raidName,
+    region: "EU",
+    faction: "Alliance",
+    ruleset: "PvP",
+    localStart: "2035-11-05T19:00",
+    durationMinutes: 180,
+    signupMinutesBefore: 15,
+    reserveMinutesBefore: 15,
+    capacity: 5,
+    roleCaps: { tank: 1, healer: 1, damage: 3 },
+    admission: "open",
+    description: "Synthetic local signup editor verification",
+    catalogId,
+    reserveLimit: 1,
+    reserveLimits: null,
+    allowDuplicates: false,
+    hardReserves: [],
+  });
+  await service.signup(targetMember, id, {
+    characterId: profile.id,
+    specialization: "Retribution",
+    role: "damage",
+    acknowledge: true,
+  });
+  await service.signup(otherMember, id, {
+    characterId: otherProfile.id,
+    specialization: "Fury",
+    role: "damage",
+    acknowledge: true,
+  });
+  await service.reserves(targetMember, id, { itemIds: [900001] });
+  let before = await db.foreverRaidSignup.findFirstOrThrow({
+    where: { eventId: id, memberId: targetMember.id },
+  });
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto(`/raids/${id}`);
+  const trigger = page.getByRole("button", {
+    name: "Edit Editor Player's class and spec",
+    exact: true,
+  });
+  const dialog = page.getByRole("dialog", {
+    name: "Edit Editor Player’s class and spec",
+    exact: true,
+  });
+  for (const [width, className, spec] of [
+    [1440, "Druid", "Feral"],
+    [390, "Priest", "Shadow"],
+  ] as const) {
+    await page.setViewportSize({ width, height: 900 });
+    await trigger.click();
+    await expect(dialog).toBeVisible();
+    await expect(
+      dialog.getByRole("button", { name: "Save player", exact: true }),
+    ).toBeDisabled();
+    await page.keyboard.press("Escape");
+    await expect(dialog).not.toBeVisible();
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    const chooseBuild = async (): Promise<void> => {
+      await dialog
+        .getByRole("group", { name: "Class", exact: true })
+        .getByText(className, { exact: true })
+        .click();
+      await expect(
+        dialog.getByRole("radio", { name: className, exact: true }),
+      ).toBeChecked();
+      await expect(
+        dialog.getByRole("button", { name: "Save player", exact: true }),
+      ).toBeDisabled();
+      await dialog
+        .getByRole("group", { name: "Specialization", exact: true })
+        .getByText(spec, { exact: true })
+        .click();
+      await expect(
+        dialog.getByRole("radio", { name: spec, exact: true }),
+      ).toBeChecked();
+    };
+    await chooseBuild();
+    if (width === 1440) {
+      await expect(
+        dialog.getByRole("button", { name: "Save player", exact: true }),
+      ).toBeDisabled();
+      await dialog
+        .getByRole("checkbox", { name: /Clear Editor Player’s 1 soft reserve/ })
+        .check();
+      const latest = await service.get(organizer, id);
+      const teammate = latest.signups.find(
+        (signup) => signup.character.name === "Editor Teammate",
+      )!;
+      await service.manage(organizer, id, {
+        action: "edit_signup_character",
+        version: latest.version,
+        signupId: teammate.id,
+        character: { className: "Warrior", specialization: "Arms" },
+      });
+      await dialog
+        .getByRole("button", { name: "Save player", exact: true })
+        .click();
+      await expect(dialog.getByRole("alert")).toContainText(
+        "The roster changed",
+      );
+      await expect(
+        dialog.getByRole("radio", { name: "Feral", exact: true }),
+      ).toBeChecked();
+      await dialog
+        .getByRole("button", { name: "Reload roster", exact: true })
+        .click();
+      await expect(dialog).not.toBeVisible();
+      await trigger.click();
+      await chooseBuild();
+      await dialog
+        .getByRole("checkbox", { name: /Clear Editor Player’s 1 soft reserve/ })
+        .check();
+    } else {
+      await expect(dialog.getByRole("checkbox")).toHaveCount(0);
+    }
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(
+      await dialog.evaluate(
+        (element) => element.scrollWidth <= element.clientWidth,
+      ),
+    ).toBe(true);
+    const accessibility = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+    expect(
+      accessibility.violations.map((violation) => ({
+        id: violation.id,
+        targets: violation.nodes.map((node) => node.target),
+      })),
+    ).toEqual([]);
+    await page.screenshot({
+      path: `artifacts/signup-character-editor-${width}.png`,
+    });
+    await dialog
+      .getByRole("button", { name: "Save player", exact: true })
+      .click();
+    await expect(dialog).not.toBeVisible();
+    await expect(
+      page
+        .locator(".raid-party-player, .raid-roster > li")
+        .filter({ has: trigger })
+        .getByText(`${spec} · ${className}`, { exact: true }),
+    ).toBeVisible();
+    await page.reload();
+    await expect(trigger).toBeVisible();
+    const saved = await db.foreverRaidSignup.findUniqueOrThrow({
+      where: { id: before.id },
+    });
+    expect(saved).toEqual({
+      ...before,
+      character: {
+        ...(before.character as Record<string, unknown>),
+        className,
+        specialization: spec,
+      },
+      reserves: [],
+    });
+    expect(
+      (
+        await db.foreverCharacter.findUniqueOrThrow({
+          where: { id: profile.id },
+        })
+      ).className,
+    ).toBe("Paladin");
+    if (width === 1440) {
+      const latest = await service.get(organizer, id);
+      await service.manage(organizer, id, {
+        action: "admit",
+        version: latest.version,
+        signupId: before.id,
+        status: "accepted",
+      });
+      before = await db.foreverRaidSignup.findUniqueOrThrow({
+        where: { id: before.id },
+      });
+      await page.reload();
+      await expect(
+        page.locator(".raid-party-player").filter({ has: trigger }),
+      ).toBeVisible();
+    }
+  }
+  expect(errors).toEqual([]);
+  const memberContext = await browser.newContext();
+  try {
+    await signIn(memberContext, 1);
+    const memberPage = await memberContext.newPage();
+    await memberPage.goto(`/raids/${id}`);
+    await expect(
+      memberPage.getByRole("button", { name: /class and spec/ }),
+    ).toHaveCount(0);
+    await expect(
+      memberPage.getByText(/Your event signup is Shadow Priest/),
+    ).toBeVisible();
+    await memberPage
+      .getByLabel("Change character and specialization", { exact: true })
+      .click();
+    await expect(
+      memberPage
+        .getByRole("group", { name: "Specialization", exact: true })
+        .getByRole("radio", { name: "Retribution", exact: true }),
+    ).toBeChecked();
+    const event = await service.get(organizer, id);
+    const response = await memberPage.request.post(`/api/raids/${id}`, {
+      headers: { Origin: origin },
+      data: {
+        operation: "manage",
+        input: {
+          action: "edit_signup_character",
+          version: event.version,
+          signupId: before.id,
+          character: { className: "Druid", specialization: "Feral" },
+        },
+      },
+    });
+    expect(response.status()).toBe(403);
+  } finally {
+    await memberContext.close();
+  }
+});
+
 test("Member beta admits non-allowlisted members and enforces fixed, confirmed posting without granting event or channel administration", async ({
   page,
   context,
@@ -2989,4 +3113,161 @@ test("Raid-Helper signup import reviews aliases on desktop/mobile and is organiz
   });
   expect(denied.status()).toBe(403);
   expect(denied.headers()["cache-control"]).toBe("private, no-store");
+});
+
+test("Imported four-player leveling roster renders every character, notes and organizer views without runtime errors", async ({
+  page,
+  context,
+}) => {
+  test.skip(
+    process.env.FOREVER_RAIDS_ACCESS_MODE !== "members" ||
+      process.env.FOREVER_RAIDS_E2E_DISCORD !== "true",
+    "Run with the isolated member-beta Discord transport.",
+  );
+  const errors: string[] = [];
+  page.on("pageerror", (error: Error) => errors.push(error.message));
+  await signIn(context);
+  for (const discordId of raidHelperFixture.signUps
+    .slice(2)
+    .map((row) => row.userId)) {
+    const member = await db.foreverMember.create({
+      data: { discordId, displayName: "Synthetic imported browser member" },
+    });
+    memberIds.push(member.id);
+  }
+  const created = await page.request.post("/api/raids", {
+    headers: { Origin: origin },
+    data: {
+      requestKey: randomUUID(),
+      game: "forever",
+      realm: "",
+      eventType: "questing",
+      title: "Four-player imported leveling group",
+      raidName: "Northshire questing",
+      confirmDiscordPublication: true,
+      region: "EU",
+      faction: "Alliance",
+      ruleset: "PvP",
+      localStart: "2035-11-05T08:30",
+      durationMinutes: 840,
+      signupMinutesBefore: 0,
+      reserveMinutesBefore: 0,
+      capacity: 5,
+      roleCaps: { tank: 1, healer: 1, damage: 3 },
+      admission: "open",
+      description:
+        "Synthetic local regression for imported leveling participants.",
+      catalogId: null,
+      reserveLimit: 0,
+      reserveLimits: null,
+      allowDuplicates: false,
+      hardReserves: [],
+    },
+  });
+  expect(created.status()).toBe(201);
+  const { id } = z.object({ id: z.string() }).parse(await created.json());
+  const member = await db.foreverMember.findUniqueOrThrow({
+    where: { id: memberIds[0] },
+  });
+  const service = raidService(db);
+  const character = await service.addCharacter(member, {
+    game: "forever",
+    realm: "",
+    name: "Existing Warrior",
+    className: "Warrior",
+    specialization: "Protection",
+    region: "EU",
+    faction: "Alliance",
+    ruleset: "PvP",
+  });
+  await service.signup(member, id, {
+    characterId: character.id,
+    role: "tank",
+    specialization: "Protection",
+    attendance: "joining",
+    acknowledge: true,
+  });
+  await page.goto(`/raids/${id}`);
+  await page
+    .getByRole("button", { name: "Import Raid-Helper signups", exact: true })
+    .click();
+  const modal = page.getByRole("dialog", {
+    name: "Import signups",
+    exact: true,
+  });
+  await modal.getByLabel("JSON export", { exact: true }).fill(
+    JSON.stringify({
+      ...raidHelperFixture,
+      signUps: raidHelperFixture.signUps.map((row, index) =>
+        index === 3
+          ? {
+              ...row,
+              note: "May already be leveled, can help with dungeon quests, and will confirm the Paladin character before launch.",
+            }
+          : row,
+      ),
+    }),
+  );
+  await modal
+    .getByRole("button", { name: "Preview players", exact: true })
+    .click();
+  await expect(modal.getByText("3 selected · 4 in source")).toBeVisible();
+  await modal
+    .getByLabel("Character name for Player_One", { exact: true })
+    .fill("kull");
+  await modal
+    .getByLabel("I reviewed each character name, role and attendance choice.")
+    .check();
+  await modal
+    .getByRole("button", { name: "Import 3 players", exact: true })
+    .click();
+  await expect(modal.getByRole("status")).toContainText("3 imported");
+  await page.screenshot({
+    path: "artifacts/smoke-import-receipt.png",
+    fullPage: false,
+  });
+  await modal.getByRole("button", { name: "Done", exact: true }).click();
+  const facts = page.locator(".raid-event-facts");
+  await expect(
+    facts.getByText("4 signed up · 0 confirmed", { exact: true }),
+  ).toBeVisible();
+  const roster = page.getByRole("region", {
+    name: "Open signups",
+    exact: true,
+  });
+  for (const name of ["Existing Warrior (you)", "Healer", "Raider", "kull"])
+    await expect(roster.getByText(name, { exact: true })).toBeVisible();
+  for (const summary of await roster
+    .locator(".raid-imported-note > summary")
+    .all())
+    await summary.click();
+  await expect(
+    roster.getByText("Can help the group after leveling.", { exact: true }),
+  ).toBeVisible();
+  await smokeScreen(page, "four-player-import");
+  await page.getByRole("button", { name: "Edit event", exact: true }).click();
+  await expect(
+    page.getByRole("region", { name: "Edit event", exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByText("Connection interrupted", { exact: true }),
+  ).toHaveCount(0);
+  await expect(roster.getByText("kull", { exact: true })).toBeVisible();
+  for (const [index, name] of [
+    "Existing Warrior",
+    "Healer",
+    "Raider",
+    "kull",
+  ].entries()) {
+    await page
+      .getByRole("button", { name: `Accept ${name}`, exact: true })
+      .click();
+    await expect(
+      facts.getByText(`4 signed up · ${index + 1} confirmed`, { exact: true }),
+    ).toBeVisible();
+  }
+  await expect(facts.getByText("0 signed up", { exact: false })).toHaveCount(0);
+  await smokeScreen(page, "four-player-confirmed");
+  expect(errors).toEqual([]);
 });

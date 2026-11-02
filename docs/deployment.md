@@ -44,6 +44,13 @@ arguments. Keep this check, actual browser checks and deployment build validatio
 
 ## Host Layout
 
+October 4 leveling preview: active build `.next-release-leveling-20261004-r1` adds only the public
+Helper leveling link and honest preview coverage to `/addons`. No migration or worker change was
+needed. The previous build is `.next-release-research-20261004-r3`; its two original listing source
+files are retained under `.data/private/leveling-source-20261004-r1` for rollback. Restore those two
+files before activating the previous build if rolling back. The staged and live listing/health checks
+passed, following local typecheck/targeted lint and 312 tests plus the Linux production build.
+
 - Host: `89.167.46.193`; DNS apex and www point to this host.
 - Project: `/home/wow-forever-discord`.
 - PM2 process: `wow-forever-discord`, running as system user `wowforever`.
@@ -133,6 +140,12 @@ The shared-channel worker is a separate deployment and OS/database identity, not
 part of `deploy/activate.sh`. See [its release runbook](shared-channels-release.md)
 before changing its secrets, runtime, commands, channel approvals or PM2 process.
 Restarting it deliberately stops publication and invalidates participation.
+
+The allowlisted event manager is hosted alongside the website with the separate
+PM2 worker `wow-forever-raids`. See [native raid operations](raid-native-release.md)
+for its configuration, scoped deployment, command registration and rollback.
+The native release also backs up trigger functions required by the raid tables;
+restore those before post-data triggers when recovering a table-filtered dump.
 
 ## Backups And Recovery
 

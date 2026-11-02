@@ -5,6 +5,7 @@ import { HttpError } from "@/lib/security";
 
 const snowflake = z.string().regex(/^\d{17,20}$/);
 export const nativeActionSchema = z.enum([
+  "notifications",
   "join",
   "tentative",
   "absent",
@@ -174,6 +175,9 @@ export interface NativeMessage {
     title: string;
     description: string;
     color: number;
+    url?: string;
+    image?: { url: string };
+    fields?: Array<{ name: string; value: string; inline?: boolean }>;
     footer?: { text: string };
   }>;
   components: NativeRow[];
@@ -253,31 +257,63 @@ const selectSchema = z.object({
   min_values: z.literal(1),
   max_values: z.literal(1),
 });
-export const nativeMessageSchema: z.ZodType<NativeMessage> = z.object({
-  content: z.string().max(2000),
-  allowed_mentions: noMentions,
-  embeds: z
-    .array(
-      z.object({
-        title: z.string().max(256),
-        description: z.string().max(4096),
-        color: z.number().int().min(0).max(0xffffff),
-        footer: z.object({ text: z.string().max(2048) }).optional(),
-      }),
-    )
-    .max(1),
-  components: z
-    .array(
-      z.object({
-        type: z.literal(1),
-        components: z.union([
-          z.array(buttonSchema).min(1).max(5),
-          z.tuple([selectSchema]),
-        ]),
-      }),
-    )
-    .max(5),
-});
+export const nativeMessageSchema: z.ZodType<NativeMessage> = z
+  .object({
+    content: z.string().max(2000),
+    allowed_mentions: noMentions,
+    embeds: z
+      .array(
+        z.object({
+          title: z.string().max(256),
+          description: z.string().max(4096),
+          color: z.number().int().min(0).max(0xffffff),
+          url: z.url().optional(),
+          image: z.object({ url: z.url() }).optional(),
+          fields: z
+            .array(
+              z.object({
+                name: z.string().min(1).max(256),
+                value: z.string().min(1).max(1024),
+                inline: z.boolean().optional(),
+              }),
+            )
+            .max(25)
+            .optional(),
+          footer: z.object({ text: z.string().max(2048) }).optional(),
+        }),
+      )
+      .max(1),
+    components: z
+      .array(
+        z.object({
+          type: z.literal(1),
+          components: z.union([
+            z.array(buttonSchema).min(1).max(5),
+            z.tuple([selectSchema]),
+          ]),
+        }),
+      )
+      .max(5),
+  })
+  .refine(
+    (message) =>
+      message.embeds.reduce(
+        (total, embed) =>
+          total +
+          embed.title.length +
+          embed.description.length +
+          (embed.footer?.text.length ?? 0) +
+          (embed.fields?.reduce(
+            (sum, field) => sum + field.name.length + field.value.length,
+            0,
+          ) ?? 0),
+        0,
+      ) <= 6000,
+    {
+      message: "Discord embeds must fit within 6,000 characters.",
+      path: ["embeds"],
+    },
+  );
 export const nativeAcknowledgementSchema: z.ZodType<NativeAcknowledgement> =
   z.discriminatedUnion("type", [
     z.object({ type: z.literal(5), data: z.object({ flags: z.literal(64) }) }),

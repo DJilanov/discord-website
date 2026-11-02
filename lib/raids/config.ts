@@ -1,6 +1,6 @@
 import { HttpError } from "@/lib/security";
 
-const fallbackKfcDiscordInvite = "https://discord.gg/WGv4APs9DY";
+const fallbackKfcDiscordInvite = "https://discord.gg/BT3CgxbqZF";
 
 export function kfcDiscordInviteUrl(
   environment: Readonly<Record<string, string | undefined>> = process.env,

@@ -72,7 +72,7 @@ export async function validateNativeSource(
     if (draft.expiresAt <= new Date())
       throw new HttpError(
         409,
-        "This private view expired. Reopen the original event post.",
+        "This private view expired. Reopen the original event post and check My signup for your saved result.",
       );
     if (draft.revision !== target.revision || draft.completedAt)
       throw new HttpError(

@@ -54,7 +54,7 @@ test("Signup import PostgreSQL: preview, atomic roster migration, replay and pla
       .filter(
         (name) =>
           name.endsWith(".sql") &&
-          ([1, 2, 13, 35, 36].includes(Number(name.slice(0, 3))) ||
+          ([1, 2, 13, 35, 36, 38].includes(Number(name.slice(0, 3))) ||
             (Number(name.slice(0, 3)) >= 14 && Number(name.slice(0, 3)) <= 33)),
       )
       .sort();

@@ -2,7 +2,10 @@ import "../scripts/env";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { z } from "zod";
-import { discordEventPanel } from "../lib/raids/discord-panel";
+import {
+  discordEventPanel,
+  raidControlsSignature,
+} from "../lib/raids/discord-panel";
 import { eventTypes, eventTypeDefinitions } from "../lib/raids/event-types";
 import {
   approveCommand,
@@ -11,6 +14,45 @@ import {
 } from "../lib/raids/approval";
 import { raidDiscordRequest } from "../lib/raids/discord-delivery";
 import type { EventView } from "../lib/raids/contracts";
+
+test("Published control comparisons detect new help buttons and ignore Discord-generated IDs", (): void => {
+  const before = [
+    {
+      type: 1,
+      components: [
+        {
+          type: 2,
+          style: 5,
+          label: "Event details",
+          url: "https://example.test/event",
+        },
+      ],
+    },
+  ];
+  const actual = [
+    {
+      ...before[0],
+      id: 1,
+      components: [{ ...before[0].components[0], id: 2, disabled: false }],
+    },
+  ];
+  assert.equal(raidControlsSignature(before), raidControlsSignature(actual));
+  const after = [
+    ...before,
+    {
+      type: 1,
+      components: [
+        {
+          type: 2,
+          style: 5,
+          label: "How to sign up",
+          url: "https://example.test/raids/help",
+        },
+      ],
+    },
+  ];
+  assert.notEqual(raidControlsSignature(before), raidControlsSignature(after));
+});
 
 test("Discord event panels cover every event type with bounded fields, no pings and honest website buttons", () => {
   const event: EventView = {
@@ -24,6 +66,8 @@ test("Discord event panels cover every event type with bounded fields, no pings 
     faction: "Alliance",
     ruleset: "PvP",
     description: "@everyone **test**",
+    leaderName: "Psyrogue",
+    assistantName: "DJ",
     startsAt: "2035-11-05T18:00:00.000Z",
     endsAt: "2035-11-05T21:00:00.000Z",
     signupClosesAt: "2035-11-05T17:45:00.000Z",
@@ -95,6 +139,14 @@ test("Discord event panels cover every event type with bounded fields, no pings 
       ),
     );
     const embed = panel.embeds[0];
+    assert.equal(
+      embed.fields.find((field) => field.name === "Leader")?.value,
+      "Psyrogue",
+    );
+    assert.equal(
+      embed.fields.find((field) => field.name === "Assistant")?.value,
+      "DJ",
+    );
     assert.ok(!("footer" in embed));
     assert.ok(!("timestamp" in embed));
     assert.ok(embed.description.includes(eventTypeDefinitions[type].label));
@@ -119,6 +171,27 @@ test("Discord event panels cover every event type with bounded fields, no pings 
         6000,
     );
   }
+  const rulesUrl =
+    "https://discord.com/channels/1411533815356194968/1411570010534449173/1566000000000000999";
+  const linked = discordEventPanel(
+    { ...event, description: `Rules: ${rulesUrl}` },
+    "https://www.wowforeverdiscord.online",
+  );
+  assert.ok(
+    linked.embeds[0].fields
+      .find((field) => field.name === "Loot")!
+      .value.includes(rulesUrl),
+  );
+  assert.ok(
+    linked.components.some((row) =>
+      row.components.some(
+        (button) =>
+          button.type === 2 &&
+          button.style === 5 &&
+          button.label === "Raid rules",
+      ),
+    ),
+  );
 });
 test("Administrator-only approval commands use explicit post targets and reject foreign links", () => {
   assert.equal(approveCommand.default_member_permissions, "0");

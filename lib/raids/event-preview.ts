@@ -72,7 +72,7 @@ export function summarizeEventRoster(
 export function signupStatusLabel(status: string): string {
   switch (status) {
     case "accepted":
-      return "Confirmed";
+      return "Selected";
     case "registered":
       return "Signed up";
     case "pending":
@@ -85,6 +85,25 @@ export function signupStatusLabel(status: string): string {
       return "Absent";
     default:
       return "Withdrawn";
+  }
+}
+
+export function signupStatusExplanation(status: string | undefined): string {
+  switch (status) {
+    case "accepted":
+      return "You are selected for the roster. Reply to an attendance invitation if the leader requests one.";
+    case "registered":
+      return "You're signed up. The leader will select the roster.";
+    case "pending":
+      return "Signup received. Awaiting the organizer's approval.";
+    case "bench":
+      return "You're on the bench. A place has not been confirmed.";
+    case "tentative":
+      return "You're marked as maybe attending. No seat is held.";
+    case "absent":
+      return "You're marked as unable to attend. No seat is held.";
+    default:
+      return "You are not signed up for this event. Use Sign up to join.";
   }
 }
 

@@ -1,4 +1,16 @@
 import { kfcResources, kfcRulesId } from "./kfc-community";
+import {
+  kfcNewcomerFooter,
+  kfcWelcomeComponents,
+  kfcForeverApplicationGuide,
+  kfcTbcApplicationDescription,
+} from "./kfc-raid-welcome";
+import {
+  kfcForeverJoiningComponents,
+  kfcForeverJoiningFooter,
+  kfcForeverJoiningTopic,
+  type KfcJoiningLinkRow,
+} from "./kfc-forever-joining";
 
 export const revision = "2026-10-09.1";
 export interface RevisionTarget {
@@ -78,17 +90,16 @@ export const revisionTargets: RevisionTarget[] = [
     id: "1411545946155909150",
     name: "tbc-application",
     parentId: "1441654698519040114",
-    readOnly: true,
+    readOnly: false,
     maintained: true,
     topic:
-      "Apply to KFC for The Burning Crusade. Read the pinned template and DM KFC Management privately. Existing applications remain below; public raid signup is separate.",
+      "Apply to the TBC guild here after community verification. Follow the pinned template; an officer confirms acceptance. KFC Certified is not required to apply. Public raid signup is separate.",
   },
   {
     id: "1411545672313737346",
     name: "joining-kfc",
     readOnly: true,
-    topic:
-      "Join KFC for TBC or WoW Forever. Choose the matching application channel; Forever: EU Alliance PvP, English. Public raid signup does not require guild membership.",
+    topic: kfcForeverJoiningTopic,
   },
   {
     id: "1411546507848454204",
@@ -467,8 +478,7 @@ export const newRevisionChannels: RevisionChannel[] = [
     name: "forever-application",
     type: 0,
     parentId: "1548517693957869619",
-    topic:
-      "Apply to KFC for WoW Forever: EU, Alliance, PvP, English. Read the pinned template and DM KFC Management privately. For a simple in-game invite, use guild-invite.",
+    topic: kfcForeverJoiningTopic,
   },
   ...classGuides.map((guide): RevisionChannel => ({
     key: guide.name.toLowerCase(),
@@ -521,6 +531,7 @@ export const newRevisionChannels: RevisionChannel[] = [
 export interface ResourcePayload {
   content: string;
   allowed_mentions: { parse: string[] };
+  components?: KfcJoiningLinkRow[];
   embeds: {
     title: string;
     description: string;
@@ -557,13 +568,23 @@ export function revisionResources(
     const payload: ResourcePayload = {
       content: "",
       allowed_mentions: { parse: [] },
+      ...(key === "welcome"
+        ? { components: kfcWelcomeComponents() }
+        : ["joining", "application-forever"].includes(key)
+          ? { components: kfcForeverJoiningComponents() }
+          : {}),
       embeds: [
         {
           title,
           description,
           color,
           footer: {
-            text: `Maintained reference | Reviewed 9 October 2026 | ${revision}`,
+            text:
+              key === "welcome"
+                ? kfcNewcomerFooter
+                : ["joining", "application-forever"].includes(key)
+                  ? kfcForeverJoiningFooter
+                  : `Maintained reference | Reviewed 9 October 2026 | ${revision}`,
           },
           ...(image ? { image: { url: image } } : {}),
         },
@@ -595,27 +616,19 @@ export function revisionResources(
     }));
   const tbcApplication = "1411545946155909150";
   const foreverApplication = id("application-forever");
-  resources.find(
-    (r): boolean => r.key === "welcome",
-  )!.payload.embeds[0].description +=
-    `\n\n**Join the guild**\n<#${tbcApplication}> - TBC\n<#${foreverApplication}> - WoW Forever\nRead the matching template and send it privately to KFC Management. Guild applications are separate from public event signups.`;
-  resources.find(
-    (r): boolean => r.key === "joining",
-  )!.payload.embeds[0].description =
-    `**Two games. One welcoming guild community.**\nKFC brings together raiders, social players and PvPers who enjoy good company and a relaxed atmosphere.\n\n**Experienced hosts. Flexible schedules.**\nWe've hosted nearly 500 TBC raids, with guild members organising runs throughout the week. Choose the groups that suit your schedule and enjoy the game together.\n\n**Choose your game**\n<#${tbcApplication}> - TBC guild applications; include your realm, character and what you enjoy playing.\n<#${foreverApplication}> - WoW Forever guild applications: EU, Alliance, PvP, English. New and returning players are welcome.\n\nRead the matching channel's pinned template, then DM a member of KFC Management from the member list. Applications stay private; no passwords or personal documents. For a simple Forever in-game invite, post your character name in <#1550970060812587028>.\n\n**Looking for a run instead?**\nCheck <#1557974287602819164> for upcoming events. Each signup has the host's times, requirements and loot rules. You don't need to join the guild to take part in an open run.\n\nhttps://kfcguild.online/`;
   resources.push(
     resource(
       "application-tbc",
       tbcApplication,
       "Join KFC | The Burning Crusade",
-      `**Raids, PvP and good company**\nTell us what you enjoy and we'll help you find the right part of the guild. Social players and public raiders are welcome; joining the guild and earning a specific raid seat are different things.\n\n**Apply privately**\nOpen the server member list and DM a member of **KFC Management**. Copy this short template:\n\n**Game:** TBC\n**Character, level, realm and faction:**\n**Class, spec and preferred role:**\n**Looking for:** social / PvP / raids\n**Usual availability and timezone:**\n**For raiding:** experience, preparation and relevant access/attunements; questions or learning goals are welcome.\n\nNo fixed attendance promise is required just to introduce yourself. Officers confirm guild fit and the host confirms each event's requirements. Never send passwords, real-world documents or unrelated personal information.\n\n**Only here for a public run?**\nUse <#1557974287602819164> and the event's signup; a guild application isn't required.\n\n**Playing Forever instead?**\nUse <#${foreverApplication}>. Earlier applications remain below as history; new applications go privately to Management.`,
+      kfcTbcApplicationDescription,
       0x79b55b,
     ),
     resource(
       "application-forever",
       foreverApplication,
       "Join KFC | WoW Forever",
-      `**EU | Alliance | PvP | English**\nA relaxed guild for raiders, social players and PvPers. New and returning players are welcome; flexible availability is fine.\n\n**Apply privately**\nOpen the server member list and DM a member of **KFC Management**. Copy this short template:\n\n**Game:** WoW Forever\n**Character name and current level, or planned character:**\n**Class, spec and preferred role:**\n**Looking for:** social / PvP / leveling / raids when available\n**Usual availability and timezone:**\n**Anything you'd like help with:**\n\nConfirm you're joining our EU Alliance PvP community. Future raid places depend on the event and roster; an application is not a guaranteed seat. Never send passwords, real-world documents or unrelated personal information.\n\n**Just need an in-game invite?**\nPost your character name in <#1550970060812587028>. Keep that request to game details only.\n\n**Find people to play with**\n<#1548519535177629707> - Forever discussion\n<#1548747530790248610> - leveling groups\n<#1557974287602819164> - upcoming events\n\n**Playing TBC instead?**\nUse <#${tbcApplication}>. This is KFC's guild application, not admission to the separate open-faction Forever community server.`,
+      kfcForeverApplicationGuide,
       0x4ca89b,
     ),
   );

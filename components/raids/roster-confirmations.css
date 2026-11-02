@@ -1,0 +1,207 @@
+.roster-confirmations {
+  scroll-margin-top: 6rem;
+}
+.roster-confirmation-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.roster-confirmation-header h2 {
+  margin: 0.35rem 0;
+}
+.roster-confirmation-header p {
+  max-width: 65ch;
+  color: var(--muted, #b1afa7);
+}
+.roster-confirmation-counts {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin: 1.2rem 0;
+}
+.roster-confirmation-counts > span {
+  padding: 0.65rem 0.85rem;
+  background: rgba(222, 185, 112, 0.07);
+  border: 1px solid rgba(222, 185, 112, 0.17);
+  border-radius: 0.7rem;
+}
+.roster-confirmation-counts strong {
+  color: #e7bf75;
+}
+.roster-publication-form fieldset {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  border: 1px solid rgba(222, 185, 112, 0.2);
+  border-radius: 0.9rem;
+  padding: 1.2rem;
+  min-width: 0;
+}
+.roster-publication-form label,
+.roster-reason-form label,
+.roster-amendment label,
+.roster-filter {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.roster-publication-form input,
+.roster-publication-form textarea,
+.roster-reason-form textarea,
+.roster-amendment input,
+.roster-amendment select,
+.roster-filter select {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #151816;
+  color: #eee9df;
+  border: 1px solid #45443b;
+  border-radius: 0.45rem;
+  padding: 0.65rem;
+  font: inherit;
+}
+.roster-wide {
+  grid-column: 1/-1;
+}
+.roster-publication-form .roster-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+.roster-check input {
+  width: auto;
+  margin-top: 0.25rem;
+}
+.roster-publication-preview {
+  border: 1px solid #8b7349;
+  border-radius: 0.8rem;
+  background: rgba(222, 185, 112, 0.07);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.roster-publication-preview ul {
+  max-height: 15rem;
+  overflow: auto;
+}
+.roster-confirmation-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+.roster-confirmation-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 1fr);
+  gap: 0.8rem;
+  border: 1px solid rgba(222, 185, 112, 0.17);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.025);
+  overflow-wrap: anywhere;
+}
+.roster-confirmation-card h3 {
+  margin: 0 0 0.3rem;
+}
+.roster-confirmation-card p {
+  margin: 0.3rem 0;
+}
+.roster-confirmation-card small {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--muted, #b1afa7);
+}
+.roster-reply {
+  display: inline-flex;
+  font-size: 0.85rem;
+  border-radius: 1rem;
+  padding: 0.25rem 0.65rem;
+  background: rgba(222, 185, 112, 0.12);
+  color: #e7bf75;
+}
+.roster-reply-confirmed {
+  color: #9ad8ad;
+  background: rgba(75, 170, 107, 0.12);
+}
+.roster-reply-declined,
+.roster-reply-revoked {
+  color: #e4a498;
+  background: rgba(197, 93, 74, 0.1);
+}
+.roster-card-actions,
+.roster-private-reason,
+.roster-reason-form,
+.roster-preparation {
+  grid-column: 1/-1;
+}
+.roster-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.roster-reason-form,
+.roster-amendment {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+}
+.roster-reason-form {
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+.roster-prep-text {
+  white-space: pre-wrap;
+}
+.roster-preparation summary {
+  cursor: pointer;
+  color: #e7bf75;
+  padding: 0.5rem 0;
+}
+.roster-preparation a {
+  display: inline-block;
+  margin: 0.5rem 1rem 0.5rem 0;
+}
+.roster-filter {
+  max-width: 20rem;
+  margin: 1rem 0;
+}
+.roster-private-reason {
+  border-left: 2px solid #837653;
+  padding-left: 0.7rem;
+}
+.roster-confirmations .button {
+  white-space: normal;
+  text-align: center;
+}
+.roster-amendment {
+  margin-top: 0.6rem;
+  border-top: 1px solid #484138;
+  padding-top: 0.8rem;
+}
+@media (max-width: 640px) {
+  .roster-publication-form fieldset,
+  .roster-confirmation-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .roster-confirmation-header > .button {
+    width: 100%;
+  }
+  .roster-confirmation-counts {
+    gap: 0.4rem;
+  }
+  .roster-confirmation-counts > span {
+    flex: 1 1 42%;
+    padding: 0.55rem;
+  }
+  .roster-publication-form fieldset {
+    padding: 0.8rem;
+  }
+  .roster-card-actions > .button {
+    flex: 1 1 45%;
+  }
+}

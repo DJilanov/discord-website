@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEventRefresh } from "./use-event-refresh";
 import {
   CalendarDays,
   Plus,
@@ -74,6 +75,7 @@ import {
 } from "./character-picker";
 import { EventCover } from "./event-cover";
 import { EventRoster } from "./event-roster";
+import { RosterConfirmations } from "./roster-confirmations";
 import { EventChangeHistory } from "./change-history";
 import { SignupImport } from "./signup-import";
 import {
@@ -86,6 +88,7 @@ import {
   eventDurationLabel,
   summarizeEventRoster,
   signupStatusLabel,
+  signupStatusExplanation,
 } from "@/lib/raids/event-preview";
 
 import { postRaid, useRaidClock } from "./client-data";
@@ -636,6 +639,7 @@ export function CreateRaid({
   destinations,
   canSelectChannels,
   channelAccessError,
+  defaultLeaderName = "",
   initialEvent,
   toolDraft,
   onSaved,
@@ -645,6 +649,7 @@ export function CreateRaid({
   destinations: RaidDiscordDestinationView[];
   canSelectChannels: boolean;
   channelAccessError: string;
+  defaultLeaderName?: string;
   initialEvent?: EventView;
   toolDraft?: ToolGroupDraft;
   onSaved?: () => void;
@@ -778,6 +783,8 @@ export function CreateRaid({
         },
         admission: text(data, "admission"),
         description: text(data, "description"),
+        leaderName: text(data, "leaderName"),
+        assistantName: text(data, "assistantName"),
         catalogId: catalogId || null,
         reserveLimit: catalog
           ? Math.max(...roles.map((role) => number(data, `sr-${role}`)))
@@ -1052,6 +1059,24 @@ export function CreateRaid({
                   minLength={3}
                   maxLength={120}
                   defaultValue={initialEvent?.title ?? prefill?.title}
+                />
+              </label>
+              <label>
+                Leader
+                <input
+                  name="leaderName"
+                  maxLength={80}
+                  placeholder="Character or Discord name"
+                  defaultValue={initialEvent?.leaderName ?? defaultLeaderName}
+                />
+              </label>
+              <label>
+                Assistant (optional)
+                <input
+                  name="assistantName"
+                  maxLength={80}
+                  placeholder="Character or Discord name"
+                  defaultValue={initialEvent?.assistantName ?? ""}
                 />
               </label>
               {eventType === "raid" && (
@@ -1579,6 +1604,11 @@ export function RaidDetail({
     [busy, setBusy] = useState(false);
   const [cancel, setCancel] = useState(false);
   const [editing, setEditing] = useState(false);
+  const refreshStatus = useEventRefresh(
+    event.id,
+    event.version,
+    !editing && !busy,
+  );
   const roster = summarizeEventRoster(
     event.signups,
     event.capacity,
@@ -1602,7 +1632,11 @@ export function RaidDetail({
     (character) => character.id === characterId,
   );
   const [specialization, setSpecialization] = useState<Specialization | "">(
-    mine?.character.specialization ?? initialCharacter?.specialization ?? "",
+    (mine?.character.className === initialCharacter?.className
+      ? mine?.character.specialization
+      : undefined) ??
+      initialCharacter?.specialization ??
+      "",
   );
   const [role, setRole] = useState<RaidRole>(
     (mine?.role && mine.role !== "participant" ? mine.role : null) ??
@@ -1611,11 +1645,13 @@ export function RaidDetail({
   const clearsReserves = Boolean(
     mine?.reserves.length &&
     (mine.character.name !== selectedCharacter?.name ||
+      mine.character.className !== selectedCharacter?.className ||
       mine.character.specialization !== specialization),
   );
   const now = useRaidClock(initialNow);
   const rosterOpen =
     event.status === "open" && new Date(event.signupClosesAt).getTime() > now;
+  const signupOpen = rosterOpen && !event.rosterPublished;
   const canBuildRoster =
     event.isOrganizer &&
     definition.combatRoles &&
@@ -1671,7 +1707,7 @@ export function RaidDetail({
                 {editing ? "Close editor" : "Edit event"}
               </button>
             )}
-            {rosterOpen && <SignupImport event={event} />}
+            {signupOpen && <SignupImport event={event} />}
           </div>
         )}
       </div>
@@ -1705,7 +1741,7 @@ export function RaidDetail({
             </p>
             <h1>{event.title}</h1>
           </div>
-          {rosterOpen ? (
+          {signupOpen ? (
             <a className="button primary raid-hero-action" href="#my-signup">
               <Users size={18} />
               {mine ? "My signup" : "Join event"}
@@ -1734,8 +1770,8 @@ export function RaidDetail({
             <span>{event.capacity} places</span>
             <strong>
               {event.admission === "open"
-                ? `${roster.signedUp.length} signed up \u00b7 ${accepted.length} confirmed`
-                : `${accepted.length} confirmed \u00b7 ${roster.pending.length} pending`}
+                ? `${roster.signedUp.length} signed up \u00b7 ${accepted.length} selected`
+                : `${accepted.length} selected \u00b7 ${roster.pending.length} pending`}
             </strong>
           </div>
         </div>
@@ -1864,6 +1900,22 @@ export function RaidDetail({
                 <strong>{event.raidName}</strong>
               </div>
             </div>
+            {(event.leaderName || event.assistantName) && (
+              <dl className="raid-leadership">
+                {event.leaderName && (
+                  <div>
+                    <dt>Leader</dt>
+                    <dd>{event.leaderName}</dd>
+                  </div>
+                )}
+                {event.assistantName && (
+                  <div>
+                    <dt>Assistant</dt>
+                    <dd>{event.assistantName}</dd>
+                  </div>
+                )}
+              </dl>
+            )}
             {event.description && (
               <p className="raid-description">{event.description}</p>
             )}
@@ -1877,6 +1929,11 @@ export function RaidDetail({
               <h2 id="event-roster-heading">
                 {canBuildRoster ? "Roster builder" : "Roster"}
               </h2>
+              <span className="fine-print">
+                {refreshStatus === "live"
+                  ? "Updates automatically"
+                  : "Auto update unavailable · use Refresh"}
+              </span>
               <button
                 className="icon-button"
                 type="button"
@@ -1934,6 +1991,7 @@ export function RaidDetail({
               }
             />
           </section>
+          <RosterConfirmations event={event} initialNow={initialNow} />
           {event.isOrganizer && (
             <details
               className="raid-organizer raid-management"
@@ -2063,9 +2121,12 @@ export function RaidDetail({
             <h2 id="my-signup-heading">My signup</h2>
           </div>
           {mine && (
-            <p className={`raid-badge ${mine.status}`}>
-              {signupStatusLabel(mine.status)}
-            </p>
+            <>
+              <p className={`raid-badge ${mine.status}`}>
+                {signupStatusLabel(mine.status)}
+              </p>
+              <p>{signupStatusExplanation(mine.status)}</p>
+            </>
           )}
           {mine?.needsAcknowledgement && event.status === "open" && (
             <form
@@ -2113,12 +2174,16 @@ export function RaidDetail({
             </p>
           )}
           <p className="raid-signup-deadline">
-            Signups close{" "}
-            <time dateTime={event.signupClosesAt}>
-              {event.signupCloseLabel}
-            </time>
+            {event.rosterPublished
+              ? "Roster published · signups closed. "
+              : "Signups close "}
+            {!event.rosterPublished && (
+              <time dateTime={event.signupClosesAt}>
+                {event.signupCloseLabel}
+              </time>
+            )}
           </p>
-          {rosterOpen ? (
+          {signupOpen ? (
             matching.length ? (
               <form
                 className="raid-form"
@@ -2184,6 +2249,17 @@ export function RaidDetail({
                     })}
                   </div>
                 </fieldset>
+                {mine &&
+                  selectedCharacter &&
+                  mine.character.className !== selectedCharacter.className && (
+                    <p className="raid-notice" role="status">
+                      Your event signup is {mine.character.specialization}{" "}
+                      {mine.character.className}. Your saved character is{" "}
+                      {selectedCharacter.className}. Updating this form will
+                      replace your event signup with the saved character
+                      selected below.
+                    </p>
+                  )}
                 <details
                   className="raid-signup-character"
                   open={
@@ -2363,7 +2439,7 @@ export function RaidDetail({
             {definition.label} &middot; {event.capacity} places
           </span>
         </div>
-        {rosterOpen ? (
+        {signupOpen ? (
           <a className="button primary" href="#my-signup">
             <Users size={17} />
             {mine

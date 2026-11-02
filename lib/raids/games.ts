@@ -51,11 +51,23 @@ const ten = { tank: 2, healer: 2, damage: 6 };
 const twentyFive = { tank: 3, healer: 6, damage: 16 };
 // Roster compositions are editable defaults, not encounter requirements.
 export const raidPresets: Record<RaidGame, RaidPreset[]> = {
-  forever: ["Hyjal Summit", "Barrow Deeps", "Onyxia's Lair"].map((name) => ({
-    name,
-    capacity: 20,
-    roleCaps: { tank: 2, healer: 4, damage: 14 },
-  })),
+  forever: [
+    {
+      name: "Hyjal Summit",
+      capacity: 20,
+      roleCaps: { tank: 2, healer: 4, damage: 14 },
+    },
+    {
+      name: "Barrow Deeps",
+      capacity: 10,
+      roleCaps: { tank: 2, healer: 2, damage: 6 },
+    },
+    {
+      name: "Onyxia's Lair",
+      capacity: 40,
+      roleCaps: { tank: 2, healer: 8, damage: 30 },
+    },
+  ],
   tbc: [
     "Karazhan",
     "Gruul's Lair",

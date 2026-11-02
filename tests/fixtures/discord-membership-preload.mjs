@@ -27,22 +27,17 @@ globalThis.fetch = async (input, init) => {
         "Unexpected OAuth credentials in isolated browser tests.",
       );
     const body = new URLSearchParams(await request.text());
-    const ordinaryMember =
-      body.get("code") === "synthetic-browser-member-authorization-code";
     if (
       body.get("redirect_uri") !==
         "http://127.0.0.1:19306/api/community/auth/callback/discord" ||
-      (!ordinaryMember &&
-        body.get("code") !== "synthetic-browser-authorization-code") ||
+      body.get("code") !== "synthetic-browser-authorization-code" ||
       !body.get("code_verifier")
     )
       throw new Error(
         "OAuth callback origin, code or verifier does not match the browser authorization.",
       );
     return Response.json({
-      access_token: ordinaryMember
-        ? "synthetic-browser-member-access-token"
-        : "synthetic-browser-access-token",
+      access_token: "synthetic-browser-access-token",
       refresh_token: "synthetic-browser-refresh-token",
       token_type: "Bearer",
       expires_in: 3600,
@@ -50,20 +45,16 @@ globalThis.fetch = async (input, init) => {
     });
   }
   if (url.pathname === "/api/users/@me") {
-    const ordinaryMember =
-      request.headers.get("authorization") ===
-      "Bearer synthetic-browser-member-access-token";
     if (
       request.method !== "GET" ||
-      (!ordinaryMember &&
-        request.headers.get("authorization") !==
-          "Bearer synthetic-browser-access-token")
+      request.headers.get("authorization") !==
+        "Bearer synthetic-browser-access-token"
     )
       throw new Error(
         "Unexpected OAuth profile call in isolated browser tests.",
       );
     return Response.json({
-      id: ordinaryMember ? "1556000000000000062" : "1556000000000000061",
+      id: "1556000000000000061",
       username: "synthetic-browser-user",
       global_name: "Synthetic browser member",
       avatar: null,
@@ -74,7 +65,7 @@ globalThis.fetch = async (input, init) => {
     request.method !== "GET" ||
     request.headers.get("authorization") !==
       "Bot synthetic-browser-membership-token" ||
-    !/^\/api\/v10\/guilds\/(1554316932948172940|1411533815356194968)(\/(members\/155600000000000006[1234]|roles|channels))?$/.test(
+    !/^\/api\/v10\/guilds\/(1554316932948172940|1411533815356194968)(\/(members\/155600000000000006[123456]|roles|channels))?$/.test(
       url.pathname,
     )
   )

@@ -1,6 +1,31 @@
 # Search and Community Operations
 
-Updated October 4, 2026. This operating checklist complements the implemented website work, not a promise of first place.
+Updated November 2, 2026. This operating checklist complements the implemented website work, not a promise of first place.
+
+## November 2 Search Console review
+
+Accessed both verified Domain properties through the owner's Chrome. The
+community's October 4–31 Web report has 195 clicks, 6,753 impressions and average
+position 8.0; `wow forever discord` averages 8.5. Both homepages are indexed with
+matching Google-selected canonicals, and both properties' security/manual-action
+reports are clear. The October 23 coverage report has 36 indexed community URLs;
+its robots/noindex examples are intentionally private, API or filter variants.
+
+The complete 73-page community sitemap audit found no HTTP/metadata/canonical
+failure. It did identify Alliance/Horde pages with no incoming public links.
+The existing homepage faction labels now link to those pages; the web-only
+`seo-discovery-20261102` release passed a full Linux build and actual desktop/mobile
+keyboard navigation at preview and production. Other product/worker PIDs stayed
+unchanged. Two original community guides and the updated homepage received
+accepted priority indexing requests; acceptance does not mean new inclusion.
+
+KFC's missing 2,240-URL catalog shard was successfully submitted in its own
+Domain property, with six targeted KFC indexing requests. Private account and
+release receipts are in the sibling wow-trader project's
+`artifacts/seo-search-console-20261102/`; the full dated cross-product report is
+`wow-trader/docs/search-console-review-2026-11-02.md`. Review on November 9/16;
+no new scheduled task or OAuth access was installed. The October 4 analysis and
+original handoff below describe their historical state.
 
 ## October 4 Ranking Diagnosis
 
@@ -48,9 +73,12 @@ The owner confirmed that `wowforeverdiscord.online` is verified in Google Search
 
 1. Select the property covering `https://www.wowforeverdiscord.online/` in Search Console. A Domain property covers subdomains; URL-prefix properties must cover the canonical www HTTPS URL.
 2. Submit `https://www.wowforeverdiscord.online/sitemap.xml`. Record the submission date, fetch status and discovered URLs. Discovery is not indexing.
-3. Inspect `/`, `/discord`, `/research`, `/research/data`, `/research/build-changes`, and `/guides/join-wow-forever-discord`. Check live fetch, indexing reason and Google-selected canonical. Request indexing for the genuinely changed research index and data page once; do not repeatedly submit every day.
-4. Verify or import the same site in Bing Webmaster Tools and submit the sitemap there. Bing verification is not yet confirmed.
-5. Use `/admin/settings` only if a public verification meta value is needed. DNS verification continues to work without Cloudflare. Keep account passwords and API secrets out of the CMS.
+3. If the Search Console property covers `helper.kfcguild.online`, submit its root sitemap and four
+   catalog shards from `robots.txt`. Record each fetch result and discovered URL count. Do not submit
+   the old unsharded `/forever/encyclopedia/sitemap.xml` path.
+4. Inspect `/`, `/discord`, `/research`, `/research/data`, `/research/build-changes`, and `/guides/join-wow-forever-discord`. Check live fetch, indexing reason and Google-selected canonical. Request indexing for the genuinely changed research index and data page once; do not repeatedly submit every day.
+5. Verify or import the same site in Bing Webmaster Tools and submit the sitemap there. Bing verification is not yet confirmed.
+6. Use `/admin/settings` only if a public verification meta value is needed. DNS verification continues to work without Cloudflare. Keep account passwords and API secrets out of the CMS.
 
 [Google ownership instructions](https://support.google.com/webmasters/answer/9008080), [Google sitemap guidance](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), and [Bing verification help](https://www.bing.com/webmasters/help/add-and-verify-site-12184f8b).
 

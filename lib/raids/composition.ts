@@ -1,4 +1,8 @@
 import type { RaidGame } from "./games";
+import {
+  foreverCompositionRules,
+  foreverCompositionRevision,
+} from "./forever-composition-rules";
 import type { RaidRole, SignupView } from "./contracts";
 import type { ClassName, Specialization } from "./specializations";
 import { suggestedRole, specializationsByClass } from "./specializations";
@@ -6,7 +10,8 @@ import type { RosterParty } from "./roster-layout";
 import { sameRosterLayout } from "./roster-layout";
 
 export type EffectState = "available" | "conditional" | "provisional";
-type Audience = "all" | "melee" | "physical" | "caster" | "mana" | "tank";
+type Audience =
+  "all" | "melee" | "physical" | "ranged" | "caster" | "mana" | "tank";
 
 export interface CompositionEffectRule {
   id: string;
@@ -20,6 +25,7 @@ export interface CompositionEffectRule {
   state: EffectState;
   requirement: string;
   stackingGroup?: string;
+  scope?: "raid" | "party";
 }
 
 export interface PartyEffectCoverage {
@@ -59,7 +65,7 @@ export interface RosterCompositionAnalysis {
 }
 
 export const compositionRevisions: Record<RaidGame, string> = {
-  forever: "forever-preview-2026.09.15",
+  forever: foreverCompositionRevision,
   tbc: "tbc-anniversary-2026.10.1",
 };
 
@@ -91,96 +97,7 @@ const sharedRules: CompositionEffectRule[] = [
   },
 ];
 
-const foreverRules: CompositionEffectRule[] = [
-  ...sharedRules,
-  {
-    id: "forever-trueshot-aura",
-    name: "Trueshot Aura",
-    icon: icon("ability_marksmanship"),
-    description: "Increases the ranged attack power of party members.",
-    className: "Hunter",
-    specializations: ["Marksmanship"],
-    audience: "physical",
-    priority: 3,
-    state: "conditional",
-    requirement: "Marksmanship build with Trueshot Aura",
-  },
-  {
-    id: "forever-vampiric-embrace",
-    name: "Vampiric Embrace",
-    icon: icon("spell_shadow_shadowwordpain"),
-    description: "Converts the Shadow Priest's damage into party healing.",
-    className: "Priest",
-    specializations: ["Shadow"],
-    audience: "all",
-    priority: 2,
-    state: "conditional",
-    requirement: "Shadow build with Vampiric Embrace",
-  },
-  {
-    id: "forever-mana-spring",
-    name: "Mana Spring Totem",
-    icon: icon("spell_nature_magicimmunity"),
-    description: "Restores mana to group members within range.",
-    className: "Shaman",
-    audience: "mana",
-    priority: 3,
-    state: "available",
-    requirement: "A Shaman using the Mana Spring water-totem slot",
-  },
-  {
-    id: "forever-mana-tide",
-    name: "Mana Tide Totem",
-    icon: icon("spell_nature_healingtouch"),
-    description: "A Restoration talent that restores mana to the group.",
-    className: "Shaman",
-    specializations: ["Restoration"],
-    audience: "mana",
-    priority: 4,
-    state: "conditional",
-    requirement: "Restoration build with Mana Tide Totem",
-  },
-  {
-    id: "forever-moonkin-aura",
-    name: "Moonkin Aura",
-    icon: icon("spell_nature_starfall"),
-    description:
-      "Provides party critical chance and is exclusive with Leader of the Pack in the preview rules.",
-    className: "Druid",
-    specializations: ["Balance"],
-    audience: "all",
-    priority: 4,
-    state: "conditional",
-    requirement: "Balance build using Moonkin Form",
-    stackingGroup: "forever-druid-party-crit",
-  },
-  {
-    id: "forever-leader-of-the-pack",
-    name: "Leader of the Pack",
-    icon: icon("ability_racial_bearform"),
-    description:
-      "Provides party critical chance and is exclusive with Moonkin Aura in the preview rules.",
-    className: "Druid",
-    specializations: ["Feral"],
-    audience: "all",
-    priority: 4,
-    state: "conditional",
-    requirement: "Feral build with Leader of the Pack while shapeshifted",
-    stackingGroup: "forever-druid-party-crit",
-  },
-  {
-    id: "forever-windfury",
-    name: "Windfury Totem",
-    icon: icon("spell_nature_lightningshield"),
-    description:
-      "Potential melee weapon support. The current Forever record is a Classic fallback and still needs live-build confirmation.",
-    className: "Shaman",
-    audience: "melee",
-    priority: 4,
-    state: "provisional",
-    requirement: "A Shaman using Windfury Totem, if unchanged in Forever",
-  },
-];
+const foreverRules: readonly CompositionEffectRule[] = foreverCompositionRules;
 
 const tbcRules: CompositionEffectRule[] = [
   ...sharedRules,
@@ -344,6 +261,8 @@ function benefits(
   if (audience === "all") return true;
   if (audience === "melee") return isMelee(signup);
   if (audience === "physical") return isPhysical(signup);
+  if (audience === "ranged")
+    return signup.role === "damage" && signup.character.className === "Hunter";
   if (audience === "caster") return isCaster(signup);
   if (audience === "mana") return usesMana(signup);
   return signup.role === "tank";
@@ -364,11 +283,12 @@ function provides(
 function reportForParty(
   game: RaidGame,
   party: RosterParty,
+  roster: readonly SignupView[],
 ): PartyCompositionReport {
   const found = compositionEffects(game)
     .map((rule): PartyEffectCoverage | null => {
-      const providers = party.signups.filter((signup) =>
-        provides(rule, signup),
+      const providers = (rule.scope === "raid" ? roster : party.signups).filter(
+        (signup) => provides(rule, signup),
       );
       if (!providers.length) return null;
       return {
@@ -392,10 +312,16 @@ function reportForParty(
   }
   for (const effect of found)
     effect.conflict = Boolean(
+      effect.rule.scope !== "raid" &&
       effect.rule.stackingGroup &&
       (stacking.get(effect.rule.stackingGroup) ?? 0) > 1,
     );
+  const scoredCategories = new Set<string>();
   const score = found.reduce((total, effect) => {
+    if (effect.rule.scope === "raid" && effect.rule.stackingGroup) {
+      if (scoredCategories.has(effect.rule.stackingGroup)) return total;
+      scoredCategories.add(effect.rule.stackingGroup);
+    }
     const confidence =
       effect.rule.state === "provisional"
         ? 0.35
@@ -403,7 +329,10 @@ function reportForParty(
           ? 0.75
           : 1;
     const value = effect.rule.priority * effect.beneficiaryCount * confidence;
-    const duplicatePenalty = effect.duplicate ? effect.rule.priority * 2 : 0;
+    const duplicatePenalty =
+      effect.duplicate && effect.rule.scope !== "raid"
+        ? effect.rule.priority * 2
+        : 0;
     const conflictPenalty = effect.conflict ? value * 0.75 : 0;
     return total + value - duplicatePenalty - conflictPenalty;
   }, 0);
@@ -412,7 +341,13 @@ function reportForParty(
 
 function layoutScore(game: RaidGame, parties: readonly RosterParty[]): number {
   return parties.reduce(
-    (total, party) => total + reportForParty(game, party).score,
+    (total, party) =>
+      total +
+      reportForParty(
+        game,
+        party,
+        parties.flatMap((entry) => entry.signups),
+      ).score,
     0,
   );
 }
@@ -508,11 +443,12 @@ function scoreCandidate(
   const open = parties.filter((party) => party.signups.length < party.capacity);
   if (!open.length) return null;
   const signup = fictionalSignup(game, candidate);
+  const roster = parties.flatMap((entry) => entry.signups);
   let best: RosterSuggestion | null = null;
   for (const party of open) {
-    const before = reportForParty(game, party);
+    const before = reportForParty(game, party, roster);
     const afterParty = { ...party, signups: [...party.signups, signup] };
-    const after = reportForParty(game, afterParty);
+    const after = reportForParty(game, afterParty, [...roster, signup]);
     const previousIds = new Set(before.effects.map((effect) => effect.rule.id));
     const gained = after.effects
       .filter((effect) => !previousIds.has(effect.rule.id))
@@ -522,8 +458,17 @@ function scoreCandidate(
     const roleValue = missingRoleSeats
       ? 100 + missingRoleSeats * 10 + rolePriority
       : 0;
-    const score = roleValue + (after.score - before.score);
+    const warriorPriority =
+      game === "forever" &&
+      candidate.className === "Warrior" &&
+      !roster.some((entry) => entry.character.className === "Warrior")
+        ? 1000
+        : 0;
+    const score = roleValue + warriorPriority + (after.score - before.score);
     const reasons = [
+      ...(warriorPriority
+        ? ["Required Warrior: assign Sunder Armor and Battle Shout"]
+        : []),
       ...(roleValue
         ? [
             `Fills one of ${missingRoleSeats} missing ${candidate.role} ${missingRoleSeats === 1 ? "place" : "places"}`,
@@ -655,7 +600,13 @@ export function analyzeRosterComposition(
 ): RosterCompositionAnalysis {
   const optimizedParties = optimizeRosterParties(game, parties);
   return {
-    parties: parties.map((party) => reportForParty(game, party)),
+    parties: parties.map((party) =>
+      reportForParty(
+        game,
+        party,
+        parties.flatMap((entry) => entry.signups),
+      ),
+    ),
     optimizedParties,
     arrangementImproves: !sameRosterLayout(parties, optimizedParties),
     availableCandidates: availableCandidateSuggestions(

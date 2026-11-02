@@ -1,0 +1,72 @@
+{
+  "name": "KFC",
+  "spotlightMessage": "500+ TBC raids hosted. Forever: a guaranteed daily 20:00 Central European raid, casual groups, two 10-player and one 20-player semi-hardcore teams. EU Alliance PvP. New and returning players welcome.",
+  "version": "Forever",
+  "listingStage": "forming",
+  "gameRegion": "eu",
+  "ruleset": "PvP",
+  "faction": "Alliance",
+  "communityLocation": "Europe",
+  "language": "English",
+  "scheduleMode": "unspecified",
+  "primaryTeamName": "KFC Forever",
+  "voicePolicy": "Varies by activity",
+  "activities": [
+    "Raiding",
+    "Dungeons",
+    "Leveling",
+    "Social",
+    "PvP"
+  ],
+  "additionalVersions": [
+    "classic-anniversary"
+  ],
+  "roles": [
+    "Tank",
+    "Healer",
+    "Melee DPS",
+    "Ranged DPS"
+  ],
+  "classes": [
+    "Druid",
+    "Hunter",
+    "Mage",
+    "Paladin",
+    "Priest",
+    "Rogue",
+    "Shaman",
+    "Warlock",
+    "Warrior"
+  ],
+  "communityTags": [
+    "New players welcome",
+    "Returning players welcome",
+    "Social recruitment open",
+    "Parents / real-life first"
+  ],
+  "openings": "All classes and roles are welcome to introduce themselves. Join our casual groups or help form one of our three semi-hardcore teams: two 10-player groups and one 20-player group. Tell us your class, preferred role and which pace suits you. Forever has a guaranteed daily 20:00 Central European raid; organizers will discuss individual team assignments and roster places with you.",
+  "description": "KFC | EU Alliance PvP\nGood company. Your pace. A team to progress with.\n\nWe are an English-speaking European WoW community bringing experienced raid organizers and a relaxed atmosphere to WoW Forever. Whether you are returning to Azeroth, finding time around family and work, or looking for organized progression, there is a place to start a conversation with us.\n\nCHOOSE YOUR PACE\n\nCasual groups\nEnjoy leveling, dungeons, PvP and guild activities with people who respect that real life comes first. Find company for your next adventure and play at a pace that suits you.\n\nSemi-hardcore teams\nWe are organizing two 10-player groups and one 20-player group for players who want to prepare, work together and progress. Pick the team that fits you; individual team assignments will be organized in Discord.\n\nRAIDS THAT FIT YOUR DAY\n• A guaranteed Forever raid every day at 20:00 Central European local time (CET/CEST).\n• Morning and afternoon raids as well.\n• We are aiming for 7+ raids in the first week.\nTBC raids will be hosted outside the Forever evening slot.\n\nWHAT WE BRING\n• A welcoming home for new players, returning veterans, raiders, PvPers and socials.\n• More than 500 TBC raids hosted by our community, bringing experienced organizers to Forever.\n• Opportunities to level, run dungeons and build your Forever character together.\n• Our own guild website, class tools, leveling guide and raid planning resources.\n\nGood preparation and respect for other people's time matter. So does enjoying the people you play with. Each event publishes its own requirements and loot rules before signup.\n\nGUILD INVITES FROM DAY ONE\nWhisper Djilanov, psyrogue, nelf, nunk or Animagigel in game. You can also join our Discord and ask directly in forever-discussion for a guild invite. Tell us your character name and class, and whether you prefer casual or semi-hardcore groups. Undecided? Say hello and we will help you find the right group.\n\nExplore the guild: https://kfcguild.online/\nBring your character. Find your people. Enjoy Forever together.",
+  "discordInviteUrl": "https://discord.gg/BT3CgxbqZF",
+  "contactType": "link",
+  "url": "https://discord.gg/BT3CgxbqZF",
+  "applicationUrl": "https://kfcguild.online/recruitment",
+  "websiteUrl": "https://kfcguild.online/",
+  "additionalTeams": [
+    {
+      "name": "Semi-hardcore | 10-player group 1",
+      "raidGoal": "Progression",
+      "scheduleMode": "unspecified"
+    },
+    {
+      "name": "Semi-hardcore | 10-player group 2",
+      "raidGoal": "Progression",
+      "scheduleMode": "unspecified"
+    },
+    {
+      "name": "Semi-hardcore | 20-player group",
+      "raidGoal": "Progression",
+      "scheduleMode": "unspecified"
+    }
+  ],
+  "timezone": "Europe/Berlin"
+}

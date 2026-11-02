@@ -51,6 +51,8 @@ async function main(): Promise<void> {
       "035_raid_attendance",
       "036_raid_signup_import",
       "037_raid_discord_mirrors",
+      "038_raid_leadership",
+      "039_raid_roster_confirmations",
     ]) {
       const sql = await readFile(`prisma/migrations/${id}.sql`, "utf8");
       const checksum = createHash("sha256").update(sql).digest("hex");

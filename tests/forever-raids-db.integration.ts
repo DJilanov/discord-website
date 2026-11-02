@@ -157,6 +157,8 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
         "032_raid_party_rosters",
         "035_raid_attendance",
         "036_raid_signup_import",
+        "038_raid_leadership",
+        "039_raid_roster_confirmations",
       ],
       members: MemberIdentity[] = [];
     for (const migration of roleMigrations)
@@ -228,6 +230,8 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
       roleCaps: { tank: 1, healer: 1, damage: 1 },
       admission: "automatic",
       description: "Private test",
+      leaderName: "",
+      assistantName: "",
       catalogId,
       reserveLimit: 2,
       reserveLimits: null,
@@ -245,6 +249,8 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
       realm: _realm,
       discordChannelId: _channel,
       confirmDiscordPublication: _confirmation,
+      leaderName: _leader,
+      assistantName: _assistant,
       ...legacyInput
     } = eventSchema.parse(input);
     assert.equal(_legacyType, "raid");
@@ -252,6 +258,8 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
     assert.equal(_realm, "");
     assert.equal(_channel, null);
     assert.equal(_confirmation, false);
+    assert.equal(_leader, "");
+    assert.equal(_assistant, "");
     assert.equal(
       (
         await database.foreverRaidEvent.findUniqueOrThrow({
@@ -726,6 +734,38 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
           await pollRaidPosts(database, settings, request);
           assert.equal(posts, 1);
           assert.equal(patches, 1);
+          const currentPost =
+            await database.foreverRaidDiscordPost.findUniqueOrThrow({
+              where: { eventId },
+            });
+          const stored = z
+            .object({ embeds: z.array(z.record(z.string(), z.unknown())) })
+            .passthrough()
+            .parse(messages.get(currentPost.messageId!));
+          messages.set(currentPost.messageId!, {
+            ...stored,
+            embeds: stored.embeds.map((embed) => ({
+              ...embed,
+              description: "Older event presentation",
+            })),
+          });
+          const unchangedEvent =
+            await database.foreverRaidEvent.findUniqueOrThrow({
+              where: { id: eventId },
+              include: { signups: true },
+            });
+          assert.equal(await pollRaidPosts(database, settings, request), 1);
+          assert.equal(posts, 1);
+          assert.equal(patches, 2);
+          assert.deepEqual(
+            await database.foreverRaidEvent.findUniqueOrThrow({
+              where: { id: eventId },
+              include: { signups: true },
+            }),
+            unchangedEvent,
+          );
+          assert.equal(await pollRaidPosts(database, settings, request), 0);
+          assert.equal(patches, 2);
           const post = await database.foreverRaidDiscordPost.findUniqueOrThrow({
             where: { eventId },
           });
@@ -2006,6 +2046,274 @@ test("Private pilot PostgreSQL: concurrency, authorization, reserves and immutab
           if (oldGuild === undefined) delete process.env.DISCORD_GUILD_ID;
           else process.env.DISCORD_GUILD_ID = oldGuild;
         }
+      },
+    );
+    await context.test(
+      "Organizer class/spec edits are event-local, audited and preserve roster state",
+      async () => {
+        const target = await service.addCharacter(members[1], {
+          name: "Editor Target",
+          className: "Paladin",
+          specialization: "Retribution",
+          region: "EU",
+          faction: "Alliance",
+          ruleset: "PvP",
+        });
+        const editId = await service.create(members[0], {
+          ...input,
+          requestKey: randomUUID(),
+          capacity: 5,
+          roleCaps: { tank: 1, healer: 1, damage: 3 },
+        });
+        const otherId = await service.create(members[0], {
+          ...input,
+          requestKey: randomUUID(),
+        });
+        for (const id of [editId, otherId])
+          await service.signup(members[1], id, {
+            characterId: target.id,
+            specialization: "Retribution",
+            role: "damage",
+            acknowledge: true,
+          });
+        await service.reserves(members[1], editId, { itemIds: [900001] });
+        const before = await database.foreverRaidSignup.findFirstOrThrow({
+          where: { eventId: editId },
+        });
+        const other = await database.foreverRaidSignup.findFirstOrThrow({
+          where: { eventId: otherId },
+        });
+        const profile = await database.foreverCharacter.findUniqueOrThrow({
+          where: { id: target.id },
+        });
+        const initial = await service.get(members[0], editId);
+        const change = {
+          action: "edit_signup_character",
+          version: initial.version,
+          signupId: before.id,
+          character: { className: "Druid", specialization: "Feral" },
+        };
+        await assert.rejects(
+          service.manage(members[1], editId, change),
+          /Only the event organizer/,
+        );
+        await assert.rejects(
+          service.manage(members[0], editId, {
+            ...change,
+            version: initial.version - 1,
+          }),
+          /roster changed/,
+        );
+        await assert.rejects(
+          service.manage(members[0], editId, { ...change, signupId: other.id }),
+          /Signup not found/,
+        );
+        await assert.rejects(
+          service.manage(members[0], editId, change),
+          /Confirm clearing/,
+        );
+        assert.deepEqual(
+          await database.foreverRaidSignup.findUniqueOrThrow({
+            where: { id: before.id },
+          }),
+          before,
+        );
+        assert.equal(
+          (await service.get(members[0], editId)).version,
+          initial.version,
+        );
+        await service.manage(members[0], editId, {
+          ...change,
+          character: { ...change.character, clearReserves: true },
+        });
+        const after = await database.foreverRaidSignup.findUniqueOrThrow({
+          where: { id: before.id },
+        });
+        assert.deepEqual(after, {
+          ...before,
+          character: {
+            ...(before.character as Record<string, unknown>),
+            className: "Druid",
+            specialization: "Feral",
+          },
+          reserves: [],
+        });
+        assert.deepEqual(
+          await database.foreverCharacter.findUniqueOrThrow({
+            where: { id: target.id },
+          }),
+          profile,
+        );
+        assert.deepEqual(
+          await database.foreverRaidSignup.findUniqueOrThrow({
+            where: { id: other.id },
+          }),
+          other,
+        );
+        let event = await service.get(members[0], editId);
+        assert.equal(event.version, initial.version + 1);
+        const audit = await database.foreverRaidAudit.findFirstOrThrow({
+          where: { eventId: editId, action: "signup_character_updated" },
+        });
+        assert.equal(audit.actorId, members[0].id);
+        assert.deepEqual(audit.details, {
+          signupId: before.id,
+          characterName: target.name,
+          before: {
+            className: "Paladin",
+            specialization: "Retribution",
+            reserves: [900001],
+          },
+          after: { className: "Druid", specialization: "Feral", reserves: [] },
+        });
+        await service.manage(members[0], editId, {
+          ...change,
+          version: event.version,
+        });
+        assert.equal(
+          (await service.get(members[0], editId)).version,
+          event.version,
+          "Identical edits are no-ops",
+        );
+
+        for (const status of [
+          "bench",
+          "registered",
+          "pending",
+          "tentative",
+          "absent",
+        ]) {
+          await database.foreverRaidSignup.update({
+            where: { id: before.id },
+            data: { status, partyIndex: null, slotIndex: null },
+          });
+          const prior = await database.foreverRaidSignup.findUniqueOrThrow({
+            where: { id: before.id },
+          });
+          const specialization =
+            (prior.character as { specialization: string }).specialization ===
+            "Feral"
+              ? "Balance"
+              : "Feral";
+          await service.manage(members[0], editId, {
+            ...change,
+            version: event.version,
+            character: { className: "Druid", specialization },
+          });
+          assert.deepEqual(
+            await database.foreverRaidSignup.findUniqueOrThrow({
+              where: { id: before.id },
+            }),
+            {
+              ...prior,
+              character: {
+                ...(prior.character as Record<string, unknown>),
+                specialization,
+              },
+            },
+          );
+          event = await service.get(members[0], editId);
+        }
+        const attempts = await Promise.allSettled([
+          service.manage(members[0], editId, {
+            ...change,
+            version: event.version,
+            character: { className: "Mage", specialization: "Frost" },
+          }),
+          service.manage(members[0], editId, {
+            ...change,
+            version: event.version,
+            character: { className: "Priest", specialization: "Shadow" },
+          }),
+        ]);
+        assert.equal(
+          attempts.filter((attempt) => attempt.status === "fulfilled").length,
+          1,
+        );
+        assert.equal(
+          attempts.filter((attempt) => attempt.status === "rejected").length,
+          1,
+        );
+        event = await service.get(members[0], editId);
+        assert.equal(event.version, initial.version + 7);
+        assert.equal(
+          await database.foreverRaidAudit.count({
+            where: { eventId: editId, action: "signup_character_updated" },
+          }),
+          7,
+        );
+
+        await database.foreverRaidSignup.update({
+          where: { id: before.id },
+          data: { status: "withdrawn" },
+        });
+        await assert.rejects(
+          service.manage(members[0], editId, {
+            ...change,
+            version: event.version,
+          }),
+          /Signup not found/,
+        );
+        await database.foreverRaidSignup.update({
+          where: { id: before.id },
+          data: { status: "bench" },
+        });
+        await database.foreverRaidEvent.update({
+          where: { id: editId },
+          data: { signupClosesAt: new Date(0) },
+        });
+        await assert.rejects(
+          service.manage(members[0], editId, {
+            ...change,
+            version: event.version,
+          }),
+          /Roster changes have closed/,
+        );
+        for (const status of ["locked", "cancelled"]) {
+          await database.foreverRaidEvent.update({
+            where: { id: editId },
+            data: { status },
+          });
+          await assert.rejects(
+            service.manage(members[0], editId, {
+              ...change,
+              version: event.version,
+            }),
+            /locked or cancelled/,
+          );
+        }
+
+        const returnId = await service.create(members[0], {
+          ...input,
+          requestKey: randomUUID(),
+        });
+        await service.updateCharacterSpecialization(members[1], {
+          id: target.id,
+          specialization: "Protection",
+        });
+        const ownSignup = {
+          characterId: target.id,
+          specialization: "Protection",
+          role: "tank",
+          acknowledge: true,
+        };
+        await service.signup(members[1], returnId, ownSignup);
+        let returnEvent = await service.get(members[0], returnId);
+        await service.manage(members[0], returnId, {
+          action: "edit_signup_character",
+          version: returnEvent.version,
+          signupId: returnEvent.signups[0].id,
+          character: { className: "Warrior", specialization: "Protection" },
+        });
+        await service.reserves(members[1], returnId, { itemIds: [900001] });
+        await service.signup(members[1], returnId, ownSignup);
+        returnEvent = await service.get(members[0], returnId);
+        assert.equal(returnEvent.signups[0].character.className, "Paladin");
+        assert.deepEqual(
+          returnEvent.signups[0].reserves,
+          [],
+          "The same spec name on another class must not retain old reserves",
+        );
       },
     );
     await context.test(

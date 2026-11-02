@@ -8,6 +8,7 @@ import {
   Check,
   GripVertical,
   Lightbulb,
+  Pencil,
   ShieldAlert,
   Sparkles,
   UserMinus,
@@ -20,6 +21,7 @@ import {
 } from "@/lib/raids/contracts";
 import {
   analyzeRosterComposition,
+  compositionRevisions,
   type PartyCompositionReport,
   type RosterSuggestion,
 } from "@/lib/raids/composition";
@@ -35,6 +37,7 @@ import {
   type RosterParty,
 } from "@/lib/raids/roster-layout";
 import { CharacterPortrait, RoleIcon } from "./character-picker";
+import { SignupCharacterEditor } from "./signup-character-editor";
 
 interface RosterStyle extends CSSProperties {
   "--raid-class-color"?: string;
@@ -88,6 +91,9 @@ function findParty(ids: PartyIdMap, signupId: string): string | null {
 function rosterIdentity(
   signup: SignupView,
   event: EventView,
+  onEditSignup: (signup: SignupView) => void,
+  busy: boolean,
+  open: boolean,
 ): React.JSX.Element {
   return (
     <div className="raid-roster-identity">
@@ -112,6 +118,18 @@ function rosterIdentity(
           <RoleIcon role={signup.role} />
           {signup.role === "participant" ? "Participant" : signup.role}
         </span>
+        {event.isOrganizer && open && (
+          <button
+            type="button"
+            className="raid-edit-signup"
+            aria-label={`Edit ${signup.character.name}'s class and spec`}
+            disabled={busy}
+            onClick={() => onEditSignup(signup)}
+          >
+            <Pencil size={12} aria-hidden="true" />
+            Class / spec
+          </button>
+        )}
         {signup.needsAcknowledgement && (
           <small className="raid-policy-pending">
             {signup.imported
@@ -152,6 +170,7 @@ function SortableRosterEntry({
   busy,
   onMove,
   onBench,
+  onEditSignup,
 }: {
   signup: SignupView;
   event: EventView;
@@ -163,6 +182,7 @@ function SortableRosterEntry({
   busy: boolean;
   onMove: (signupId: string, partyIndex: number) => void;
   onBench: (signupId: string) => void;
+  onEditSignup: (signup: SignupView) => void;
 }): React.JSX.Element {
   const { ref, handleRef, isDragSource } = useSortable({
     id: signup.id,
@@ -195,7 +215,7 @@ function SortableRosterEntry({
         </button>
       )}
       <div className="raid-party-player-main">
-        {rosterIdentity(signup, event)}
+        {rosterIdentity(signup, event, onEditSignup, busy, canAdmit)}
       </div>
       {editable && (
         <div className="raid-party-player-controls">
@@ -259,7 +279,7 @@ function EffectCoverage({
       {report.effects.map((effect) => {
         const warning = effect.conflict
           ? "Overlapping effect"
-          : effect.duplicate
+          : effect.duplicate && effect.rule.scope !== "raid"
             ? "Duplicate provider"
             : effect.rule.state === "provisional"
               ? "Verify in Forever"
@@ -269,7 +289,7 @@ function EffectCoverage({
         return (
           <li
             key={effect.rule.id}
-            className={`raid-effect ${effect.rule.state}${effect.conflict || effect.duplicate ? " warning" : ""}`}
+            className={`raid-effect ${effect.rule.state}${effect.conflict || (effect.duplicate && effect.rule.scope !== "raid") ? " warning" : ""}`}
             title={`${effect.rule.description} ${effect.rule.requirement}.`}
           >
             <Image
@@ -282,6 +302,7 @@ function EffectCoverage({
             <span>
               <strong>{effect.rule.name}</strong>
               <small>
+                {effect.rule.scope === "raid" ? "Raid-wide · " : "Party · "}
                 {warning} · {effect.beneficiaryCount} benefit
               </small>
             </span>
@@ -302,6 +323,7 @@ function PartyColumn({
   busy,
   onMove,
   onBench,
+  onEditSignup,
 }: {
   party: RosterParty;
   event: EventView;
@@ -312,6 +334,7 @@ function PartyColumn({
   busy: boolean;
   onMove: (signupId: string, partyIndex: number) => void;
   onBench: (signupId: string) => void;
+  onEditSignup: (signup: SignupView) => void;
 }): React.JSX.Element {
   const { ref, isDropTarget } = useDroppable({
     id: partyKey(party.index),
@@ -350,6 +373,7 @@ function PartyColumn({
             busy={busy}
             onMove={onMove}
             onBench={onBench}
+            onEditSignup={onEditSignup}
           />
         ))}
         {Array.from({ length: openPlaces }, (_, index) => (
@@ -419,12 +443,14 @@ function WaitingEntry({
   open,
   busy,
   onAdmit,
+  onEditSignup,
 }: {
   event: EventView;
   signup: SignupView;
   open: boolean;
   busy: boolean;
   onAdmit: EventRosterProps["onAdmit"];
+  onEditSignup: (signup: SignupView) => void;
 }): React.JSX.Element {
   return (
     <li
@@ -434,7 +460,7 @@ function WaitingEntry({
         } as RosterStyle
       }
     >
-      {rosterIdentity(signup, event)}
+      {rosterIdentity(signup, event, onEditSignup, busy, open)}
       <div className="raid-roster-actions">
         <span className={`raid-badge ${signup.status}`}>
           {signupStatusLabel(signup.status)}
@@ -475,7 +501,10 @@ function ParticipantRoster({
   open,
   busy,
   onAdmit,
-}: Omit<EventRosterProps, "onSaveLayout">): React.JSX.Element {
+  onEditSignup,
+}: Omit<EventRosterProps, "onSaveLayout"> & {
+  onEditSignup: (signup: SignupView) => void;
+}): React.JSX.Element {
   const openPool = event.admission === "open" && event.status === "open";
   const displayed = openPool
     ? event.signups.filter((signup) =>
@@ -485,7 +514,7 @@ function ParticipantRoster({
   return (
     <div className="raid-visual-roster raid-roster-compact">
       <div className="raid-confirmed-heading">
-        <h3>{openPool ? "Signed up" : "Confirmed"}</h3>
+        <h3>{openPool ? "Signed up" : "Selected"}</h3>
         <span>
           {displayed.length} / {event.capacity}
         </span>
@@ -495,7 +524,7 @@ function ParticipantRoster({
           {roster.registered.length
             ? `${roster.registered.length} awaiting roster selection.`
             : roster.confirmed.length
-              ? `${roster.confirmed.length} confirmed.`
+              ? `${roster.confirmed.length} selected.`
               : "Roster selection pending."}
         </p>
       )}
@@ -508,6 +537,7 @@ function ParticipantRoster({
             open={open}
             busy={busy}
             onAdmit={onAdmit}
+            onEditSignup={onEditSignup}
           />
         ))}
       </ul>
@@ -556,6 +586,7 @@ function ParticipantRoster({
                     open={open}
                     busy={busy}
                     onAdmit={onAdmit}
+                    onEditSignup={onEditSignup}
                   />
                 ))}
               </ul>
@@ -588,6 +619,15 @@ export function EventRoster({
   );
   const [saving, setSaving] = useState(false);
   const [announcement, setAnnouncement] = useState("");
+  const [editingSignup, setEditingSignup] = useState<SignupView | null>(null);
+  const editor =
+    event.isOrganizer && open && editingSignup ? (
+      <SignupCharacterEditor
+        event={event}
+        signup={editingSignup}
+        onClose={() => setEditingSignup(null)}
+      />
+    ) : null;
 
   const parties = useMemo(
     () => partiesFromIds(partyIds, templates, signupMap),
@@ -639,13 +679,17 @@ export function EventRoster({
 
   if (!combat)
     return (
-      <ParticipantRoster
-        event={event}
-        roster={roster}
-        open={open}
-        busy={busy}
-        onAdmit={onAdmit}
-      />
+      <>
+        <ParticipantRoster
+          event={event}
+          roster={roster}
+          open={open}
+          busy={busy}
+          onAdmit={onAdmit}
+          onEditSignup={setEditingSignup}
+        />
+        {editor}
+      </>
     );
 
   const waitingSections = [
@@ -665,7 +709,7 @@ export function EventRoster({
     {
       label: "Tentative",
       ariaLabel: "Tentative",
-      hint: "Not counted in the confirmed roster.",
+      hint: "Not counted in the selected roster.",
       signups: roster.tentative,
     },
     {
@@ -676,13 +720,44 @@ export function EventRoster({
     },
   ];
 
+  const waitingLists = waitingSections.map(
+    (section) =>
+      section.signups.length > 0 && (
+        <section
+          className="raid-roster-waiting"
+          aria-label={section.ariaLabel}
+          key={section.label}
+        >
+          <h3>
+            {section.label} <span>{section.signups.length}</span>
+          </h3>
+          {section.hint && <p className="fine-print">{section.hint}</p>}
+          <ul className="raid-roster">
+            {section.signups.map((signup) => (
+              <WaitingEntry
+                key={signup.id}
+                event={event}
+                signup={signup}
+                open={open}
+                busy={busy || saving}
+                onAdmit={onAdmit}
+                onEditSignup={setEditingSignup}
+              />
+            ))}
+          </ul>
+        </section>
+      ),
+  );
+
   return (
     <div className="raid-visual-roster raid-party-roster">
+      {event.admission === "open" && waitingLists[0]}
+      {editor}
       <div className="raid-confirmed-heading">
         <div>
           <h3>Raid parties</h3>
           <p className="fine-print">
-            Five players per party · party effects do not apply raid-wide
+            Five players per party · support labels distinguish party and raid scope
           </p>
         </div>
         <span>
@@ -772,6 +847,7 @@ export function EventRoster({
               busy={busy || saving}
               onMove={moveToParty}
               onBench={(signupId) => onAdmit(signupId, "bench")}
+              onEditSignup={setEditingSignup}
             />
           ))}
         </div>
@@ -779,6 +855,28 @@ export function EventRoster({
       <p className="sr-only" aria-live="polite">
         {announcement}
       </p>
+
+      {event.game === "forever" && [10, 20, 40].includes(event.capacity) && (
+        <section
+          className="raid-composition-advice"
+          aria-label="Full raid composition planner"
+        >
+          <h3>Plan the whole raid</h3>
+          <p>
+            Compare 10-, 20- and 40-player lineups, shared buffs, spec counts
+            and Sunder assignments. This opens an anonymous planning draft; it
+            does not change this roster or send invitations.
+          </p>
+          <a
+            className="button"
+            href={`https://kfcguild.online/tools/forever/raid-composition?size=${event.capacity}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open {event.capacity}-player composition planner
+          </a>
+        </section>
+      )}
 
       {(analysis.availableCandidates.length > 0 ||
         analysis.recruitment.length > 0) && (
@@ -790,7 +888,10 @@ export function EventRoster({
             <Lightbulb size={20} />
             <div>
               <h3>Roster suggestions</h3>
-              <p>Role gaps first, then the strongest new party coverage.</p>
+              <p>
+                Role gaps first, then planned raid-wide and party support. These
+                are coverage hints, not DPS rankings.
+              </p>
             </div>
           </div>
           {analysis.availableCandidates.length > 0 && (
@@ -827,7 +928,7 @@ export function EventRoster({
             <ShieldAlert size={16} />
             “Talent or setup required” effects are capabilities, not confirmed
             loadouts. Forever effects marked “Verify” use provisional client
-            data. Rules: {event.compositionRevision ?? "legacy"}.
+            data. Rules: {compositionRevisions[event.game ?? "forever"]}.
           </p>
         </section>
       )}
@@ -835,32 +936,8 @@ export function EventRoster({
       {!event.signups.length && (
         <p className="muted raid-no-signups">No signups yet.</p>
       )}
-      {waitingSections.map(
-        (section) =>
-          section.signups.length > 0 && (
-            <section
-              className="raid-roster-waiting"
-              aria-label={section.ariaLabel}
-              key={section.label}
-            >
-              <h3>
-                {section.label} <span>{section.signups.length}</span>
-              </h3>
-              {section.hint && <p className="fine-print">{section.hint}</p>}
-              <ul className="raid-roster">
-                {section.signups.map((signup) => (
-                  <WaitingEntry
-                    key={signup.id}
-                    event={event}
-                    signup={signup}
-                    open={open}
-                    busy={busy || saving}
-                    onAdmit={onAdmit}
-                  />
-                ))}
-              </ul>
-            </section>
-          ),
+      {waitingLists.filter(
+        (_, index) => event.admission !== "open" || index !== 0,
       )}
     </div>
   );

@@ -6,7 +6,7 @@ import {
   type EventView,
   type SignupView,
 } from "./contracts";
-import { signupStatusLabel } from "./event-preview";
+import { signupStatusLabel, signupStatusExplanation } from "./event-preview";
 import { classes, specializationsByClass } from "./specializations";
 import { eventTypeDefinitions } from "./event-types";
 import { gameLabels } from "./games";
@@ -85,7 +85,9 @@ export function nativeSignupStatus(signup: SignupView | undefined): string {
   return !signup
     ? "Not signed up"
     : signup.status === "accepted"
-      ? "Confirmed"
+      ? signup.attendanceReply === "confirmed"
+        ? "Attendance confirmed"
+        : "Selected for the roster"
       : signup.status === "registered"
         ? "Signed up; roster not selected"
         : signup.status === "pending"
@@ -107,6 +109,10 @@ export function renderNativePanel(
   const mine = event.signups.find((signup) => signup.isMine);
   const definition = eventTypeDefinitions[event.eventType];
   const signupOpen =
+    event.status === "open" &&
+    !event.rosterPublished &&
+    Date.parse(event.signupClosesAt) > Date.now();
+  const rosterChangesOpen =
     event.status === "open" && Date.parse(event.signupClosesAt) > Date.now();
   const reservesOpen =
     event.status === "open" && Date.parse(event.reservesCloseAt) > Date.now();
@@ -203,6 +209,7 @@ export function renderNativePanel(
         ),
       );
     if (!selected) {
+      title = "Step 1 of 2 · Your character";
       description += `**New character:** ${state.name ? discordText(state.name) : "Name not entered"}\nClass: ${state.className ?? "Not selected"}\nSpec: ${state.specialization ?? "Not selected"}\n\nSave the character first; this does not sign you up.\n${event.game === "tbc" ? "Use the 2-12 letter in-game name." : "Use the in-game first and last name, if applicable."}`;
       components.push(
         row([
@@ -210,7 +217,7 @@ export function renderNativePanel(
           button(
             draft,
             "register",
-            "Save character",
+            "Save character & continue",
             1,
             !state.className || !state.name || !state.specialization,
           ),
@@ -218,6 +225,10 @@ export function renderNativePanel(
         ]),
       );
     } else {
+      title =
+        state.attendance === "joining"
+          ? "Step 2 of 2 · Confirm your signup"
+          : `Confirm ${signupStatusLabel(state.attendance)}`;
       components.push(
         select(
           draft,
@@ -257,7 +268,7 @@ export function renderNativePanel(
       if (event.description)
         description += `\n${discordText(event.description, 500)}\nFull conditions: Event details.\n`;
       description +=
-        "\n**Confirm accepts the participation rules and roster audience above.**";
+        "\n**Confirm accepts the participation rules and roster audience above.** The assistant may DM you about this raid. You can switch to My signup only afterward.";
       components.push(
         row([
           button(
@@ -422,7 +433,7 @@ export function renderNativePanel(
       state.mode === "manage" &&
       participatingStatuses.some((status) => status === state.filter) &&
       page.length &&
-      signupOpen &&
+      rosterChangesOpen &&
       !state.lockConfirm
     ) {
       components.push(
@@ -481,7 +492,19 @@ export function renderNativePanel(
         "\n\n**Locking closes changes and captures an immutable roster/loot snapshot. Confirm only when the roster is final.**";
   } else {
     title = "My signup";
-    description += `**${nativeSignupStatus(mine)}**\n${mine ? signupLine(mine) : "No participation recorded."}\n\nSignups close ${event.signupCloseLabel}`;
+    description += `**${nativeSignupStatus(mine)}**\n${signupStatusExplanation(mine?.status)}\n${mine ? signupLine(mine) : ""}\n\nSignups close ${event.signupCloseLabel}`;
+    if (mine && components.length < 4)
+      components.push(
+        row([
+          button(
+            draft,
+            "notifications",
+            mine.rosterDirectMessages === false
+              ? "Enable raid DMs"
+              : "Use My signup only",
+          ),
+        ]),
+      );
     if (mine?.reserves.length)
       description += `\n\nReserves:\n${mine.reserves.map((id) => discordText(event.catalog?.items.find((item) => item.itemId === id)?.name ?? `Item ${id}`, 80)).join("\n")}`;
     if (mine?.needsAcknowledgement && event.status === "open") {
@@ -545,7 +568,10 @@ export function renderNativePanel(
         description,
         color: state.className ? classAccent(state.className) : 0xdfb956,
         footer: {
-          text: "Private to you · selections are saved only after confirmation",
+          text:
+            state.mode === "signup"
+              ? "Private prompt · Saving your character is followed by raid confirmation"
+              : "Private prompt · Use My signup on the original post to return",
         },
       },
     ],

@@ -39,7 +39,13 @@ export function publicEventCalendar(
   now = new Date(),
 ): string {
   const url = `${SITE_URL}/events/${event.id}`;
-  const description = `${event.activity} · ${event.region} · ${event.faction} · ${event.ruleset}\n\n${event.description}\n\nCheck the current event for changes and signup: ${url}\nThis calendar entry is a snapshot, not a confirmed roster place.`;
+  const leadership = [
+    event.leaderName ? `Leader: ${event.leaderName}` : "",
+    event.assistantName ? `Assistant: ${event.assistantName}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const description = `${event.activity} · ${event.region} · ${event.faction} · ${event.ruleset}${leadership ? `\n${leadership}` : ""}\n\n${event.description}\n\nCheck the current event for changes and signup: ${url}\nThis calendar entry is a snapshot, not a confirmed roster place.`;
   return (
     [
       "BEGIN:VCALENDAR",

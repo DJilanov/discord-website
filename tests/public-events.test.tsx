@@ -17,6 +17,8 @@ const event: PublicEvent = {
   faction: "Alliance",
   ruleset: "PvP",
   description: "Meet at Northshire. Confirm your level before joining.",
+  leaderName: "Psyrogue",
+  assistantName: "DJ",
   startsAt: new Date("2026-11-05T07:30:00Z"),
   endsAt: new Date("2026-11-05T21:30:00Z"),
   signupClosesAt: new Date("2026-11-05T07:00:00Z"),
@@ -42,10 +44,23 @@ test("public summaries render useful plans without member or character data", ()
   );
   assert.ok($("img").attr("src")?.includes("questing"));
   assert.equal($("form, input").length, 0);
+  assert.match($(".detail-grid").text(), /LeaderPsyrogue/);
+  assert.match($(".detail-grid").text(), /AssistantDJ/);
   assert.equal($("script[type='application/ld+json']").length, 1);
 });
 
 test("ended and closed previews do not present an active signup", () => {
+  const published = load(
+    renderToStaticMarkup(
+      <PublicEventSummary
+        event={{ ...event, rosterPublished: true }}
+        now={now}
+      />,
+    ),
+  );
+  assert.match(published.text(), /Signup is closed/);
+  assert.match(published.text(), /Closed · roster published/);
+  assert.equal(published('a[href^="/raids/"]').text(), "Open event");
   const ended = load(
     renderToStaticMarkup(
       <PublicEventSummary
@@ -78,6 +93,7 @@ test("calendar snapshots escape injection, preserve UTC and fold UTF-8 safely", 
   assert.match(calendar, /DTSTART:20261105T073000Z\r\n/);
   assert.match(calendar, /DTEND:20261105T213000Z\r\n/);
   assert.match(calendar, /DTSTAMP:20261022T120000Z\r\n/);
+  assert.ok(unfolded.includes("Leader: Psyrogue\\nAssistant: DJ"));
   assert.equal(
     calendar.split("\r\n").filter((line) => line === "END:VEVENT").length,
     1,

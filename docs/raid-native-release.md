@@ -1,5 +1,36 @@
 # Native Raid Pilot Release
 
+## November 1, 2026 — server-specific native membership correction
+
+Live worker-only fix at 03:42:08 UTC: native signup verifies membership in the
+clicked post's approved guild, rather than always checking `DISCORD_GUILD_ID`.
+A real KFC-only newcomer previously received a join-server error despite a 200
+KFC membership response; the wrongly checked default guild returned 404. The
+updated live transport now accepts that same member. KFC and WoW Forever users
+can complete signup inside their respective Discord without joining both servers
+or creating a website session.
+
+`NativeWorkerTransport.membership(discordId, guildId)` now receives the signed,
+source-validated interaction's guild at both first execution and response retries.
+Unapproved guilds fail closed. Existing actor, message, channel, audience, disabled
+member, expiration and replay checks remain. Reopen Sign up after an old error;
+character setup still requires name, class/spec, Save character & continue and
+then explicit Confirm signup.
+
+Validation: 24 native unit tests, 31 isolated PostgreSQL checks, focused strict
+TypeScript and ESLint. The new test uses the real membership transport with
+mocked Discord HTTP and no prior website member profile, completing signup once
+in each server. It fails against the previous worker and passes with this fix.
+Temporary databases, roles and the test TCP proxy were removed. Read-only live
+checks verified 11 primary native raid posts and the bot's correct interactions
+endpoint. No production test signup or unsolicited Discord message was sent.
+
+Only `wow-forever-raids` restarted, retaining `/home/wow-forever-discord` as cwd.
+No web rebuild/schema migration; other PM2 processes preserved. Source and test
+backups plus activation/readback receipts: `.data/raid-native-audit-20261101/`.
+The related website release remains `kfc-raid-newcomers-20261031-r2`.
+
+
 Release date: 3 October 2026. Discord-member beta; anonymous access remains disabled.
 
 ## Event Editing And Member Beta

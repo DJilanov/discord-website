@@ -1,3 +1,9 @@
+import {
+  kfcForeverJoiningDescription,
+  kfcForeverJoiningTopic,
+} from "./kfc-forever-joining";
+import { kfcWelcomeDescription, kfcWelcomeTopic } from "./kfc-raid-welcome";
+
 export const kfcGuildId = "1411533815356194968";
 export const foreverGuildId = "1554316932948172940";
 export const kfcApplicationId = "1554796912673169428";
@@ -8,9 +14,13 @@ export const scheduledEventBindings = [
   {
     eventId: "cmuz20aal0000fu4s0vf3f2wx",
     projections: [
-      { guildId: kfcGuildId, scheduledId: "1550723826864889886" },
+      { guildId: kfcGuildId, scheduledId: "1566688030972969075" },
       { guildId: foreverGuildId, scheduledId: "1560892325117435904" },
     ],
+  },
+  {
+    eventId: "cmvy07lb500000m4sbok6tgqq",
+    projections: [{ guildId: kfcGuildId, scheduledId: "1566688035708473495" }],
   },
 ] as const;
 export const kfcNativeEventEditions: Readonly<
@@ -65,8 +75,7 @@ export const kfcTargets: KfcChannelTarget[] = [
     name: "joining-kfc",
     public: true,
     readOnly: true,
-    topic:
-      "Current guild profile and joining information below. EU Alliance PvP, English, flexible hosting. https://kfcguild.online/",
+    topic: kfcForeverJoiningTopic,
   },
   {
     id: "1411570010534449173",
@@ -124,8 +133,7 @@ export const kfcTargets: KfcChannelTarget[] = [
     id: "1548519535177629707",
     name: "forever-discussion",
     public: true,
-    topic:
-      "WoW Forever discussion, questions and guild plans. Separate game facts from speculation. Existing shared-channel participation preferences remain unchanged.",
+    topic: kfcForeverJoiningTopic,
   },
   {
     id: "1548747530790248610",
@@ -138,16 +146,15 @@ export const kfcTargets: KfcChannelTarget[] = [
     id: "1550970060812587028",
     name: "guild-invite",
     public: true,
-    topic:
-      "KFC Forever: EU, Alliance, PvP, English. Ask for an in-game invite with character name and availability; never post passwords or personal data.",
+    topic: kfcForeverJoiningTopic,
   },
   {
     id: "1460899582824153140",
-    name: "tbc-announcements",
+    name: "tbc-schedule",
     public: true,
     readOnly: true,
     topic:
-      "TBC run announcements. Open the linked signup for schedule, requirements, roster and loot; Discord Interested is not a character signup.",
+      "Upcoming TBC runs in start-time order. Use the pinned schedule; open the original signup for roster, preparation and loot. Optional alerts are below.",
   },
   {
     id: "1463110825790148639",
@@ -226,12 +233,11 @@ export const kfcNewChannels: KfcNewChannel[] = [
   },
   {
     key: "raidChat",
-    name: "raid-chat",
+    name: "tbc-raid-chat",
     type: 0,
-    parentId: null,
-    parentKey: "groups",
+    parentId: "1441654698519040114",
     topic:
-      "TBC and Forever run questions: mention your game and event. A public signup does not automatically guarantee a selected raid seat.",
+      "General TBC raid questions. Session-specific questions, late arrivals and loot discussions belong in that raid's post.",
   },
   {
     key: "lfg",
@@ -248,8 +254,7 @@ export const kfcNewChannels: KfcNewChannel[] = [
     type: 0,
     parentId: "1412555658108211280",
     readOnly: true,
-    topic:
-      "Welcome, activity destinations and private staff-contact instructions. Classes and interests are optional in Channels & Roles.",
+    topic: kfcWelcomeTopic,
   },
   {
     key: "pvp",
@@ -294,7 +299,7 @@ export function kfcResources(channels: Record<string, string>): KfcResource[] {
       key: "welcome",
       channelId: channels.start,
       title: "Welcome to KFC",
-      description: `Find a run that fits your week, ask for help or just hang out. We respect each other's time without making WoW a second job.\n\n**Pick your game**\n**TBC Raids** - <#1460899582824153140> and existing raid signups\n**WoW Forever** - <#1548519535177629707> and <#1548747530790248610>\n**Find a Group** - shared calendar, LFG and PvP requests; include TBC or Forever in your post\n\n**Find your people**\n${mention("calendar")} - current signup destinations\n${mention("lfg")} - dungeon and questing groups\n${mention("pvp")} - arena, battleground and world PvP groups\n${mention("introductions")} / ${mention("help")} - say hello or ask a question\n\n**Before a raid**\nRead <#1411570010534449173> and the event's own requirements. Public runs and guild-priority runs are separate.\n\n**Private staff contact**\nFor a report, appeal or guild application, open the member list and DM a member of KFC Management. Include the event/message link and a short description. Do not post personal evidence in public. Staff will never ask for your game or Discord password. Response times depend on available volunteers.\n\nChoose optional classes and interests in **Channels & Roles**. KFC guild: https://kfcguild.online/ . The independent, open-faction Forever community: https://www.wowforeverdiscord.online/ .`,
+      description: kfcWelcomeDescription,
     },
     {
       key: "conduct",
@@ -307,8 +312,7 @@ export function kfcResources(channels: Record<string, string>): KfcResource[] {
       key: "joining",
       channelId: "1411545672313737346",
       title: "Joining KFC",
-      description:
-        "**KFC | WoW Forever EU Alliance PvP**\nAn English-speaking guild for raiders, social players and PvPers who enjoy good company and a relaxed atmosphere.\n\n**Experienced hosts. Flexible schedules.**\nWe've hosted nearly 500 TBC raids, with guild members organising runs throughout the week. Choose the groups that suit your schedule and enjoy the game together.\n\n**Join us for WoW Forever**\nPost your character name in <#1550970060812587028> or message KFC Management. New and returning players are welcome.\n\n**Find your next group**\nCheck <#1557974287602819164> for upcoming events. Each signup has the host's times, requirements and loot rules. You don't need to join the guild to take part in an open run.\n\nhttps://kfcguild.online/",
+      description: `${kfcForeverJoiningDescription}\n\n**Playing TBC?**\nUse <#1411545946155909150>.\n\n**Upcoming events**\n<#1557974287602819164>\n\nhttps://kfcguild.online/`,
     },
     {
       key: "loot",
@@ -349,7 +353,7 @@ export function kfcResources(channels: Record<string, string>): KfcResource[] {
       channelId: channels.calendar,
       title: "Find an upcoming run",
       description:
-        "**TBC runs**\n<#1460899582824153140> - host announcements and their authoritative signup links. Existing dated raid channels and Raid-Helper signups remain active until the host closes or migrates the run.\n\n**WoW Forever**\n<#1548747530790248610> - guild group-leveling plans and current event posts.\n<#1548519535177629707> - discussion and questions.\n\n**Quick groups**\nUse looking-for-group for dungeon/questing requests and pvp-groups for structured PvP posts.\n\nDiscord's Events/Interested helps you remember a run; it does not reserve a character slot or loot. Open the actual signup for class/spec, roster, time and loot. Never sign up twice across tools unless the host explicitly asks you to.",
+        "**WoW Forever**\n<#1565932272631283853> - upcoming dates and signup links.\n<#1565932273944231957> - one post and conversation per raid.\n\n**TBC runs**\n<#1460899582824153140> - upcoming dates and signup links.\n<#1565932309171937411> - one post and conversation per raid.\n\nExisting Raid-Helper signups keep their authoritative roster. The current Black Temple run remains active in its original channel. Historical channels retain their messages and links.\n\n**Quick groups**\nUse looking-for-group for dungeon/questing requests and pvp-groups for structured PvP posts.\n\nDiscord's Events/Interested helps you remember a run; it does not reserve a character slot or loot. Open the actual signup for class/spec, roster, time and loot. Never sign up twice across tools unless the host explicitly asks you to.",
     },
   ];
 }

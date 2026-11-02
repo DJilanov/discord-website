@@ -26,9 +26,11 @@ import {
   scheduledEventSchema,
   scheduledEventPatch,
   kfcCalendarContent,
+  kfcCalendarPublicationEligible,
   type KfcCalendarEntry,
 } from "../lib/kfc-event-maintenance";
 import { scheduledEventRequest } from "../lib/scheduled-event-client";
+import { syncKfcRaiding } from "../lib/kfc-raiding/sync";
 
 const sourceStateSchema = z.object({
   guildId: z.literal(kfcGuildId),
@@ -243,14 +245,9 @@ async function main(): Promise<void> {
           discordMirrors: { where: { guildId: kfcGuildId, status: "sent" } },
         },
       });
-      if (
-        !event ||
-        event.discordPost?.visibility !== "community" ||
-        !event.discordPost.approvedAt ||
-        !event.discordMirrors.length
-      ) {
+      if (!event || !kfcCalendarPublicationEligible(event)) {
         console.log(
-          `Held event ${binding.eventId}: public approval/mirror unavailable.`,
+          `Held event ${binding.eventId}: approved KFC publication unavailable.`,
         );
         continue;
       }
@@ -416,6 +413,8 @@ async function main(): Promise<void> {
         url: `https://discord.com/events/${kfcGuildId}/${event.id}`,
       });
     }
+    // The edition schedules own this navigation message after the scoped rollout.
+    if (process.env.KFC_RAIDING_ENABLED === "true") return;
     const calendar = sourceState.messages.calendar,
       route = `/channels/${calendar.channelId}/messages/${calendar.messageId}`;
     const current = messageSchema.parse(await request(route));
@@ -471,6 +470,14 @@ async function main(): Promise<void> {
             ? error.message
             : "KFC maintenance deferred; review permissions and private journal.",
         );
+      }
+      if (process.env.KFC_RAIDING_ENABLED === "true") {
+        try {
+          await syncKfcRaiding(db, !!values.apply);
+        } catch (error: unknown) {
+          if (!values.watch) throw error;
+          console.error(error instanceof Error ? error.message : "KFC raiding refresh deferred.");
+        }
       }
       if (!values.watch || stopped) break;
       for (

@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto";
+import { isRosterInteraction, processRosterInteraction } from "./roster-confirmation-interactions";
+import { invitationView, recordRosterChange } from "./roster-confirmations";
+import { rosterButtons, rosterReplyLabel } from "./roster-confirmation-ui";
 import { z } from "zod";
 import type {
   ForeverRaidNativeDraft,
@@ -8,7 +11,11 @@ import type {
 import { HttpError } from "@/lib/security";
 import { checkServerMembership } from "@/lib/member-discord";
 import { decryptToken } from "@/lib/discord-bridge/crypto";
-import { raidDiscordSettings } from "./discord-settings";
+import {
+  raidDestinationForPost,
+  raidDiscordGuildIds,
+  raidDiscordSettings,
+} from "./discord-settings";
 import { reserveQuota } from "./loot-policy";
 import { nativeRaidsEnabled } from "./discord-format";
 import {
@@ -52,12 +59,12 @@ import { jsonChecksum } from "./json";
 import { eventPolicyChecksum } from "./event-policy";
 import { raidAccountAllowed } from "./config";
 import { raidAudienceIncludes } from "./access";
-import { raidDestinationForPost } from "./discord-settings";
 
 type Transaction = Prisma.TransactionClient;
 export interface NativeWorkerTransport {
   membership: (
     discordId: string,
+    guildId: string,
   ) => Promise<"member" | "not_member" | "unavailable">;
   respond: (token: string, message: NativeMessage) => Promise<void>;
 }
@@ -75,8 +82,11 @@ export function nativeWorkerTransport(): NativeWorkerTransport {
   return {
     membership: (
       id: string,
+      guildId: string,
     ): Promise<"member" | "not_member" | "unavailable"> =>
-      checkServerMembership(id, settings.guildId, settings.token),
+      raidDiscordGuildIds().includes(guildId)
+        ? checkServerMembership(id, guildId, settings.token)
+        : Promise.resolve("unavailable"),
     async respond(token: string, message: NativeMessage): Promise<void> {
       if (!/^[A-Za-z0-9_.-]{10,1024}$/.test(token))
         throw new Error("Invalid interaction continuation");
@@ -448,7 +458,7 @@ async function processInput(
         ? suggestedRole(state.specialization)
         : "participant";
       notice =
-        "Character saved. Review the event rules and confirm separately to sign up.";
+        "Character ready. Check your role and event rules below, then press Confirm signup to join this raid.";
     } else if (action === "confirm") {
       requireMode(state, "signup");
       await requireUnchanged(client, draft, member);
@@ -470,6 +480,12 @@ async function processInput(
         state.attendance === "joining"
           ? "Signup saved."
           : "Availability saved. No confirmed seat or soft reserves are held.";
+    } else if (action === "notifications") {
+      const mine = await client.foreverRaidSignup.findUnique({ where: { eventId_memberId: { eventId, memberId: member.id } } });
+      if (!mine) throw new HttpError(400, "Sign up for this event first.");
+      await client.foreverRaidSignup.update({ where: { id: mine.id }, data: { rosterDirectMessages: !mine.rosterDirectMessages } });
+      await recordRosterChange(client, eventId, member.id, "roster_message_preference_changed");
+      notice = mine.rosterDirectMessages ? "Use My signup here for roster invitations; automatic raid DMs are off." : "Raid DMs enabled for this event.";
     } else if (action === "acknowledge") {
       requireMode(state, "mine");
       await requireUnchanged(client, draft, member);
@@ -667,13 +683,16 @@ async function processInput(
   const post = await client.foreverRaidDiscordPost.findUniqueOrThrow({
     where: { eventId },
   });
-  return renderNativePanel(
-    event,
-    characters,
-    viewDraft(draft),
-    post.origin || settings.origin,
-    notice,
-  );
+  const panel = renderNativePanel(event, characters, viewDraft(draft), post.origin || settings.origin, notice);
+  if (nativeStateSchema.parse(draft.state).mode === "mine") {
+    const invitation = await client.foreverRaidRosterInvitation.findFirst({ where: { eventId, discordId: member.discordId } });
+    if (invitation) {
+      const current = await invitationView(client, invitation, true);
+      if (panel.embeds[0]) panel.embeds[0].description = (panel.embeds[0].description + `\n\n**${rosterReplyLabel(current.state)}**`).slice(0, 4096);
+      if (panel.components.length < 5) panel.components.unshift({ type: 1, components: rosterButtons(current) });
+    }
+  }
+  return panel;
 }
 export async function runNativeRaidWork(
   database: PrismaClient,
@@ -710,10 +729,13 @@ export async function runNativeRaidWork(
   if (!work) return 0;
   try {
     let response: NativeMessage;
+    if (isRosterInteraction(work.input)) {
+      response = await processRosterInteraction(work, database, transport.membership);
+    } else {
     const input = nativeInputSchema.parse(work.input);
     if (input.id !== work.id || input.member.user.id !== work.actorId)
       throw new Error("Native work identity mismatch");
-    const membership = await transport.membership(work.actorId);
+    const membership = await transport.membership(work.actorId, input.guild_id);
     if (work.response) {
       const target = nativeTarget(input.data.custom_id);
       const draft =
@@ -757,7 +779,7 @@ export async function runNativeRaidWork(
         membership !== "member"
           ? nativeError(
               membership === "not_member"
-                ? "This service is for WoW Forever Discord members. Join the server before using it."
+                ? "Join this raid's Discord server before using its signup controls."
                 : "Server membership could not be verified. Reopen the event and try again shortly.",
             )
           : await database.$transaction(
@@ -811,6 +833,7 @@ export async function runNativeRaidWork(
             status: "responding",
           },
         });
+    }
     }
     if (!work.tokenCipher) throw new Error("Native continuation unavailable");
     await transport.respond(

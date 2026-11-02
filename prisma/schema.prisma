@@ -115,6 +115,8 @@ model ForeverRaidEvent {
   faction             String
   ruleset             String
   description         String
+  leaderName          String                   @default("")
+  assistantName       String                   @default("")
   startsAt            DateTime                 @db.Timestamptz(3)
   endsAt              DateTime                 @db.Timestamptz(3)
   signupClosesAt      DateTime                 @db.Timestamptz(3)
@@ -198,6 +200,7 @@ model ForeverRaidDiscordMirror {
 }
 
 model ForeverRaidSignup {
+  rosterDirectMessages Boolean @default(true)
   id             String           @id @default(cuid())
   eventId        String
   event          ForeverRaidEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
@@ -788,4 +791,91 @@ model ForeverBridgeAdminRequest {
   createdAt   DateTime @default(now()) @db.Timestamptz
 
   @@index([createdAt])
+}
+
+model ForeverRaidRosterPublication {
+  id          String   @id @default(uuid())
+  eventId     String
+  actorId     String
+  requestKey  String   @unique
+  requestHash String
+  deadline    DateTime @db.Timestamptz(3)
+  preparation Json
+  roster      Json
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([eventId, createdAt])
+}
+
+model ForeverRaidRosterInvitation {
+  id              String   @id @default(uuid())
+  eventId         String
+  publicationId   String
+  signupId        String
+  discordId       String
+  guildId         String
+  sourceChannelId String
+  sourceMessageId String
+  version         Int      @default(1)
+  termsHash       String
+  offer           Json
+  state           String   @default("pending")
+  dmChannelId     String?
+  dmMessageId     String?
+  repliedAt       DateTime? @db.Timestamptz(3)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  @@unique([eventId, signupId])
+  @@index([discordId, eventId])
+  @@index([state, updatedAt])
+}
+
+model ForeverRaidRosterResponse {
+  id           String   @id @default(uuid())
+  invitationId String
+  requestKey   String   @unique
+  actorId      String
+  version      Int
+  choice       String
+  reason       String?
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([invitationId, createdAt])
+}
+
+model ForeverRaidNotification {
+  id             String   @id @default(uuid())
+  invitationId   String
+  kind           String
+  revision       Int
+  recipientId    String
+  status         String   @default("pending")
+  attempts       Int      @default(0)
+  nonce          String   @unique
+  payload        Json
+  channelId      String?
+  messageId      String?
+  leaseId        String?
+  leaseUntil     DateTime? @db.Timestamptz(3)
+  nextAttemptAt  DateTime @default(now()) @db.Timestamptz(3)
+  lastError      String?
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  @@unique([invitationId, kind, revision, recipientId])
+  @@index([status, nextAttemptAt])
+}
+
+model ForeverRaidRosterAmendment {
+  id          String   @id @default(uuid())
+  eventId     String
+  requestKey  String   @unique
+  revision    Int
+  actorId     String
+  reason      String
+  payload     Json
+  checksum    String
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  @@unique([eventId, revision])
 }

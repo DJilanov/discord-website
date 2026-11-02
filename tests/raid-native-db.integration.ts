@@ -1,4 +1,21 @@
 import "../scripts/env";
+import {
+  publishRoster,
+  previewRosterPublication,
+  replyToRoster,
+  rosterDashboard,
+  amendRoster,
+  manuallyConfirmRoster,
+  reconcileRosterInvitations,
+} from "../lib/raids/roster-confirmations";
+import { rosterInteraction } from "../lib/raids/roster-confirmation-interactions";
+import { rosterControl } from "../lib/raids/roster-confirmation-ui";
+import { defaultPreparation } from "../lib/raids/roster-confirmation-contracts";
+import {
+  deliverRosterNotification,
+  RosterDeliveryError,
+  type RosterDeliveryTransport,
+} from "../lib/raids/roster-confirmation-delivery";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -18,6 +35,7 @@ import {
 import { stageCatalog, reviewCatalog } from "../lib/raids/catalog-store";
 import { raidCatalogFixture } from "./fixtures/raid-catalog";
 import { localRaidStart } from "../lib/raids/time";
+import { findRaidShareEvent } from "../lib/raids/share-metadata";
 import { nativeRaidInteraction } from "../lib/raids/native-interactions";
 import {
   nativeMessageSchema,
@@ -29,6 +47,7 @@ import {
 import {
   NativeResponseError,
   runNativeRaidWork,
+  nativeWorkerTransport,
   type NativeWorkerTransport,
 } from "../lib/raids/native-worker";
 
@@ -297,7 +316,9 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
             (Number(filename.slice(0, 3)) >= 14 &&
               Number(filename.slice(0, 3)) <= 32) ||
             filename.startsWith("035_") ||
-            filename.startsWith("036_")),
+            filename.startsWith("036_") ||
+            filename.startsWith("038_") ||
+            filename.startsWith("039_")),
       )
       .sort();
     for (const filename of migrations)
@@ -333,6 +354,69 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
     );
 
     await context.test(
+      "Link metadata exposes only approved public events from the configured community",
+      async () => {
+        assert.equal(await findRaidShareEvent("invalid", database), null);
+        for (const game of ["forever", "tbc"] as const) {
+          const eventId = await createEvent({
+            game,
+            realm: game === "tbc" ? "spineshatter" : "",
+          });
+          assert.equal(await findRaidShareEvent(eventId, database), null);
+          const post = await database.foreverRaidDiscordPost.update({
+            where: { eventId },
+            data: {
+              visibility: "community",
+              confirmedAt: new Date(),
+              approvedAt: new Date(),
+              approvedBy: members[0].discordId,
+              label: "Synthetic public sharing test",
+            },
+          });
+          const shared = await findRaidShareEvent(eventId, database);
+          assert.ok(shared);
+          assert.equal(shared.game, game);
+          for (const field of [
+            "signups",
+            "organizer",
+            "description",
+            "audience",
+            "discordPost",
+            "hardReserves",
+          ])
+            assert.equal(field in shared, false, field);
+          for (const data of [
+            { visibility: "private" },
+            { approvedAt: null, approvedBy: null },
+            { origin: "https://other.invalid" },
+            { guildId: "1557000000000000099" },
+            { status: "failed" },
+          ]) {
+            await database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data,
+            });
+            assert.equal(
+              await findRaidShareEvent(eventId, database),
+              null,
+              JSON.stringify(data),
+            );
+            await database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data: {
+                visibility: post.visibility,
+                approvedAt: post.approvedAt,
+                approvedBy: post.approvedBy,
+                origin: post.origin,
+                guildId: post.guildId,
+                status: post.status,
+              },
+            });
+          }
+        }
+      },
+    );
+    await context.test(
       "Public click acknowledges privately, encrypts the continuation, and selection does not sign up",
       async () => {
         const eventId = await createEvent();
@@ -364,7 +448,7 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
           0,
         );
         const confirmed = await act(members[1], selected, "confirm");
-        assert.match(confirmed.content, /Confirmed/);
+        assert.match(confirmed.content, /Selected/);
         const signup = await database.foreverRaidSignup.findFirstOrThrow({
           where: { eventId },
         });
@@ -421,6 +505,140 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
       },
     );
     await context.test(
+      "New Discord-only members can register in either server without joining the other server",
+      async () => {
+        const otherGuild = "1557000000000000020";
+        const otherChannel = "1557000000000000021";
+        const actors = ["1557000000000000030", "1557000000000000031"];
+        const originalFetch = globalThis.fetch;
+        const originalPilot = process.env.FOREVER_RAIDS_PILOT_DISCORD_IDS;
+        const originalDestinations =
+          process.env.FOREVER_RAIDS_DISCORD_DESTINATIONS;
+        process.env.FOREVER_RAIDS_PILOT_DISCORD_IDS = [...ids, ...actors].join(
+          ",",
+        );
+        process.env.FOREVER_RAIDS_DISCORD_DESTINATIONS = JSON.stringify([
+          {
+            guildId: otherGuild,
+            channelId: otherChannel,
+            label: "Second server",
+          },
+        ]);
+        try {
+          for (const [index, server] of [guildId, otherGuild].entries()) {
+            const channel = index === 0 ? channelId : otherChannel;
+            const actor: MemberIdentity = {
+              id: "not-a-website-member",
+              discordId: actors[index],
+              displayName: "Discord-only newcomer",
+            };
+            assert.equal(
+              await database.foreverMember.findUnique({
+                where: { discordId: actor.discordId },
+              }),
+              null,
+            );
+            const checkedGuilds: string[] = [];
+            globalThis.fetch = async (request): Promise<Response> => {
+              const url = new URL(
+                request instanceof Request ? request.url : String(request),
+              );
+              assert.equal(url.origin, "https://discord.com");
+              const match = /^\/api\/v10\/guilds\/(\d+)\/members\/(\d+)$/.exec(
+                url.pathname,
+              );
+              assert.ok(
+                match,
+                "Signup must not start OAuth or any other HTTP flow",
+              );
+              checkedGuilds.push(match[1]);
+              return match[1] === server && match[2] === actor.discordId
+                ? Response.json({ user: { id: actor.discordId } })
+                : Response.json({ code: 10007 }, { status: 404 });
+            };
+            const nativeTransport = {
+              ...nativeWorkerTransport(),
+              respond: transport.respond,
+            };
+            const eventId = await createEvent();
+            await database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data: { guildId: server, channelId: channel },
+            });
+            const clicked = await publicInput(eventId, actor);
+            clicked.guild_id = server;
+            clicked.channel_id = channel;
+            let message = await finish(clicked, nativeTransport);
+            assert.equal(
+              message.embeds[0]?.title,
+              "Step 1 of 2 · Your character",
+            );
+            async function next(action: string, value?: string): Promise<void> {
+              const input = privateInput(
+                actor,
+                control(message, action),
+                value === undefined ? undefined : [value],
+              );
+              input.guild_id = server;
+              input.channel_id = channel;
+              message = await finish(input, nativeTransport);
+            }
+            await next("class", "Warrior");
+            await next("spec", "Fury");
+            const nameRequest = privateInput(actor, control(message, "name"));
+            nameRequest.guild_id = server;
+            nameRequest.channel_id = channel;
+            assert.equal(
+              (await nativeRaidInteraction(nameRequest, database)).type,
+              9,
+            );
+            message = await finish(
+              {
+                ...nameRequest,
+                id: snowflake(),
+                token: `native-test-${snowflake()}`,
+                type: 5,
+                data: {
+                  custom_id: control(message, "name"),
+                  components: [
+                    {
+                      type: 18,
+                      component: {
+                        type: 4,
+                        custom_id: "name",
+                        value: `New ${index === 0 ? "Alpha" : "Bravo"}`,
+                      },
+                    },
+                  ],
+                },
+              },
+              nativeTransport,
+            );
+            await next("register");
+            assert.equal(
+              await database.foreverRaidSignup.count({ where: { eventId } }),
+              0,
+            );
+            await next("confirm");
+            const signup = await database.foreverRaidSignup.findFirstOrThrow({
+              where: { eventId },
+            });
+            const member = await database.foreverMember.findUniqueOrThrow({
+              where: { discordId: actor.discordId },
+            });
+            assert.equal(signup.memberId, member.id);
+            assert.equal(signup.status, "accepted");
+            assert.ok(checkedGuilds.length >= 6);
+            assert.ok(checkedGuilds.every((checked) => checked === server));
+          }
+        } finally {
+          globalThis.fetch = originalFetch;
+          process.env.FOREVER_RAIDS_PILOT_DISCORD_IDS = originalPilot;
+          process.env.FOREVER_RAIDS_DISCORD_DESTINATIONS = originalDestinations;
+        }
+      },
+    );
+    await context.test(
       "First character registration uses class/spec and a modal; saving is separate from signup",
       async () => {
         const eventId = await createEvent();
@@ -459,7 +677,7 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
           await database.foreverRaidSignup.count({ where: { eventId } }),
           0,
         );
-        assert.match(message.content, /confirm separately/);
+        assert.match(message.content, /press Confirm signup/);
         await act(members[2], message, "confirm");
         const row = await database.foreverRaidSignup.findFirstOrThrow({
           where: { eventId },
@@ -679,7 +897,10 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
             "tentative",
           );
           const rejoin = await open(eventId, members[1], "join");
-          assert.equal(rejoin.embeds[0].title, "Join event");
+          assert.equal(
+            rejoin.embeds[0].title,
+            "Step 2 of 2 · Confirm your signup",
+          );
           await act(members[1], rejoin, "confirm");
           view = await service.get(members[1], eventId);
           mine = view.signups.find((row) => row.isMine)!;
@@ -808,6 +1029,85 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
         assert.equal(
           (exported.payload as { roster: unknown[] }).roster.length,
           1,
+        );
+      },
+    );
+    await context.test(
+      "Leadership edits retain signups, approvals and policy, without granting assistant management access",
+      async (): Promise<void> => {
+        const eventId = await createEvent({
+          leaderName: "Psyrogue",
+          assistantName: "DJ",
+          admission: "open",
+        });
+        await act(members[1], await open(eventId, members[1]), "confirm");
+        await database.foreverRaidDiscordPost.update({
+          where: { eventId },
+          data: { approvedAt: new Date(), approvedBy: members[0].discordId },
+        });
+        const before = await service.get(members[0], eventId);
+        assert.equal(
+          await service.revision(members[0], eventId),
+          before.version,
+        );
+        const storedBefore = await database.foreverRaidEvent.findUniqueOrThrow({
+          where: { id: eventId },
+          include: { discordPost: true },
+        });
+        await edit(eventId, { assistantName: "Vargos" });
+        const after = await service.get(members[0], eventId);
+        const storedAfter = await database.foreverRaidEvent.findUniqueOrThrow({
+          where: { id: eventId },
+          include: { discordPost: true },
+        });
+        assert.equal(after.leaderName, "Psyrogue");
+        assert.equal(after.assistantName, "Vargos");
+        assert.deepEqual(after.signups, before.signups);
+        assert.equal(after.policyChecksum, before.policyChecksum);
+        assert.equal(storedAfter.policyRevision, storedBefore.policyRevision);
+        assert.equal(storedAfter.requestHash, storedBefore.requestHash);
+        assert.equal(storedAfter.organizerId, storedBefore.organizerId);
+        assert.equal(after.version, before.version + 1);
+        assert.equal(
+          await service.revision(members[0], eventId),
+          after.version,
+        );
+        assert.equal(storedAfter.discordPost?.desiredVersion, after.version);
+        assert.equal(
+          storedAfter.discordPost?.approvedAt?.toISOString(),
+          storedBefore.discordPost?.approvedAt?.toISOString(),
+        );
+        await assert.rejects(
+          edit(eventId, { assistantName: "DJ" }, members[1]),
+          /Only the event organizer/,
+        );
+        await service.manage(members[0], eventId, {
+          action: "edit",
+          version: after.version,
+          settings: eventSettings(after),
+        });
+        assert.equal(
+          (await service.get(members[0], eventId)).assistantName,
+          "Vargos",
+          "Older forms omit the fields without erasing them",
+        );
+        await edit(eventId, { assistantName: "" });
+        assert.equal(
+          (await service.get(members[0], eventId)).assistantName,
+          "",
+        );
+        const current = await service.get(members[0], eventId);
+        await service.manage(members[0], eventId, {
+          action: "cancel",
+          version: current.version,
+          reason: "Synthetic cancellation for leadership guard check",
+        });
+        await assert.rejects(
+          database.foreverRaidEvent.update({
+            where: { id: eventId },
+            data: { assistantName: "DJ" },
+          }),
+          /leadership is immutable/,
         );
       },
     );
@@ -1227,7 +1527,7 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
               membership: async (): Promise<"not_member"> => "not_member",
             },
           );
-          assert.match(refused.content, /Join the server/);
+          assert.match(refused.content, /Join.*Discord server/);
           assert.equal(
             await database.foreverRaidSignup.count({
               where: { eventId: sharedId },
@@ -1239,7 +1539,7 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
             await open(sharedId, additional),
             "confirm",
           );
-          assert.match(success.content, /Confirmed/);
+          assert.match(success.content, /Selected/);
           const signup = (await service.get(additional, sharedId)).signups.find(
             (row) => row.isMine,
           )!;
@@ -1416,7 +1716,7 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
             membership: async (): Promise<"not_member"> => "not_member",
           },
         );
-        assert.match(response.content, /Join the server/);
+        assert.match(response.content, /Join.*Discord server/);
         assert.equal(
           await database.foreverRaidSignup.count({ where: { eventId } }),
           0,
@@ -1467,7 +1767,7 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
           }),
           1,
         );
-        assert.match(replies.get(payload.token)!.content, /Confirmed/);
+        assert.match(replies.get(payload.token)!.content, /Selected/);
       },
     );
     await context.test(
@@ -1623,6 +1923,10 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
           where: { id: eventId },
           data: { audience: [members[0].discordId] },
         });
+        await assert.rejects(
+          service.revision(members[1], eventId),
+          /Event not found/,
+        );
         await database.foreverRaidNativeWork.update({
           where: { id: payload.id },
           data: { nextAttemptAt: new Date(0) },
@@ -1681,6 +1985,34 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
         });
         let event = await service.get(members[1], eventId);
         assert.equal(event.signups[0].needsAcknowledgement, true);
+        const imported = await database.foreverRaidSignup.findFirstOrThrow({
+          where: { eventId, memberId: members[1].id },
+        });
+        assert.equal(imported.acknowledgedAt, null);
+        const preview = await previewRosterPublication(
+          members[0],
+          eventId,
+          {
+            requestKey: randomUUID(),
+            version: event.version,
+            deadline: new Date(
+              Date.parse(event.startsAt) - 3600000,
+            ).toISOString(),
+            preparation: defaultPreparation(event.raidName, event.game),
+          },
+          database,
+        );
+        assert.equal(preview.recipients.length, 1);
+        assert.equal(
+          preview.recipients[0].policyChecksum,
+          event.policyChecksum,
+        );
+        assert.deepEqual(
+          await database.foreverRaidSignup.findUniqueOrThrow({
+            where: { id: imported.id },
+          }),
+          imported,
+        );
         const prompt = await open(eventId, members[1], "mine");
         assert.match(prompt.embeds[0].description, /signup was imported/);
         await act(members[1], prompt, "acknowledge");
@@ -1732,6 +2064,614 @@ test("Native Discord PostgreSQL: draft confirmation, registration, reserves, per
         const response = replies.get(payload.token)!;
         assert.match(response.content, /access could not be verified/);
         assert.deepEqual(response.embeds, []);
+      },
+    );
+    await context.test(
+      "Roster publication sends current rules without requiring a prior My signup review",
+      async () => {
+        const eventId = await createEvent();
+        await act(members[1], await open(eventId, members[1]), "confirm");
+        await edit(eventId, { description: "Updated rules for this roster" });
+        const approvedAt = new Date();
+        await database.foreverRaidDiscordPost.update({
+          where: { eventId },
+          data: {
+            visibility: "community",
+            confirmedAt: approvedAt,
+            approvedAt,
+            approvedBy: members[0].discordId,
+          },
+        });
+        const event = await service.get(members[0], eventId);
+        const signup = await database.foreverRaidSignup.findFirstOrThrow({
+          where: { eventId, memberId: members[1].id },
+        });
+        assert.notEqual(signup.policyChecksum, event.policyChecksum);
+        const publication = {
+          requestKey: randomUUID(),
+          version: event.version,
+          deadline: new Date(
+            Date.parse(event.startsAt) - 3600000,
+          ).toISOString(),
+          preparation: defaultPreparation(event.raidName, event.game),
+        };
+        const preview = await previewRosterPublication(
+          members[0],
+          eventId,
+          publication,
+          database,
+        );
+        assert.equal(preview.recipients.length, 1);
+        assert.equal(
+          preview.recipients[0].policyChecksum,
+          event.policyChecksum,
+        );
+        assert.equal(preview.recipients[0].description, event.description);
+        await database.foreverMember.update({
+          where: { id: members[1].id },
+          data: { active: false },
+        });
+        try {
+          await assert.rejects(
+            previewRosterPublication(
+              members[0],
+              eventId,
+              publication,
+              database,
+            ),
+            /inactive members/,
+          );
+          await assert.rejects(
+            publishRoster(members[0], eventId, publication, database),
+            /inactive members/,
+          );
+        } finally {
+          await database.foreverMember.update({
+            where: { id: members[1].id },
+            data: { active: true },
+          });
+        }
+        await publishRoster(members[0], eventId, publication, database);
+        const published = await service.get(members[0], eventId);
+        assert.deepEqual(
+          (
+            await database.foreverRaidDiscordPost.findUniqueOrThrow({
+              where: { eventId },
+            })
+          ).approvedAt,
+          approvedAt,
+        );
+        assert.equal(published.rosterPublished, true);
+        assert.equal(published.signupClosesAt, event.signupClosesAt);
+        assert.equal(published.policyChecksum, event.policyChecksum);
+        await assert.rejects(
+          service.signup(members[0], eventId, {
+            acknowledge: true,
+            policyChecksum: published.policyChecksum,
+            characterId: (await service.characters(members[0])).find(
+              (c) => c.game === "forever",
+            )!.id,
+            role: "damage",
+            specialization: "Fury",
+          }),
+          /Signups have closed/,
+        );
+        assert.deepEqual(
+          await database.foreverRaidSignup.findUniqueOrThrow({
+            where: { id: signup.id },
+          }),
+          signup,
+        );
+        const dashboard = await rosterDashboard(members[0], eventId, database);
+        assert.equal(dashboard.invitations.length, 1);
+        const invitation = dashboard.invitations[0];
+        assert.equal(invitation.state, "pending");
+        assert.equal(invitation.offer.policyChecksum, published.policyChecksum);
+        await replyToRoster(
+          members[1].discordId,
+          {
+            requestKey: randomUUID(),
+            invitationId: invitation.id,
+            version: invitation.version,
+            choice: "confirmed",
+            reason: "",
+          },
+          database,
+          async () => "member",
+        );
+        const acknowledged = await database.foreverRaidSignup.findUniqueOrThrow(
+          {
+            where: { id: signup.id },
+          },
+        );
+        assert.equal(acknowledged.policyChecksum, published.policyChecksum);
+        assert.ok(acknowledged.acknowledgedAt);
+      },
+    );
+    await context.test(
+      "Roster publication, DM replies, privacy, delivery recovery and locked amendments",
+      async () => {
+        const eventId = await createEvent();
+        await act(members[1], await open(eventId, members[1]), "confirm");
+        await act(members[2], await open(eventId, members[2]), "confirm");
+        let event = await service.get(members[0], eventId);
+        const replacement = event.signups.find(
+          (row) => row.character.name === "New Tester",
+        )!;
+        await service.manage(members[0], eventId, {
+          action: "admit",
+          version: event.version,
+          signupId: replacement.id,
+          status: "bench",
+        });
+        event = await service.get(members[0], eventId);
+        const publication = {
+          requestKey: randomUUID(),
+          version: event.version,
+          deadline: new Date(
+            Date.parse(event.startsAt) - 3600000,
+          ).toISOString(),
+          preparation: defaultPreparation(event.raidName, event.game),
+        };
+        await assert.rejects(
+          publishRoster(members[1], eventId, publication, database),
+          /organizer/,
+        );
+        const id = await publishRoster(
+          members[0],
+          eventId,
+          publication,
+          database,
+        );
+        assert.equal(
+          await publishRoster(members[0], eventId, publication, database),
+          id,
+        );
+        assert.equal(
+          await database.foreverRaidRosterInvitation.count({
+            where: { eventId },
+          }),
+          1,
+        );
+        await assert.rejects(
+          publishRoster(
+            members[0],
+            eventId,
+            { ...publication, deadline: event.startsAt },
+            database,
+          ),
+          /different request/,
+        );
+        let dashboard = await rosterDashboard(members[0], eventId, database);
+        const invitation = dashboard.invitations[0];
+        const channel = snowflake(),
+          sent: Array<{ id: string; nonce: string; message: NativeMessage }> =
+            [];
+        const dm: RosterDeliveryTransport = {
+          membership: async (_actor, server) => {
+            assert.equal(server, guildId);
+            return "member";
+          },
+          open: async () => channel,
+          send: async (_channel, message, nonce) => {
+            const id = snowflake();
+            sent.push({ id, nonce, message });
+            return id;
+          },
+          edit: async (_channel, _id, message) => {
+            nativeMessageSchema.parse(message);
+          },
+          find: async (_channel, nonce) =>
+            sent.find((row) => row.nonce === nonce)?.id ?? null,
+        };
+        for (let count = 0; count < 20; count++)
+          if (!(await deliverRosterNotification(database, dm))) break;
+        const stored =
+          await database.foreverRaidRosterInvitation.findUniqueOrThrow({
+            where: { id: invitation.id },
+          });
+        assert.ok(stored.dmChannelId && stored.dmMessageId);
+        function dmInput(action: "confirm" | "decline" | "preparation") {
+          const id = snowflake();
+          return {
+            id,
+            token: `rsvp-test-${id}`,
+            type: 3 as const,
+            application_id: botId,
+            user: { id: members[1].discordId },
+            channel_id: stored.dmChannelId!,
+            message: {
+              id: stored.dmMessageId!,
+              author: { id: botId, bot: true as const },
+              flags: 0,
+            },
+            data: {
+              custom_id: rosterControl(invitation, action),
+              component_type: 2 as const,
+            },
+          };
+        }
+        const clicked = dmInput("confirm");
+        await assert.rejects(
+          rosterInteraction(
+            { ...clicked, id: snowflake(), user: { id: members[2].discordId } },
+            database,
+          ),
+          /another player/,
+        );
+        assert.equal((await rosterInteraction(clicked, database)).type, 6);
+        assert.equal((await rosterInteraction(clicked, database)).type, 6);
+        await database.foreverRaidNativeWork.update({
+          where: { id: clicked.id },
+          data: { nextAttemptAt: new Date(0) },
+        });
+        await runNativeRaidWork(database, {
+          membership: dm.membership,
+          respond: transport.respond,
+        });
+        assert.match(
+          replies.get(clicked.token)!.embeds[0].description,
+          /Attendance confirmed/,
+        );
+        assert.equal(
+          await database.foreverRaidRosterResponse.count({
+            where: { invitationId: invitation.id },
+          }),
+          1,
+        );
+        assert.equal(
+          (await rosterDashboard(members[2], eventId, database)).invitations
+            .length,
+          0,
+        );
+        const confirmed = await service.get(members[0], eventId);
+        await service.manage(members[0], eventId, {
+          action: "lock",
+          version: confirmed.version,
+        });
+        const original =
+          await database.foreverRaidLootSnapshot.findUniqueOrThrow({
+            where: { eventId },
+          });
+        await replyToRoster(
+          members[1].discordId,
+          {
+            requestKey: randomUUID(),
+            invitationId: invitation.id,
+            version: invitation.version,
+            choice: "declined",
+            reason: "Private schedule conflict",
+          },
+          database,
+          async () => "not_member",
+        );
+        assert.equal(
+          (
+            await database.foreverRaidLootSnapshot.findUniqueOrThrow({
+              where: { eventId },
+            })
+          ).checksum,
+          original.checksum,
+        );
+        assert.equal(
+          (await rosterDashboard(members[2], eventId, database)).invitations
+            .length,
+          0,
+        );
+        dashboard = await rosterDashboard(members[0], eventId, database);
+        assert.equal(
+          dashboard.invitations[0].reason,
+          "Private schedule conflict",
+        );
+        event = await service.get(members[0], eventId);
+        const removedSignup = event.signups.find(
+          (signup) => signup.isMine === false && signup.status === "accepted",
+        )!;
+        const amendment = {
+          requestKey: randomUUID(),
+          version: event.version,
+          removedSignupId: removedSignup.id,
+          replacementSignupId: replacement.id,
+          manualVerified: true,
+          reason: "Replacement verified in voice",
+        };
+        const revision = await amendRoster(
+          members[0],
+          eventId,
+          amendment,
+          database,
+        );
+        assert.equal(revision, 1);
+        assert.equal(
+          await amendRoster(members[0], eventId, amendment, database),
+          1,
+        );
+        assert.equal(
+          (
+            await database.foreverRaidLootSnapshot.findUniqueOrThrow({
+              where: { eventId },
+            })
+          ).checksum,
+          original.checksum,
+        );
+        const exported = await service.export(members[0], eventId);
+        assert.equal(
+          (exported.payload as { schema: string }).schema,
+          "forever-raid-loot.v3",
+        );
+        assert.notEqual(exported.checksum, original.checksum);
+        await assert.rejects(
+          replyToRoster(
+            members[1].discordId,
+            {
+              requestKey: randomUUID(),
+              invitationId: invitation.id,
+              version: invitation.version,
+              choice: "confirmed",
+              reason: "",
+            },
+            database,
+            async () => "member",
+          ),
+          /no longer active/,
+        );
+        const retryEvent = await createEvent();
+        await act(members[1], await open(retryEvent, members[1]), "confirm");
+        const retryView = await service.get(members[0], retryEvent);
+        const retryPublication = {
+          ...publication,
+          requestKey: randomUUID(),
+          version: retryView.version,
+        };
+        await publishRoster(members[0], retryEvent, retryPublication, database);
+        const retryInvite = (
+          await rosterDashboard(members[0], retryEvent, database)
+        ).invitations[0];
+        // Isolate this event's job from older, valid notification updates.
+        await database.foreverRaidNotification.updateMany({
+          where: { invitationId: { not: retryInvite.id }, status: "pending" },
+          data: { nextAttemptAt: new Date(Date.now() + 3600000) },
+        });
+        await deliverRosterNotification(database, {
+          ...dm,
+          send: async () => {
+            throw new RosterDeliveryError(403, 50007);
+          },
+        });
+        assert.equal(
+          (await rosterDashboard(members[0], retryEvent, database))
+            .invitations[0].delivery,
+          "blocked",
+        );
+        assert.equal(
+          (await rosterDashboard(members[0], retryEvent, database))
+            .invitations[0].state,
+          "pending",
+        );
+        await replyToRoster(
+          members[1].discordId,
+          {
+            requestKey: randomUUID(),
+            invitationId: retryInvite.id,
+            version: retryInvite.version,
+            choice: "confirmed",
+            reason: "",
+          },
+          database,
+          dm.membership,
+        );
+        assert.equal(
+          (await rosterDashboard(members[1], retryEvent, database))
+            .invitations[0].state,
+          "confirmed",
+        );
+        await manuallyConfirmRoster(
+          members[0],
+          retryInvite.id,
+          "Already personally confirmed",
+          database,
+        );
+        assert.equal(
+          (await rosterDashboard(members[1], retryEvent, database))
+            .invitations[0].state,
+          "confirmed",
+        );
+        await reconcileRosterInvitations(database);
+      },
+    );
+    await context.test(
+      "Roster replies use the invitation's server in both guilds and preserve deadline/privacy failures",
+      async () => {
+        const otherGuild = "1557000000000000050",
+          otherChannel = "1557000000000000051";
+        const originalDestinations =
+          process.env.FOREVER_RAIDS_DISCORD_DESTINATIONS;
+        process.env.FOREVER_RAIDS_DISCORD_DESTINATIONS = JSON.stringify([
+          {
+            guildId: otherGuild,
+            channelId: otherChannel,
+            label: "Second RSVP server",
+          },
+        ]);
+        try {
+          for (const currentGuild of [guildId, otherGuild]) {
+            const eventId = await createEvent();
+            await act(members[1], await open(eventId, members[1]), "confirm");
+            await database.foreverRaidDiscordPost.update({
+              where: { eventId },
+              data: {
+                guildId: currentGuild,
+                channelId: currentGuild === guildId ? channelId : otherChannel,
+              },
+            });
+            const event = await service.get(members[0], eventId);
+            await publishRoster(
+              members[0],
+              eventId,
+              {
+                requestKey: randomUUID(),
+                version: event.version,
+                deadline: new Date(
+                  Date.parse(event.startsAt) - 3600000,
+                ).toISOString(),
+                preparation: defaultPreparation(event.raidName, event.game),
+              },
+              database,
+            );
+            const invite = (
+              await rosterDashboard(members[1], eventId, database)
+            ).invitations[0];
+            await replyToRoster(
+              members[1].discordId,
+              {
+                requestKey: randomUUID(),
+                invitationId: invite.id,
+                version: invite.version,
+                choice: "confirmed",
+                reason: "",
+              },
+              database,
+              async (actor, checkedGuild) => {
+                assert.equal(actor, members[1].discordId);
+                assert.equal(checkedGuild, currentGuild);
+                return "member";
+              },
+            );
+            assert.equal(
+              (await rosterDashboard(members[0], eventId, database))
+                .invitations[0].state,
+              "confirmed",
+            );
+            await edit(eventId, { localStart: "2035-11-06T19:00" });
+            await reconcileRosterInvitations(database);
+            assert.equal(
+              (await rosterDashboard(members[0], eventId, database))
+                .invitations[0].state,
+              "changed",
+            );
+            await assert.rejects(
+              replyToRoster(
+                members[1].discordId,
+                {
+                  requestKey: randomUUID(),
+                  invitationId: invite.id,
+                  version: invite.version,
+                  choice: "confirmed",
+                  reason: "",
+                },
+                database,
+                async () => "member",
+              ),
+              /details changed/,
+            );
+          }
+        } finally {
+          process.env.FOREVER_RAIDS_DISCORD_DESTINATIONS = originalDestinations;
+        }
+      },
+    );
+    await context.test(
+      "Ambiguous DM sends reconcile a receipt without a duplicate; channel-only and expired invitations stay honest",
+      async () => {
+        const eventId = await createEvent();
+        await act(members[1], await open(eventId, members[1]), "confirm");
+        const event = await service.get(members[0], eventId);
+        await publishRoster(
+          members[0],
+          eventId,
+          {
+            requestKey: randomUUID(),
+            version: event.version,
+            deadline: new Date(Date.now() + 1800).toISOString(),
+            preparation: defaultPreparation(event.raidName, event.game),
+          },
+          database,
+        );
+        const invite = (await rosterDashboard(members[0], eventId, database))
+          .invitations[0];
+        await database.foreverRaidNotification.updateMany({
+          where: {
+            invitationId: { not: invite.id },
+            status: { in: ["pending", "sending", "uncertain"] },
+          },
+          data: { nextAttemptAt: new Date(Date.now() + 3600000) },
+        });
+        const channel = snowflake(),
+          receipt = snowflake();
+        let sends = 0;
+        const ambiguous: RosterDeliveryTransport = {
+          membership: async () => "member",
+          open: async () => channel,
+          edit: async () => {},
+          find: async () => receipt,
+          send: async () => {
+            sends++;
+            throw new TypeError(
+              "Connection lost after Discord accepted the message",
+            );
+          },
+        };
+        await deliverRosterNotification(database, ambiguous);
+        assert.equal(
+          (await rosterDashboard(members[0], eventId, database)).invitations[0]
+            .delivery,
+          "uncertain",
+        );
+        await database.foreverRaidNotification.updateMany({
+          where: { invitationId: invite.id },
+          data: { nextAttemptAt: new Date(0) },
+        });
+        await deliverRosterNotification(database, ambiguous);
+        assert.equal(sends, 1);
+        assert.equal(
+          (await rosterDashboard(members[0], eventId, database)).invitations[0]
+            .delivery,
+          "sent",
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1900));
+        await assert.rejects(
+          replyToRoster(
+            members[1].discordId,
+            {
+              requestKey: randomUUID(),
+              invitationId: invite.id,
+              version: invite.version,
+              choice: "confirmed",
+              reason: "",
+            },
+            database,
+            async () => "member",
+          ),
+          /deadline passed/,
+        );
+        await reconcileRosterInvitations(database);
+        assert.equal(
+          (await rosterDashboard(members[0], eventId, database)).invitations[0]
+            .state,
+          "expired",
+        );
+        const oldNote = await database.foreverRaidRosterResponse.create({
+          data: {
+            invitationId: invite.id,
+            requestKey: randomUUID(),
+            actorId: members[1].discordId,
+            version: 1,
+            choice: "declined",
+            reason: "Expired private note",
+            createdAt: new Date("2020-01-01"),
+          },
+        });
+        await database.foreverRaidRosterResponse.update({
+          where: { id: oldNote.id },
+          data: { reason: null },
+        });
+        await assert.rejects(
+          database.foreverRaidRosterResponse.update({
+            where: { id: oldNote.id },
+            data: { choice: "confirmed" },
+          }),
+          /append-only/,
+        );
       },
     );
   } finally {

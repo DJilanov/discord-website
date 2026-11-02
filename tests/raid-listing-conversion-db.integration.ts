@@ -72,7 +72,7 @@ test("Listing conversion PostgreSQL: in-place signup, unchanged private prototyp
         const number = Number(name.slice(0, 3));
         return (
           name.endsWith(".sql") &&
-          ([1, 2, 13, 35, 36].includes(number) ||
+          ([1, 2, 13, 35, 36, 38].includes(number) ||
             (number >= 14 && number <= 33))
         );
       })

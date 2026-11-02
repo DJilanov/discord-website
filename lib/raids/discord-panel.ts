@@ -1,7 +1,7 @@
 import type { EventView, SignupView } from "./contracts";
 import { eventTypeDefinitions } from "./event-types";
 import { gameLabels } from "./games";
-import { reservePolicyLabel } from "./loot-policy";
+import { guildRaidRulesUrl, reservePolicyLabel } from "./loot-policy";
 import { eventArtwork } from "./event-artwork";
 import { classes } from "./specializations";
 import { buildRosterParties } from "./roster-layout";
@@ -14,6 +14,28 @@ import {
   hardReserveText,
 } from "./discord-format";
 import type { NativeButton, NativeRow } from "./native-contracts";
+import { z } from "zod";
+
+const controlRowsSchema = z.array(
+  z.object({
+    type: z.literal(1),
+    components: z.array(
+      z.object({
+        type: z.literal(2),
+        style: z.number().int().min(1).max(5),
+        label: z.string(),
+        custom_id: z.string().optional(),
+        url: z.string().optional(),
+        disabled: z.boolean().default(false),
+      }),
+    ),
+  }),
+);
+
+export function raidControlsSignature(raw: unknown): string {
+  // Discord adds component IDs and explicit false flags to the sent payload.
+  return JSON.stringify(controlRowsSchema.parse(raw));
+}
 
 interface DiscordField {
   name: string;
@@ -37,10 +59,20 @@ export function raidPostMarker(id: string): string {
   return `Forever event ${id}`;
 }
 
-function rosterLines(signups: SignupView[], budget: number): string {
+function rosterLines(
+  signups: SignupView[],
+  budget: number,
+  showClassSpec: boolean,
+): string {
   const lines: string[] = [];
   for (const signup of signups) {
-    const line = `${emojiText(signup.character.className, signup.character.specialization)}**${discordText(signup.character.name, 40)}**`;
+    const classSpec = showClassSpec
+      ? ` · ${signup.character.className}${signup.character.specialization ? ` · ${signup.character.specialization}` : ""}`
+      : "";
+    const reply = signup.attendanceReply
+      ? ` · ${signup.attendanceReply === "confirmed" ? "Confirmed" : signup.attendanceReply === "manual" ? "Confirmed by leader" : signup.attendanceReply === "declined" ? "Declined" : signup.attendanceReply === "revoked" ? "Removed" : signup.attendanceReply === "expired" ? "No reply" : "Waiting"}`
+      : "";
+    const line = `${signup.attendanceReply === "confirmed" ? "✓ " : ""}${emojiText(signup.character.className, signup.character.specialization)}**${discordText(signup.character.name, 40)}**${classSpec}${reply}`;
     // Reserve space for an honest overflow count, including escaped names/emojis.
     if ([...lines, line].join("\n").length + 70 > budget) break;
     lines.push(line);
@@ -73,6 +105,10 @@ export function discordEventPanel(
     absent,
   } = roster;
   const openPool = event.admission === "open" && event.status === "open";
+  const signupClosed =
+    event.status !== "open" ||
+    event.rosterPublished === true ||
+    Date.parse(event.signupClosesAt) <= Date.now();
   const displayed = openPool
     ? event.signups.filter(
         (signup) =>
@@ -82,6 +118,8 @@ export function discordEventPanel(
   const compactRoles = definition.combatRoles && event.capacity <= 5;
   const url = `${origin}/raids/${event.id}`;
   const reservesUrl = `${url}/reserves`;
+  const rulesUrl =
+    event.game === "forever" ? guildRaidRulesUrl(event.description) : null;
   const hasReserves =
     event.eventType === "raid" &&
     event.catalog !== null &&
@@ -93,7 +131,7 @@ export function discordEventPanel(
   const description = `**${discordText(event.raidName, 100)}**\n${context}${excerpt ? `\n\n${excerpt}${Array.from(event.description).length > 180 ? `\n[Full event details](${url})` : ""}` : ""}`;
   const openSignupProgress =
     [
-      ...(accepted.length ? [`${accepted.length} confirmed`] : []),
+      ...(accepted.length ? [`${accepted.length} selected`] : []),
       ...(registered.length
         ? [`${registered.length} awaiting roster selection`]
         : []),
@@ -107,10 +145,22 @@ export function discordEventPanel(
     },
     {
       name: "Roster",
-      value: `${openPool ? `**${roster.signedUp.length} signed up** · ${event.capacity} planned seats` : `**${accepted.length}/${event.capacity} confirmed** · **${roster.signedUp.length} signed up**`}\n${event.admission === "open" ? `Open signup · ${openSignupProgress}` : event.admission === "approval" ? "Organizer approval" : "Automatic signup · bench when full"}`,
+      value: `${openPool ? `**${roster.signedUp.length} signed up** · ${event.capacity} planned seats` : `**${accepted.length}/${event.capacity} selected** · **${roster.signedUp.length} signed up**`}\n${signupClosed ? "Signups closed · " : ""}${event.admission === "open" ? `${signupClosed ? "Roster selection" : "Open signup"} · ${openSignupProgress}` : event.admission === "approval" ? "Organizer approval" : "Automatic signup · bench when full"}`,
       inline: false,
     },
   ];
+  if (event.leaderName)
+    fields.push({
+      name: "Leader",
+      value: discordText(event.leaderName, 80),
+      inline: true,
+    });
+  if (event.assistantName)
+    fields.push({
+      name: "Assistant",
+      value: discordText(event.assistantName, 80),
+      inline: true,
+    });
   if (event.status === "cancelled" || event.status === "locked")
     fields.push({
       name: "Event status",
@@ -143,7 +193,9 @@ export function discordEventPanel(
       name: "Loot",
       value: event.catalog
         ? `${reservePolicyLabel(event)} · ${event.allowDuplicates ? "duplicates allowed" : "unique items"}\nHard reserves (${event.hardReserves.length}): ${hardReserveText(event)}\nSR closes <t:${Math.floor(Date.parse(event.reservesCloseAt) / 1000)}:f>${hasReserves ? `\n[Open soft reserves](${reservesUrl})` : ""}`
-        : "No soft-reserve pool attached",
+        : rulesUrl
+          ? `[Read the shared raid rules](${rulesUrl})\nSoftres and named tank HRs will be published before the raid.`
+          : "No soft-reserve pool attached",
       inline: false,
     });
   const groups: Array<{
@@ -214,7 +266,7 @@ export function discordEventPanel(
   }
   if (!groups.length)
     groups.push({
-      name: openPool ? "Signups" : "Confirmed roster",
+      name: openPool ? "Signups" : "Selected roster",
       signups: [],
       inline: false,
     });
@@ -300,6 +352,7 @@ export function discordEventPanel(
           rosterLines(
             group.signups,
             Math.min(budget, 1024 - (group.summary?.length ?? 0) - 2),
+            compactRoles,
           ),
           group.summary,
         ]
@@ -309,8 +362,6 @@ export function discordEventPanel(
     })),
   );
   const native = nativeRaidsEnabled();
-  const signupClosed =
-    event.status !== "open" || Date.parse(event.signupClosesAt) <= Date.now();
   const reservesClosed =
     event.status !== "open" || Date.parse(event.reservesCloseAt) <= Date.now();
   const controls: NativeButton[] = native
@@ -391,6 +442,19 @@ export function discordEventPanel(
           : []),
       ],
     });
+  const helpLinks: NativeButton[] = [
+    { type: 2, style: 5, label: "How to sign up", url: `${origin}/raids/help` },
+  ];
+  if (rulesUrl) {
+    const link: NativeButton = {
+      type: 2,
+      style: 5,
+      label: "Raid rules",
+      url: rulesUrl,
+    };
+    helpLinks.push(link);
+  }
+  rows.push({ type: 1, components: helpLinks });
   return {
     content: "",
     allowed_mentions: { parse: [] },

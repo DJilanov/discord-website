@@ -54,6 +54,7 @@ export default async function NewRaidPage({
         }
         canSelectChannels={canSelectChannels}
         channelAccessError={channelAccessError}
+        defaultLeaderName={member.displayName.slice(0, 80)}
       />
     </>
   );

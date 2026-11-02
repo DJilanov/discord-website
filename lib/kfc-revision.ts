@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { z } from "zod";
 import { kfcApplicationId, kfcGuildId } from "../content/kfc-community";
 import type { ResourcePayload } from "../content/kfc-revision";
+import type { RaidingConfig } from "./kfc-raiding/contracts";
 import {
   channelPermissions,
   discordId,
@@ -104,13 +105,39 @@ const embedSchema = z.object({
   thumbnail: z.object({ url: z.string() }).optional(),
   image: z.object({ url: z.string() }).optional(),
 });
+const linkRowSchema = z.object({
+  type: z.literal(1),
+  components: z
+    .array(
+      z
+        .object({
+          type: z.literal(2),
+          style: z.literal(5),
+          label: z.string().min(1).max(80),
+          url: z.url().max(512),
+          disabled: z.boolean().default(false),
+        })
+        .transform(({ disabled, ...button }) =>
+          disabled ? { ...button, disabled } : button,
+        ),
+    )
+    .min(1)
+    .max(5),
+});
 export function renderedResource(value: unknown): {
   content: string;
   embeds: z.infer<typeof embedSchema>[];
+  components?: z.infer<typeof linkRowSchema>[];
 } {
-  return z
-    .object({ content: z.string(), embeds: z.array(embedSchema) })
+  const { components, ...resource } = z
+    .object({
+      content: z.string(),
+      embeds: z.array(embedSchema),
+      components: z.array(linkRowSchema).max(5).default([]),
+    })
     .parse(value);
+  // Preserve the checksum shape of existing references without buttons.
+  return components.length ? { ...resource, components } : resource;
 }
 export function resourceMatches(actual: unknown, expected: unknown): boolean {
   return isDeepStrictEqual(
@@ -177,6 +204,49 @@ const onboardingSchema = z.object({
     }),
   ),
 });
+
+export function routeRaidOnboarding(
+  value: unknown,
+  config: RaidingConfig,
+): Record<string, unknown> {
+  if (
+    config.guildId !== kfcGuildId ||
+    config.applicationId !== kfcApplicationId
+  )
+    throw new Error("Unexpected raid onboarding scope.");
+  const data = onboardingSchema.parse(value);
+  const prompt = data.prompts.find(
+    (entry) => entry.id === "1557977148621586494",
+  );
+  if (
+    !prompt ||
+    prompt.title !== "What brings you here?" ||
+    prompt.single_select ||
+    !prompt.in_onboarding
+  )
+    throw new Error("The edition question changed; review before updating it.");
+  for (const [game, optionId] of [
+    ["forever", "1557977148621586498"],
+    ["tbc", "1557977148621586497"],
+  ] as const) {
+    const option = prompt.options.find((entry) => entry.id === optionId);
+    if (!option || option.role_ids.length)
+      throw new Error(
+        "The raid interest changed or grants a role; review before updating it.",
+      );
+    const space = config.spaces[game];
+    option.channel_ids = [
+      space.schedule.channelId,
+      space.forumId,
+      space.chatId,
+    ];
+    option.description = "See scheduled raids, signups and raid chat.";
+  }
+  data.default_channel_ids = [
+    ...new Set([...data.default_channel_ids, "1557974301095755900"]),
+  ];
+  return data;
+}
 
 export function attachClassSubscriptions(
   value: unknown,

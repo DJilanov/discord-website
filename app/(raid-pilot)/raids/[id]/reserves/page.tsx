@@ -1,10 +1,20 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { getRaidShareMetadata } from "@/lib/raids/share-metadata";
 import { getMember } from "@/lib/member-auth";
 import { raids, serverRaidTime } from "@/lib/raids/service";
 import { HttpError } from "@/lib/security";
 import { RaidAccess } from "@/components/raids/access";
 import { SoftReserves } from "@/components/raids/soft-reserves";
 import type { EventView } from "@/lib/raids/contracts";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  return getRaidShareMetadata((await params).id, "reserves");
+}
 
 export default async function ReservesPage({
   params,

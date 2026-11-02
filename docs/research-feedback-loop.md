@@ -60,6 +60,6 @@ Release and recurring operations:
 6. submit the updated sitemap once through the existing Search Console property, then compare
    seven- and 28-day query/page results instead of repeatedly requesting indexing.
 
-Production Helper release `kfc-helper-forever-research-20261004-r3` and community build directory
-`.next-release-research-20261004-r2` are active. Search Console submission remains an account-side
+Production Helper release `kfc-helper-forever-research-20261004-r4` and community build directory
+`.next-release-research-20261004-r3` are active. Search Console submission remains an account-side
 owner action because this deployment has no Search Console credential or connected API.

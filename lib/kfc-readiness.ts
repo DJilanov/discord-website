@@ -16,11 +16,15 @@ import {
   type DiscordAuditSnapshot,
 } from "./discord-audit";
 import { assertKfcScope, kfcWriteMask } from "./kfc-community";
+import { analyzeKfcAccess, type KfcAccessBindings } from "./kfc-access";
+import type { RaidingConfig } from "./kfc-raiding/contracts";
 
 export interface KfcReadinessBindings {
   community: Record<string, string>;
   revision: Record<string, string>;
   shamanId: string;
+  raiding?: RaidingConfig;
+  access?: KfcAccessBindings;
 }
 
 export interface KfcReadinessCheck {
@@ -44,7 +48,7 @@ const viewHistory = (1n << 10n) | (1n << 16n);
 const verifiedId = "1412584499740672051";
 const pvpId = "1557974303432118272";
 const tbcCategoryId = "1441654698519040114";
-const routes: Record<string, string[]> = {
+const legacyRoutes: Record<string, string[]> = {
   "TBC raids": ["1460899582824153140", "1411592694404218991"],
   "WoW Forever": [
     "1548519535177629707",
@@ -69,6 +73,23 @@ export function analyzeKfcReadiness(
   bindings: KfcReadinessBindings,
 ): KfcReadinessReport {
   assertKfcScope(snapshot);
+  const routes = {
+    ...legacyRoutes,
+    ...(bindings.raiding
+      ? {
+          "TBC raids": [
+            bindings.raiding.spaces.tbc.schedule.channelId,
+            bindings.raiding.spaces.tbc.forumId,
+            bindings.raiding.spaces.tbc.chatId,
+          ],
+          "WoW Forever": [
+            bindings.raiding.spaces.forever.schedule.channelId,
+            bindings.raiding.spaces.forever.forumId,
+            bindings.raiding.spaces.forever.chatId,
+          ],
+        }
+      : {}),
+  };
   const checks: KfcReadinessCheck[] = [];
   function check(key: string, affectedIds: string[]): void {
     checks.push({
@@ -132,20 +153,18 @@ export function analyzeKfcReadiness(
     snapshot.onboarding.status === "available"
       ? snapshot.onboarding.data
       : null;
-  const defaults = [
-    "1411545639392645192",
-    "1412553351874215976",
-    ...["calendar", "introductions", "help", "raidChat", "lfg"].map(
-      (key): string => bindings.community[key],
-    ),
-  ];
+  const defaults = onboarding?.default_channel_ids ?? [];
   check(
-    "seven-shared-defaults",
+    "shared-defaults-accessible",
     onboarding &&
-      defaults.every(Boolean) &&
-      sameIds(onboarding.default_channel_ids, defaults) &&
+      defaults.length >= 7 &&
+      new Set(defaults).size === defaults.length &&
       defaults.every(
-        (id): boolean => channels.get(id)?.parent_id !== tbcCategoryId,
+        (id): boolean =>
+          channels.has(id) &&
+          channels.get(id)?.type === 0 &&
+          channels.get(id)?.parent_id !== tbcCategoryId &&
+          hasDiscordPermission(access(id, []), viewHistory),
       )
       ? []
       : ["defaults"],
@@ -161,6 +180,13 @@ export function analyzeKfcReadiness(
     "five-writable-defaults",
     writableDefaults.length >= 5 ? [] : ["default-permissions"],
   );
+  if (bindings.access) {
+    const accessReport = analyzeKfcAccess(snapshot, bindings.access);
+    check(
+      "guild-and-entry-access",
+      accessReport.issues.map((issue) => `${issue.channelId}:${issue.code}`),
+    );
+  }
   const activity = onboarding?.prompts.find(
     (prompt): boolean => prompt.title === "What brings you here?",
   );

@@ -3,11 +3,15 @@ import assert from "node:assert/strict";
 import {
   eventActionSchema,
   eventSettingsSchema,
+  eventSchema,
   policyAcknowledgementSchema,
 } from "../lib/raids/contracts";
 import { eventPolicyChecksum } from "../lib/raids/event-policy";
 import { jsonChecksum } from "../lib/raids/json";
 import { localRaidStart } from "../lib/raids/time";
+import { classes, specializationsByClass } from "../lib/raids/specializations";
+import { eventCreationHash } from "../lib/raids/event-request";
+import { createHash } from "node:crypto";
 
 const settings = {
   game: "tbc",
@@ -32,6 +36,61 @@ const settings = {
   allowDuplicates: false,
   hardReserves: [],
 };
+
+test("Leadership accepts bounded single-line names and preserves omitted edit fields", (): void => {
+  const parsed = eventSettingsSchema.parse({
+    ...settings,
+    leaderName: " Psyrogue ",
+    assistantName: " DJ ",
+  });
+  assert.equal(parsed.leaderName, "Psyrogue");
+  assert.equal(parsed.assistantName, "DJ");
+  assert.equal(eventSettingsSchema.parse(settings).assistantName, undefined);
+  assert.equal(
+    eventSettingsSchema.parse({ ...settings, assistantName: "" }).assistantName,
+    "",
+  );
+  for (const name of ["a".repeat(81), "DJ\nadmin", "DJ\u0000", "DJ\tadmin"])
+    for (const field of ["leaderName", "assistantName"])
+      assert.equal(
+        eventSettingsSchema.safeParse({ ...settings, [field]: name }).success,
+        false,
+      );
+});
+
+test("Empty leadership defaults retain legacy retry hashes; supplied names are part of creation identity", (): void => {
+  const input = eventSchema.parse({
+    ...settings,
+    game: "forever",
+    realm: "",
+    requestKey: "00000000-0000-4000-8000-000000000001",
+  });
+  const {
+    eventType,
+    game,
+    realm,
+    discordChannelId,
+    confirmDiscordPublication,
+    leaderName,
+    assistantName,
+    ...legacy
+  } = input;
+  assert.equal(eventType, "raid");
+  assert.equal(game, "forever");
+  assert.equal(realm, "");
+  assert.equal(discordChannelId, null);
+  assert.equal(confirmDiscordPublication, false);
+  assert.equal(leaderName, "");
+  assert.equal(assistantName, "");
+  assert.equal(
+    eventCreationHash(input),
+    createHash("sha256").update(JSON.stringify(legacy)).digest("hex"),
+  );
+  assert.notEqual(
+    eventCreationHash({ ...input, assistantName: "DJ" }),
+    eventCreationHash(input),
+  );
+});
 
 test("Preview edit contracts allow event settings but never creator, audience or channel injection", () => {
   const result = eventActionSchema.parse({
@@ -82,6 +141,63 @@ test("Party layout actions require bounded, explicit roster positions", () => {
       version: 4,
       assignments: [{ signupId: "signup-1", partyIndex: 0, slotIndex: 5 }],
     }).success,
+    false,
+  );
+});
+
+test("Organizer character edits accept only matching class/spec pairs and explicit reserve consent", () => {
+  const input = {
+    action: "edit_signup_character",
+    version: 3,
+    signupId: "signup-1",
+    character: { className: "Druid", specialization: "Feral" },
+  };
+  for (const className of classes)
+    for (const specialization of specializationsByClass[className]) {
+      const parsed = eventActionSchema.parse({
+        ...input,
+        character: { className, specialization },
+      });
+      assert.equal(parsed.action, "edit_signup_character");
+      assert.equal(parsed.character.clearReserves, false);
+    }
+  assert.equal(
+    eventActionSchema.safeParse({
+      ...input,
+      character: { className: "Paladin", specialization: "Feral" },
+    }).success,
+    false,
+  );
+  for (const specialization of [null, "", "unknown"])
+    assert.equal(
+      eventActionSchema.safeParse({
+        ...input,
+        character: { ...input.character, specialization },
+      }).success,
+      false,
+    );
+  for (const version of [0, -1, 1.5, "3"])
+    assert.equal(
+      eventActionSchema.safeParse({ ...input, version }).success,
+      false,
+    );
+  for (const field of [
+    "role",
+    "status",
+    "memberId",
+    "characterId",
+    "partyIndex",
+    "name",
+  ])
+    assert.equal(
+      eventActionSchema.safeParse({
+        ...input,
+        character: { ...input.character, [field]: "injected" },
+      }).success,
+      false,
+    );
+  assert.equal(
+    eventActionSchema.safeParse({ ...input, organizerId: "injected" }).success,
     false,
   );
 });
